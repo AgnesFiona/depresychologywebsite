@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sistem Assessment Psikologis - Login & Register</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, .25);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            display: flex;
+            min-height: 600px
+        }
+
+        .illustration-panel {
+            flex: 1;
+            background: linear-gradient(rgba(26, 41, 128, .9), rgba(38, 208, 206, .9)), url('https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=800&q=80') center/cover;
+            color: #fff;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center
+        }
+    
+        .illustration-panel h1 {
+            font-size: 32px;
+            margin-bottom: 16px
+        }
+
+        .illustration-panel p {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            opacity: .9
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 20px
+        }
+
+        .features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px
+        }
+
+        .features i {
+            color: #26d0ce;
+            background: #fff;
+            border-radius: 50%;
+            padding: 6px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .form-panel {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative
+        }
+
+        .message-box {
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 13px
+        }
+
+        .message-box.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block
+        }
+
+        .message-box.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block
+        }
+
+        .message-box.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block
+        }
+
+        .message-box.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block
+        }
+
+        .message-box strong {
+            font-weight: 700
+        }
+
+        .form-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            position: relative;
+            transition: .3s
+        }
+
+        .tab-btn.active {
+            color: #1a2980
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #26d0ce;
+            border-radius: 3px 3px 0 0
+        }
+
+        .form-content {
+            display: none;
+            animation: fade .25s
+        }
+
+        .form-content.active {
+            display: block
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateX(15px)
+            } to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .form-title {
+            font-size: 22px;
+            color: #1a2980;
+            margin-bottom: 20px;
+            text-align: center
+        }
+
+        .form-group {
+            margin-bottom: 16px
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        .input-with-icon {
+            position: relative
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1a2980
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: .3s
+        }
+
+        .input-with-icon input:focus {
+            border-color: #26d0ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(38, 208, 206, .1)
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 14px
+        }
+
+        .password-toggle:hover {
+            color: #1a2980
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+            font-size: 13px
+        }
+
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+            accent-color: #26d0ce
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .3s;
+            margin-top: 5px
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(38, 208, 206, .3)
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 16px;
+            color: #666;
+            font-size: 13px
+        }
+
+        .form-footer a {
+            color: #1a2980;
+            text-decoration: none;
+            font-weight: 600
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline
+        }
+
+        .error-message {
+            color: #ff4757;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none
+        }
+
+        .security-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #495057
+        }
+
+        .security-info i {
+            margin-right: 5px;
+            color: #28a745
+        }
+
+        .admin-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #856404
+        }
+
+        .age-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #0066cc
+        }
+        
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-with-icon select,
+        .input-with-icon input[type="number"] {
+            padding-left: 42px;
+            height: 46px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 15px;
+            background-color: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .input-with-icon select:focus,
+        .input-with-icon input[type="number"]:focus {
+            border-color: #26d0ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+        }
+        
+        @media(max-width:768px) {
+            .container {
+                flex-direction: column;
+                max-width: 520px
+            }
+            
+            .illustration-panel,
+            .form-panel {
+                padding: 28px
+            }
+            
+            .illustration-panel h1 {
+                font-size: 26px
+            }
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- PANEL KIRI -->
+            <div class="illustration-panel">
+                <h1><i class="fas fa-brain"></i> PsychoClass</h1>
+                <p>Sistem Assessment Psikologis dengan Hybrid AHP-Logistic Regression untuk mengukur dan menganalisis kondisi psikologis.</p>
+                <ul class="features">
+                    <li><i class="fas fa-clipboard-check"></i> 10 Pertanyaan psikologis lengkap</li>
+                    <li><i class="fas fa-chart-line"></i> Analisis real-time dengan hybrid AHP-LR</li>
+                    <li><i class="fas fa-shield-alt"></i> Data aman di browser Anda</li>
+                    <li><i class="fas fa-user-md"></i> Rekomendasi personalisasi</li>
+                    <li><i class="fas fa-history"></i> Riwayat perkembangan kondisi</li>
+                </ul>
+                <div class="security-info">
+                    <p><i class="fas fa-shield-alt"></i> <strong>KEAMANAN DATA ANDA:</strong></p>
+                    <p>• User Login menggunakan email & password pribadi</p>
+                    <p>• Kategori usia: <code>15-24 tahun</code>.</p>
+                    <p>• Data "TIDAK" disimpan di database eksternal, sehingga sangat aman.</p>
+                    <p>• Semua data hanya tersimpan di browser Anda 😉</p>
+                </div>
+            </div>
+        
+            <!-- PANEL KANAN -->
+            <div class="form-panel">
+                <div class="message-box info" id="infoBox">
+                    <strong><i class="fas fa-shield-alt"></i> Sistem Aman</strong><br />
+                    Data Anda tidak akan terbocorkan oleh adminskikologi.
+                </div>
+            
+                <div class="form-tabs">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="register">Daftar User Baru</button>
+                </div>
+            
+                <div class="message-box" id="messageBox"></div>
+                <!-- FORM LOGIN -->
+                <form class="form-content active" id="loginForm">
+                    <h2 class="form-title">Masuk ke Sistem</h2>
+                
+                    <div class="message-box warning" id="loginWarning" style="display: none;">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Pengguna Baru:</strong>
+                        Jika Anda belum memiliki akun, wajib melakukan registrasi terlebih dahulu.
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="loginEmail">Email Pribadi</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="anakesopo@sarjanul.com" required />
+                        </div>
+                        <div class="error-message" id="loginEmailError"></div>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="loginPassword">Password email</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="yangbenardantepat,waras" required />
+                            <button type="button" class="password-toggle" id="toggleLoginPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="loginPasswordError"></div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Ingat email saya</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> MASUK SEKARANG
+                    </button>
+                
+                    <div class="security-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Informasi Login:</strong><br>
+                        • Gunakan email & password pribadi yang telah diregistrasi<br>
+                        • Data TIDAK tersimpan di database, hanya di browser Anda 😉
+                    </div>
+                    
+                    <div class="form-footer">
+                        Belum punya akun? <a href="#" id="linkToRegister">Daftar pengguna baru</a>
+                    </div>
+                </form>
+            
+                <!-- FORM REGISTER -->
+                <form class="form-content" id="registerForm">
+                    <h2 class="form-title">Daftar Akun User</h2>
+            
+                    <div class="form-group">
+                        <label for="regName">Nama Lengkapku:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="regName" placeholder="Nama lengkap Anda" required />
+                        </div>
+                        <div class="error-message" id="regNameError"></div>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="regEmail">Email Pribadi:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="anakesopo@sarjanul.com" required />
+                        </div>
+                        <div class="error-message" id="regEmailError"></div>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="regGender">Jenis Kelamin</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-venus-mars"></i>
+                            <select id="regGender" class="form-control" style="padding-left: 42px; height: 46px; border: 2px solid #e1e1e1; 
+                            border-radius: 10px; width: 100%;">
+                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="male">Laki-laki</option>
+                                <option value="female">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="regGenderError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regAge">Usia (angka)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                            <input type="number" id="regAge" placeholder="Masukkan usia Anda dengan jujur" min="15" max="24" required />
+                        </div>
+                        <div class="error-message" id="regAgeError"></div>
+                        <div class="age-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Batas Usia:</strong> Hanya untuk usia 15-24 tahun. Di luar rentang ini tidak dapat registrasi.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPassword" placeholder="Masukkan Password Anda" required />
+                            <button type="button" class="password-toggle" id="toggleRegPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="regPasswordError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Konfirmasi Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regConfirmPassword" placeholder="Konfirm ulang password Anda" required />
+                        </div>
+                        <div class="error-message" id="regConfirmPasswordError"></div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i> DAFTAR
+                    </button>
+                    
+                    <div class="security-info">
+                        <i class="fas fa-lock"></i>
+                        <strong>Perhatian:</strong><br>
+                        • Data Anda tidak akan dibocorkan oleh adminskikologi<br>
+                        • Jika cache browser dibersihkan, data akan hilang<br>
+                        • Gunakan email pribadi untuk registrasi dan login
+                    </div>
+                    
+                    <div class="form-footer">
+                        Sudah punya akun? <a href="#" id="linkBackLogin">Kembali ke login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+    <script>
+    //INISIALISASI SISTEM
+    // Inisialisasi database user jika belum ada
+    if (!localStorage.getItem('psycho_users')) {
+        localStorage.setItem('psycho_users', JSON.stringify([]));
+    }
+    
+    // Inisialisasi database assessments jika belum ada
+    if (!localStorage.getItem('userAssessments')) {
+        localStorage.setItem('userAssessments', JSON.stringify([]));
+    }
+    
+    // Inisialisasi database logs jika belum ada
+    if (!localStorage.getItem('system_logs')) {
+        localStorage.setItem('system_logs', JSON.stringify([]));
+    }
+    
+    // ==================== ELEMENTS ====================
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const forms = document.querySelectorAll('.form-content');
+    const msgBox = document.getElementById('messageBox');
+    const loginWarning = document.getElementById('loginWarning');
+    
+    // ==================== FUNGSI HELPER ====================
+    function showMessage(html, type = 'success') {
+        msgBox.innerHTML = html;
+        msgBox.className = 'message-box ' + type;
+        msgBox.style.display = 'block';
+        setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
+    }
+    
+    function clearErrors() {
+        document.querySelectorAll('.error-message').forEach(e => {
+            e.textContent = ''; 
+            e.style.display = 'none';
+        });
+    }
+    
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (el) { 
+            el.textContent = msg; 
+            el.style.display = 'block'; 
+        }
+    }
+    
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    // Fungsi untuk menambahkan log
+    function addLog(userName, role, action, status) {
+        const log = {
+            id: 'log_' + Date.now(),
+            timestamp: new Date().toISOString(),
+            userName: userName,
+            role: role,
+            action: action,
+            status: status,
+            ip: '127.0.0.1'
+        };
+        
+        const systemLogs = JSON.parse(localStorage.getItem('system_logs') || '[]');
+        systemLogs.unshift(log);
+        
+        // Keep only last 1000 logs
+        if (systemLogs.length > 1000) {
+            systemLogs.pop();
+        }
+        
+        localStorage.setItem('system_logs', JSON.stringify(systemLogs));
+    }
+    
+    // Fungsi untuk mengecek apakah email sudah terdaftar
+    function isEmailRegistered(email) {
+        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
+        return users.some(u => u.email.toLowerCase() === email.toLowerCase());
+    }
+    
+    // ==================== SWITCH TAB ====================
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab + 'Form').classList.add('active');
+            clearErrors();
+            
+            // Tampilkan warning untuk pengguna baru di tab login
+            if (btn.dataset.tab === 'login') {
+                checkAndShowLoginWarning();
+            }
+        });
+    });
+    
+    // ==================== LINK NAVIGATION ====================
+    document.getElementById('linkToRegister').addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector('.tab-btn[data-tab="register"]').click();
+    });
+    
+    document.getElementById('linkBackLogin').addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector('.tab-btn[data-tab="login"]').click();
+    });
+    
+    // ==================== TOGGLE PASSWORD ====================
+    document.getElementById('toggleLoginPassword').addEventListener('click', function () {
+        const input = document.getElementById('loginPassword');
+        const icon = this.querySelector('i');
+        if (input.type === 'password') { 
+            input.type = 'text'; 
+            icon.classList.replace('fa-eye', 'fa-eye-slash'); 
+        } else { 
+            input.type = 'password'; 
+            icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+        }
+    });
+    
+    document.getElementById('toggleRegPassword').addEventListener('click', function () {
+        const input = document.getElementById('regPassword');
+        const icon = this.querySelector('i');
+        if (input.type === 'password') { 
+            input.type = 'text'; 
+            icon.classList.replace('fa-eye', 'fa-eye-slash'); 
+        } else { 
+            input.type = 'password'; 
+            icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+        }
+    });
+    
+    // ==================== CEK EMAIL DI INPUT LOGIN ====================
+    document.getElementById('loginEmail').addEventListener('blur', function() {
+        checkAndShowLoginWarning();
+    });
+    
+    function checkAndShowLoginWarning() {
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        if (email && !isEmailRegistered(email) && email !== 'adminpsyc@admin.com') {
+            loginWarning.style.display = 'block';
+        } else {
+            loginWarning.style.display = 'none';
+        }
+    }
+    
+    // ==================== FORM REGISTER ====================
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors();
+
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim().toLowerCase();
+        const gender = document.getElementById('regGender').value;
+        const age = parseInt(document.getElementById('regAge').value);
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+        // Validasi
+        if (!name) {
+            showError('regNameError', 'Nama tidak boleh kosong');
+            return;
+        }
+        
+        if (!email || !validateEmail(email)) {
+            showError('regEmailError', 'Email tidak valid');
+            return;
+        }
+        
+        if (!gender) {
+            showError('regGenderError', 'Pilih jenis kelamin');
+            return;
+        }
+        
+        if (!age || age < 15 || age > 24) {
+            showError('regAgeError', 'Usia harus antara 15-24 tahun');
+            return;
+        }
+        
+        if (!password || password.length < 6) {
+            showError('regPasswordError', 'Password minimal 6 karakter');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            showError('regConfirmPasswordError', 'Password tidak cocok');
+            return;
+        }
+
+        // Cek apakah email sudah terdaftar
+        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
+        const existingUser = users.find(u => u.email.toLowerCase() === email);
+        
+        if (existingUser) {
+            showError('regEmailError', 'Email sudah terdaftar');
+            return;
+        }
+
+        // Buat user baru
+        const newUser = {
+            id: 'user_' + Date.now(),
+            name: name,
+            email: email,
+            gender: gender,
+            age: age,
+            password: password,
+            createdAt: new Date().toISOString(),
+            role: 'user',
+            lastLogin: null
+        };
+
+        // Simpan ke database
+        users.push(newUser);
+        localStorage.setItem('psycho_users', JSON.stringify(users));
+
+        // Tambahkan log
+        addLog(name, 'user', 'Registrasi akun baru', 'success');
+
+        // Tampilkan pesan sukses
+        showMessage(`
+            <i class="fas fa-check-circle"></i> 
+            <strong>Registrasi berhasil!</strong><br>
+            Akun Anda telah berhasil dibuat. Silakan login dengan email dan password yang telah didaftarkan.
+        `, 'success');
+
+        // Auto-fill email di form login
+        document.getElementById('loginEmail').value = email;
+        
+        // Clear form register
+        document.getElementById('registerForm').reset();
+        
+        // Switch ke tab login
+        setTimeout(() => {
+            document.querySelector('.tab-btn[data-tab="login"]').click();
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').focus();
+        }, 1500);
+    });
+    
+    // ==================== FORM LOGIN ====================
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors();
+
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const password = document.getElementById('loginPassword').value;
+        const rememberCheckbox = document.getElementById('remember');
+
+        if (!email || !validateEmail(email)) {
+            showError('loginEmailError', 'Email tidak valid');
+            return;
+        }
+        
+        if (!password) {
+            showError('loginPasswordError', 'Password tidak boleh kosong');
+            return;
+        }
+
+        // ==================== LOGIN ADMIN ====================
+        if (email === 'adminpsyc@admin.com') {
+            if (password === 'depresychol') {
+                const adminUser = {
+                    id: 'admin_001',
+                    name: 'Admin PsychoClass',
+                    email: 'adminpsyc@admin.com',
+                    role: 'admin',
+                    gender: 'other',
+                    age: 35,
+                    loginTime: new Date().toISOString()
+                };
+
+                // Simpan ke sessionStorage dan localStorage
+                sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
+                localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                sessionStorage.setItem('currentAdmin', JSON.stringify(adminUser));
+                localStorage.setItem('currentAdmin', JSON.stringify(adminUser));
+
+                // Ingat email jika checkbox dicentang
+                if (rememberCheckbox && rememberCheckbox.checked) {
+                    localStorage.setItem('rememberedEmail', email);
+                }
+                
+                // Tambahkan log
+                addLog(adminUser.name, 'admin', 'Login ke sistem admin', 'success');
+
+                showMessage('<i class="fas fa-shield-alt"></i> Login berhasil! Mengarahkan ke dashboard admin...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1500);
+                return;
+            } else {
+                showError('loginPasswordError', 'Password admin salah');
+                addLog('Unknown', 'admin', 'Login admin gagal - password salah', 'failed');
+                return;
+            }
+        }
+
+        // ==================== LOGIN USER BIASA ====================
+        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
+        const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+        if (!user) {
+            // Cek apakah email terdaftar
+            const emailExists = users.find(u => u.email.toLowerCase() === email);
+            if (emailExists) {
+                showError('loginPasswordError', 'Password salah. Silakan coba lagi.');
+            } else {
+                showError('loginEmailError', 'Email belum terdaftar. Silakan registrasi terlebih dahulu.');
+                showMessage('<i class="fas fa-exclamation-triangle"></i> <strong>Pengguna baru:</strong> Wajib registrasi terlebih dahulu.', 'warning');
+            }
+            addLog(email, 'unknown', 'Login gagal - email/password salah', 'failed');
+            return;
+        }
+
+        // Update last login time
+        user.lastLogin = new Date().toISOString();
+        const userIndex = users.findIndex(u => u.id === user.id);
+        if (userIndex !== -1) {
+            users[userIndex] = user;
+            localStorage.setItem('psycho_users', JSON.stringify(users));
+        }
+
+        const userData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            gender: user.gender,
+            age: user.age,
+            role: 'user',
+            loginTime: new Date().toISOString()
+        };
+
+        // Simpan session
+        sessionStorage.setItem('currentUser', JSON.stringify(userData));
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+
+        // Ingat email jika checkbox dicentang
+        if (rememberCheckbox && rememberCheckbox.checked) {
+            localStorage.setItem('rememberedEmail', email);
+        }
+        
+        // Tambahkan log
+        addLog(user.name, 'user', 'Login ke sistem', 'success');
+
+        showMessage(`<i class="fas fa-check-circle"></i> Login berhasil! Selamat datang, ${user.name}.`, 'success');
+
+        // Redirect ke dashboard
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
+    });
+    
+    // ==================== LOAD REMEMBERED EMAIL ====================
+    window.addEventListener('DOMContentLoaded', () => {
+        const remembered = localStorage.getItem('rememberedEmail');
+        if (remembered && document.getElementById('loginEmail')) {
+            document.getElementById('loginEmail').value = remembered;
+            checkAndShowLoginWarning();
+        }
+        
+        // Tambahkan user demo untuk testing (opsional)
+        addDemoUserForTesting();
+    });
+    
+    // ==================== FUNGSI TAMBAHAN ====================
+    function addDemoUserForTesting() {
+        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
+        
+        // Cek apakah user demo sudah ada
+        const demoExists = users.find(u => u.email === 'user@demo.com');
+        
+        if (!demoExists) {
+            const demoUser = {
+                id: 'demo_002',
+                name: 'User Demo',
+                email: 'user@demo.com',
+                gender: 'male',
+                age: 20,
+                password: 'demo123',
+                createdAt: new Date().toISOString(),
+                role: 'user',
+                lastLogin: new Date().toISOString()
+            };
+            
+            users.push(demoUser);
+            localStorage.setItem('psycho_users', JSON.stringify(users));
+        }
+    }
+    
+    // ==================== FUNGSI CEK USER LOGIN ====================
+    function isLoggedIn() {
+        try {
+            const sessionUser = sessionStorage.getItem('currentUser');
+            const localUser = localStorage.getItem('currentUser');
+            
+            return !!(sessionUser || localUser);
+        } catch (error) {
+            return false;
+        }
+    }
+    
+    function getCurrentUser() {
+        try {
+            const sessionUser = sessionStorage.getItem('currentUser');
+            const localUser = localStorage.getItem('currentUser');
+            
+            if (sessionUser) return JSON.parse(sessionUser);
+            if (localUser) return JSON.parse(localUser);
+            return null;
+        } catch (error) {
+            return null;
+        }
+    }
+    
+    function logout() {
+        if (confirm('Apakah Anda yakin ingin logout?')) {
+            const user = getCurrentUser();
+            if (user) {
+                addLog(user.name, user.role, 'Logout dari sistem', 'success');
+            }
+            
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('currentUser');
+            sessionStorage.removeItem('currentAdmin');
+            localStorage.removeItem('currentAdmin');
+            window.location.href = 'index.html';
+        }
+    }
+    
+    // ==================== EXPORT FUNGSI UNTUK FILE LAIN ====================
+    window.AuthSystem = {
+        isLoggedIn,
+        getCurrentUser,
+        logout,
+        validateEmail,
+        addLog,
+        isEmailRegistered
+    };
+    </script>
+    </body>
+</html>

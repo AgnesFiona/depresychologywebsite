@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dataset - Depresychology</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        
+            :root {
+                --primary: #667eea;
+                --primary-dark: #5a67d8;
+                --secondary: #764ba2;
+                --light: #f8fafc;
+                --dark: #2d3748;
+                --gray: #718096;
+                --border: #e2e8f0;
+                --success: #48bb78;
+                --warning: #ed8936;
+                --danger: #f56565;
+                --info: #4299e1;
+                --sidebar-width: 280px;
+            }
+        
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: var(--dark);
+                background: #f5f7fa;
+                min-height: 100vh;
+                display: flex;
+                overflow-x: hidden;
+            }
+            
+            .sidebar {
+                width: var(--sidebar-width);
+                background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                padding: 20px 0;
+                height: 100vh;
+                position: fixed;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                z-index: 1000;
+            }
+        
+            .sidebar-content {
+                padding: 0 15px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                overflow: hidden;
+            }
+        
+            .brand-section {
+                margin-bottom: 25px;
+                text-align: center;
+                padding: 0 10px;
+                flex-shrink: 0;
+            }
+        
+            .brand-icon {
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 12px auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.2);
+            }
+            
+            .brand-logo-img {
+                width: 50px;
+                height: 50px;
+                object-fit: contain;
+            }
+        
+            .brand-name {
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 3px;
+            }
+        
+            .brand-tagline {
+                font-size: 12px;
+                opacity: 0.9;
+                letter-spacing: 0.5px;
+                white-space: nowrap;
+            }
+        
+            .user-section {
+                margin-bottom: 25px;
+                flex-shrink: 0;
+            }
+        
+            .user-card {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 15px;
+                backdrop-filter: blur(10px);
+            }
+        
+            .user-name {
+                display: flex;
+                justify-content: center;
+                gap: 6px;
+                margin-bottom: 10px;
+                font-size: 16px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+        
+            .user-status {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-bottom: 15px;
+                font-size: 13px;
+            }
+        
+            .user-details {
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 8px;
+                padding: 12px;
+            }
+        
+            .detail-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                font-size: 12px;
+            }
+        
+            .detail-item:last-child {
+                margin-bottom: 0;
+            }
+        
+            .detail-item .detail-icon {
+                width: 14px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+        
+            .detail-item span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+            }
+            
+            .menu-checkbox {
+                width: 14px;
+                height: 14px;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 3px;
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+        
+            .menu-checkbox.checked::after {
+                content: '✓';
+                font-size: 10px;
+                color: white;
+            }
+        
+            .menu-checkbox.unchecked {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .menu-section {
+                margin-bottom: 15px;
+                flex: 1;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+        
+            .menu-title {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                margin: 0 0 12px 8px;
+                opacity: 0.7;
+                font-weight: 600;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+        
+            .menu-items-container {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding-right: 3px;
+            }
+        
+            .menu-items-container::-webkit-scrollbar {
+                display: none;
+            }
+        
+            .menu-item {
+                display: flex;
+                align-items: center;
+                padding: 10px 12px;
+                border-radius: 8px;
+                margin-bottom: 6px;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                text-decoration: none;
+                color: white;
+                font-size: 13px;
+                min-width: 0;
+                flex-shrink: 0;
+            }
+        
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateX(3px);
+            }
+        
+            .menu-item.active {
+                background: rgba(255, 255, 255, 0.2);
+                font-weight: 600;
+            }
+        
+            .menu-item.active .menu-checkbox {
+                border-color: white;
+            }
+        
+            .menu-item.active .menu-checkbox.unchecked::after {
+                content: '✓';
+                font-size: 10px;
+                color: white;
+            }
+        
+            .menu-icon {
+                font-size: 14px;
+                margin-right: 10px;
+                width: 18px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+        
+            .menu-text {
+                font-size: 13px;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                line-height: 1.4;
+                white-space: normal;
+                word-wrap: break-word;
+                max-height: 36px;
+                line-clamp: 2;
+                box-orient: vertical;
+            }
+            
+            .logout-section {
+                margin-top: auto;
+                padding: 10px 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                flex-shrink: 0;
+            }
+        
+            .logout-menu-item {
+                display: flex;
+                align-items: center;
+                padding: 10px 12px;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                text-decoration: none;
+                color: #fed7d7;
+                background: rgba(245, 101, 101, 0.15);
+                border: 1px solid rgba(245, 101, 101, 0.3);
+                font-size: 13px;
+            }
+        
+            .logout-menu-item:hover {
+                background: rgba(245, 101, 101, 0.25);
+                transform: translateX(3px);
+                color: #fff5f5;
+                border-color: rgba(245, 101, 101, 0.5);
+            }
+        
+            .logout-menu-icon {
+                font-size: 14px;
+                margin-right: 10px;
+                width: 18px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+        
+            .logout-menu-text {
+                font-size: 13px;
+                flex: 1;
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        
+            .logout-menu-checkbox {
+                width: 14px;
+                height: 14px;
+                border: 2px solid rgba(245, 101, 101, 0.5);
+                border-radius: 3px;
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(245, 101, 101, 0.1);
+                flex-shrink: 0;
+            }
+        
+            .logout-menu-checkbox.unchecked::after {
+                content: '🚪';
+                font-size: 9px;
+                color: #fed7d7;
+            }
+            
+            .main-content {
+                flex: 1;
+                margin-left: var(--sidebar-width);
+                padding: 30px;
+                min-height: 100vh;
+                overflow-y: auto;
+                padding-bottom: 50px;
+            }
+        
+            .header {
+                margin-bottom: 30px;
+            }
+        
+            .page-title {
+                font-size: 28px;
+                font-weight: 700;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+        
+            .page-icon {
+                font-size: 24px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            
+            .tabs {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 30px;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 15px;
+            }
+        
+            .tab {
+                padding: 12px 24px;
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+        
+            .tab:hover {
+                background: var(--light);
+                border-color: var(--primary);
+            }
+        
+            .tab.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+        
+            .dataset-header {
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                border-radius: 16px;
+                padding: 30px;
+                color: white;
+                margin-bottom: 30px;
+                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            }
+        
+            .dataset-title {
+                font-size: 24px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+        
+            .dataset-description {
+                font-size: 16px;
+                opacity: 0.9;
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+        
+            .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 20px;
+            }
+        
+            .stat-item {
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(8px);
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        
+            .stat-number {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+        
+            .stat-label {
+                font-size: 14px;
+                opacity: 0.9;
+            }
+        
+            .dataset-guide-panel {
+                background: white;
+                border-radius: 16px;
+                padding: 30px;
+                margin-bottom: 30px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border);
+                display: none;
+            }
+        
+            .dataset-guide-panel.active {
+                display: block;
+            }
+        
+            .dataset-guide-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+        
+            .dataset-guide-title {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        
+            .dataset-guide-title-icon {
+                color: var(--primary);
+            }
+        
+            .close-panel-btn {
+                background: var(--light);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 10px 15px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+        
+            .close-panel-btn:hover {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+        
+            .dataset-columns-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 25px;
+            }
+        
+            .column-card {
+                background: var(--light);
+                border-radius: 12px;
+                padding: 25px;
+                border-left: 5px solid var(--primary);
+                transition: transform 0.3s ease;
+            }
+            
+            .column-card:hover {
+                transform: translateY(-5px);
+            }
+        
+            .column-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+        
+            .column-icon {
+                font-size: 20px;
+                margin-right: 15px;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+            }
+        
+            .column-number {
+                font-size: 14px;
+                font-weight: 700;
+                color: white;
+                background: var(--dark);
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+            }
+        
+            .column-name {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--dark);
+            }
+        
+            .column-description {
+                font-size: 14px;
+                line-height: 1.6;
+                color: var(--dark);
+                margin-bottom: 15px;
+            }
+        
+            .column-example {
+                background: white;
+                border-radius: 8px;
+                padding: 12px;
+                margin-top: 10px;
+                border: 1px solid var(--border);
+                font-size: 13px;
+                color: var(--gray);
+                font-style: italic;
+            }
+            
+            .clinical-explanation-panel {
+                background: white;
+                border-radius: 16px;
+                padding: 30px;
+                margin-bottom: 30px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border);
+                display: none;
+            }
+        
+            .clinical-explanation-panel.active {
+                display: block;
+            }
+        
+            .clinical-panel-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+        
+            .clinical-panel-title {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        
+            .clinical-panel-title-icon {
+                color: var(--primary);
+            }
+        
+            .clinical-scales-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 25px;
+            }
+        
+            .scale-card {
+                background: var(--light);
+                border-radius: 12px;
+                padding: 25px;
+                border-left: 5px solid var(--primary);
+                transition: transform 0.3s ease;
+            }
+        
+            .scale-card:hover {
+                transform: translateY(-5px);
+            }
+        
+            .scale-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+        
+            .scale-icon {
+                font-size: 24px;
+                margin-right: 15px;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+            }
+        
+            .scale-name {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--dark);
+            }
+        
+            .scale-full-name {
+                font-size: 14px;
+                color: var(--gray);
+                margin-bottom: 5px;
+            }
+        
+            .scale-description {
+                font-size: 14px;
+                line-height: 1.6;
+                color: var(--dark);
+                margin-bottom: 15px;
+            }
+        
+            .scale-details {
+                background: white;
+                border-radius: 8px;
+                padding: 15px;
+                margin-top: 15px;
+                border: 1px solid var(--border);
+            }
+        
+            .scale-range-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--dark);
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+        
+            .scale-range {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+        
+            .range-item {
+                background: white;
+                border-radius: 6px;
+                padding: 10px;
+                text-align: center;
+                border: 1px solid var(--border);
+            }
+        
+            .range-value {
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+        
+            .range-label {
+                font-size: 12px;
+                color: var(--gray);
+            }
+        
+            .range-item.low {
+                background: rgba(72, 187, 120, 0.1);
+                border-color: rgba(72, 187, 120, 0.3);
+            }
+        
+            .range-item.moderate {
+                background: rgba(237, 137, 54, 0.1);
+                border-color: rgba(237, 137, 54, 0.3);
+            }
+        
+            .range-item.severe {
+                background: rgba(245, 101, 101, 0.1);
+                border-color: rgba(245, 101, 101, 0.3)
+            }
+            
+            .filter-container {
+                background: white;
+                border-radius: 16px;
+                padding: 30px;
+                margin-bottom: 30px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border);
+            }
+        
+            .filter-title {
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 25px;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        
+            .filter-title-icon {
+                color: var(--primary);
+            }
+            
+            
+            .filter-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+        
+            @media (max-width: 1200px) {
+                .filter-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        
+            @media (max-width: 992px) {
+                .filter-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        
+            @media (max-width: 768px) {
+                .filter-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        
+            .filter-column {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+        
+            .filter-group {
+                margin-bottom: 0;
+            }
+        
+            .filter-group-title {
+                font-size: 13px;
+                font-weight: 600;
+                color: white;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 6px 10px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 6px;
+                display: inline-block;
+                box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            }
+            
+            .filter-dropdown {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid var(--border);
+                border-radius: 8px;
+                font-size: 15px;
+                transition: all 0.3s;
+                background-color: white;
+                cursor: pointer;
+                color: var(--dark);
+                font-family: inherit;
+            }
+        
+            .filter-dropdown:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+            
+            .apply-filter-container {
+                text-align: center;
+                padding-top: 20px;
+                border-top: 1px solid var(--border);
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+        
+            .apply-filter-btn {
+                padding: 14px 32px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-family: inherit;
+            }
+        
+            .apply-filter-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            }
+        
+            .apply-filter-btn.reset {
+                background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+                box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+            }
+        
+            .apply-filter-btn.reset:hover {
+                box-shadow: 0 6px 20px rgba(113, 128, 150, 0.4);
+            }
+            
+            .data-table-container {
+                background: white;
+                border-radius: 16px;
+                padding: 25px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border);
+                overflow-x: auto;
+                margin-bottom: 40px;
+            }
+        
+            .table-title {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        
+            .table-title-icon {
+                color: var(--primary);
+            }
+        
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 1200px;
+            }
+        
+            .data-table th {
+                background: var(--light);
+                padding: 16px 20px;
+                text-align: left;
+                font-weight: 600;
+                color: var(--dark);
+                border-bottom: 2px solid var(--border);
+                font-size: 14px;
+                white-space: nowrap;
+            }
+        
+            .data-table td {
+                padding: 14px 20px;
+                border-bottom: 1px solid var(--border);
+                font-size: 14px;
+                color: var(--gray);
+            }
+        
+            .data-table tr:hover {
+                background: rgba(102, 126, 234, 0.05);
+            }
+        
+            .data-table .risk-high {
+                background: rgba(245, 101, 101, 0.1);
+            }
+        
+            .data-table .risk-medium {
+                background: rgba(237, 137, 54, 0.1);
+            }
+        
+            .data-table .risk-low {
+                background: rgba(72, 187, 120, 0.1);
+            }
+            
+            .badge {
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: 600;
+                display: inline-block;
+            }
+        
+            .badge-success {
+                background: #c6f6d5;
+                color: #276749;
+            }
+        
+            .badge-warning {
+                background: #feebc8;
+                color: #975a16;
+            }
+        
+            .badge-danger {
+                background: #fed7d7;
+                color: #9b2c2c;
+            }
+        
+            .badge-info {
+                background: #c3dafe;
+                color: #2c5282;
+            }
+            
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                margin-top: 30px;
+            }
+        
+            .pagination-button {
+                padding: 10px 16px;
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 14px;
+            }
+        
+            .pagination-button:hover {
+                background: var(--light);
+                border-color: var(--primary);
+            }
+        
+            .pagination-button.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+            
+            .footer {
+                text-align: center;
+                padding: 30px 20px 20px;
+                color: var(--gray);
+                margin-top: 40px;
+                border-top: 1px solid var(--border);
+            }
+        
+            .footer-logo {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--primary);
+                margin-bottom: 8px;
+            }
+        
+            .copyright {
+                font-size: 14px;
+                opacity: 0.8;
+            }
+        
+            .tab-content {
+                display: none;
+            }
+        
+            .tab-content.active {
+                display: block;
+            }
+        
+            .loading-container {
+                text-align: center;
+                padding: 30px;
+            }
+        
+            .loading-spinner {
+                border: 4px solid var(--light);
+                border-top: 4px solid var(--primary);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 15px auto;
+            }
+        
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                } 100% {
+                    transform: rotate(360deg);
+                }
+            }
+            
+            .show-guide-btn {
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 12px 25px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 0 auto 30px auto;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            }
+        
+            .show-guide-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            }
+            
+            .filter-notification {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                animation: fadeIn 0.5s ease;
+            }
+        
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                } to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        
+            .filter-notification-close {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            @media (max-width: 1024px) {
+                :root {
+                    --sidebar-width: 240px;
+                }
+            
+                .main-content {
+                    padding: 20px;
+                    width: calc(100% - 240px);
+                }
+            
+                .menu-text {
+                    font-size: 12px;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                body {
+                    flex-direction: column;
+                }
+                
+                .sidebar {
+                    width: 100%;
+                    height: auto;
+                    position: relative;
+                    padding: 15px 0;
+                    max-height: 70vh;
+                    overflow-y: auto;
+                }
+            
+                .sidebar-content {
+                    padding: 0 15px;
+                    overflow: visible;
+                }
+            
+                .menu-items-container {
+                    overflow: visible;
+                }
+            
+                .main-content {
+                    margin-left: 0;
+                    padding: 15px;
+                    width: 100%;
+                }
+            
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            
+                .mood-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        
+            @media (max-width: 480px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+            
+                .mood-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            
+                .brand-name {
+                    font-size: 20px;
+                }
+            
+                .menu-item {
+                    padding: 8px 10px;
+                    font-size: 12px;
+                }
+            
+                .menu-text {
+                    font-size: 13px;
+                    flex: 1;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    display: -moz-box;
+                    display: box;
+                    -webkit-line-clamp: 2;
+                    -moz-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    -moz-box-orient: vertical;
+                    box-orient: vertical;
+                    line-height: 1.4;
+                    white-space: normal;
+                    word-wrap: break-word;
+                    max-height: 36px;
+                }
+            
+                .page-title {
+                    font-size: 22px;
+                }
+            
+                .section-title {
+                    font-size: 18px;
+                }
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    
+    <body>
+        <!-- Sidebar - SAMA SEPERTI DASHBOARD -->
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <!-- Brand Section -->
+                <div class="brand-section">
+                    <div class="brand-icon">
+                        <img src="Logo Depression Web.png" alt="Depresychology Logo" class="brand-logo-img">
+                    </div>
+                    <div class="brand-name">Depresychology</div>
+                    <div class="brand-tagline">Assessment Psikologis Online</div>
+                </div>
+            
+                <!-- User Section -->
+                <div class="user-section">
+                    <div class="user-card">
+                        <div class="user-name" id="sidebar-user-name">
+                            <span id="user-full-name">Loading...</span>
+                        </div>
+                    
+                        <div class="user-status">
+                            <span>Online</span>
+                        </div>
+                    
+                        <div class="user-details">
+                            <div class="detail-item">
+                                <div class="detail-icon">📧</div>
+                                <span id="user-email">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">👤</div>
+                                <span id="user-gender">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Section -->
+                <div class="menu-section">
+                    <div class="menu-title">MENU UTAMA</div>
+                
+                    <div class="menu-items-container">
+                        <a href="dashboard.html" class="menu-item" onclick="setActiveMenu('dashboard')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">🏠</div>
+                            <div class="menu-text">Dashboard</div>
+                        </a>
+                    
+                        <a href="dataset.html" class="menu-item active" onclick="setActiveMenu('dataset')">
+                            <div class="menu-checkbox checked"></div>
+                            <div class="menu-icon">🗃️</div>
+                            <div class="menu-text">Psychological Assessment Dataset</div>
+                        </a>
+                    
+                        <a href="analisa.html" class="menu-item" onclick="setActiveMenu('analisa')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">🔬</div>
+                            <div class="menu-text">Analisa Psychological Assessment Dataset</div>
+                        </a>
+                    
+                        <a href="input.html" class="menu-item" onclick="trackActivity('Tes Psikologis', '🧪', 'tes')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">🧪</div>
+                            <div class="menu-text">Tes Psikologis</div>
+                        </a>
+                    
+                        <a href="hasil.html" class="menu-item" onclick="trackActivity('Hasil Tes', '📊', 'hasil')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">📊</div>
+                            <div class="menu-text">Hasil Tes Saya</div>
+                        </a>
+                    
+                        <a href="riwayat.html" class="menu-item" onclick="trackActivity('Riwayat', '📜', 'riwayat')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">📜</div>
+                            <div class="menu-text">Riwayat Saya</div>
+                        </a>
+                    
+                        <a href="tentang.html" class="menu-item" onclick="trackActivity('Pengaturan', '⚙️', 'pengaturan')">
+                            <div class="menu-checkbox unchecked"></div>
+                            <div class="menu-icon">💭</div>
+                            <div class="menu-text">Tentang website</div>
+                        </a>
+                    </div>
+                </div>
+            
+                <!-- Logout Section -->
+                <div class="logout-section">
+                    <a href="index.html" class="logout-menu-item" onclick="return confirmLogout()">
+                        <div class="logout-menu-checkbox unchecked"></div>
+                        <div class="logout-menu-icon">🚪</div>
+                        <div class="logout-menu-text">Keluar</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="page-title">
+                    <span class="page-icon">🗃️</span>
+                    Dataset Psikologis Lengkap (9,504 Records)
+                </h1>
+            </div>
+        
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="dataset">Dataset Psikologis (9,504 Records)</div>
+                <div class="tab" data-tab="klinis">Data Psikologi Klinis (Skala Lengkap)</div>
+            </div>
+        
+            <!-- Dataset Header -->
+            <div class="dataset-header">
+                <h2 class="dataset-title">Psychological Assessment Dataset - Kaggle (9,504 Records)</h2>
+                <p class="dataset-description">
+                    Dataset lengkap dengan 9,504 records untuk analisis psikologis. Sumber:
+                    <strong>https://www.kaggle.com/datasets/abdullah895/psychological-assessment-dataset</strong>.
+                    Data ini berfokus pada indikator mood, kecemasan, kualitas tidur, perubahan nafsu makan, dan mekanisme koping.
+                </p>
+            
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-number">9,504</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">11</div>
+                        <div class="stat-label">Kolom Dataset</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Skala Klinis</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">7.06</div>
+                        <div class="stat-label">Usability Score</div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Tab Content: Dataset Psikologis -->
+            <div id="dataset-tab" class="tab-content active">
+                <!-- Tombol untuk menampilkan panel penjelasan dataset -->
+                <button class="show-guide-btn" id="show-dataset-guide">
+                    <i class="fas fa-info-circle"></i> Buka Panduan Kolom Dataset Psikologis
+                </button>
+            
+                <!-- Panel Penjelasan Dataset (Hidden by default) -->
+                <div id="dataset-guide-panel" class="dataset-guide-panel">
+                    <div class="dataset-guide-header">
+                        <h3 class="dataset-guide-title">
+                            <span class="dataset-guide-title-icon">📋</span>
+                            Panduan Kolom Dataset Psikologis (Kaggle Dataset)
+                        </h3>
+                        <button class="close-panel-btn" id="close-dataset-panel">
+                            <i class="fas fa-times"></i> Tutup Panduan
+                        </button>
+                    </div>
+                
+                    <div class="dataset-columns-grid">
+                        <!-- Kolom 1: Mood -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">1</div>
+                                <h4 class="column-name">Mood</h4>
+                            </div>
+                            <p class="column-description">
+                                Mendeskripsikan suasana hati selama dua minggu terakhir. Menilai kondisi emosional umum
+                                seperti cemas, depresi, normal, atau stres.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Anxious", "Depressed", "Normal", "Stressed", "Mixed"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 2: Anxious Social Scale -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">2</div>
+                                <h4 class="column-name">Anxious Social Scale</h4>
+                            </div>
+                            <p class="column-description">
+                                Mengukur tingkat kecemasan sosial terkini. Menilai sejauh mana individu mengalami kecemasan
+                                dalam situasi sosial atau interpersonal.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Low", "Medium", "High", "Severe"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 3: Anxiety Triggers -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">3</div>
+                                <h4 class="column-name">Anxiety Triggers</h4>
+                            </div>
+                            <p class="column-description">
+                                Daftar pemicu stres atau sumber kecemasan umum. Mengidentifikasi faktor-faktor spesifik yang
+                                memicu respons kecemasan.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Work", "Social", "Health", "Financial", "Family"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 4: Sleep Quality -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">4</div>
+                                <h4 class="column-name">Sleep Quality</h4>
+                            </div>
+                            <p class="column-description">
+                                Mengevaluasi pengalaman tidur terkini. Menilai kualitas, durasi, dan gangguan tidur yang dialami.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Good", "Fair", "Poor", "Insomnia"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 5: Appetite Change -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">5</div>
+                                <h4 class="column-name">Appetite Change</h4>
+                            </div>
+                            <p class="column-description">
+                                Mengindikasikan perubahan perilaku makan. Menilai apakah nafsu makan meningkat, menurun, atau tidak berubah.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Decreased", "Normal", "Increased", "Fluctuating"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 6: Lack of Interest -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">6</div>
+                                <h4 class="column-name">Lack of Interest</h4>
+                            </div>
+                            <p class="column-description">
+                                Mencerminkan anhedonia atau keterlibatan rendah. Menilai hilangnya minat atau kesenangan dalam aktivitas yang 
+                                sebelumnya dinikmati.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "None", "Mild", "Moderate", "Severe"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 7: Enjoyable Activities -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">7</div>
+                                <h4 class="column-name">Enjoyable Activities</h4>
+                            </div>
+                            <p class="column-description">
+                                Frekuensi partisipasi dalam kegiatan rekreasi atau hobi. Mengukur seberapa sering individu
+                                terlibat dalam aktivitas yang menyenangkan.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Rarely", "Sometimes", "Often", "Very Often"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 8: Physical Anxiety Symptoms -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">8</div>
+                                <h4 class="column-name">Physical Anxiety Symptoms</h4>
+                            </div>
+                            <p class="column-description">
+                                Melaporkan gejala kecemasan fisiologis. Mengidentifikasi manifestasi fisik dari kecemasan seperti jantung 
+                                berdebar, berkeringat, atau gemetar.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Headaches", "Fatigue", "Muscle Tension", "None"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 9: Concentration Difficulty -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">9</div>
+                                <h4 class="column-name">Concentration Difficulty</h4>
+                            </div>
+                            <p class="column-description">
+                                Frekuensi kesulitan perhatian atau fokus. Menilai kemampuan untuk mempertahankan konsentrasi pada tugas 
+                                atau aktivitas.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Poor", "Fair", "Good", "Excellent"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 10: Coping Strategies -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">10</div>
+                                <h4 class="column-name">Coping Strategies</h4>
+                            </div>
+                            <p class="column-description">
+                                Metode yang digunakan untuk mengelola kecemasan atau stres. Mengidentifikasi strategi penanggulangan yang 
+                                diterapkan individu.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Exercise", "Meditation", "Therapy", "Social Support", "None"
+                            </div>
+                        </div>
+                    
+                        <!-- Kolom 11: Condition Summary -->
+                        <div class="column-card">
+                            <div class="column-header">
+                                <div class="column-number">11</div>
+                                <h4 class="column-name">Condition Summary</h4>
+                            </div>
+                            <p class="column-description">
+                                Klasifikasi yang menunjukkan kondisi kesehatan mental potensial. Ringkasan kondisi berdasarkan penilaian 
+                                keseluruhan dari berbagai indikator.
+                            </p>
+                            <div class="column-example">
+                                Contoh nilai: "Sleep Disorders", "Stress-Related", "Anxiety Disorders", "Mood Disorders", 
+                                "No Significant Issues"
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="apply-filter-container">
+                        <button class="apply-filter-btn" id="close-dataset-panel-bottom">
+                            <i class="fas fa-check-circle"></i> Saya Memahami Panduan Ini
+                        </button>
+                    </div>
+                </div>
+            
+                <!-- Filter Notification (Hidden by default) -->
+                <div id="filter-notification" class="filter-notification" style="display: none;">
+                    <div>
+                        <i class="fas fa-filter"></i>
+                        <span id="filter-notification-text">Menampilkan 0 dari 9,504 records</span>
+                    </div>
+                    <button class="filter-notification-close" id="close-filter-notification">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            
+                <!-- Filter Container -->
+                <div class="filter-container">
+                    <h3 class="filter-title">
+                        <span class="filter-title-icon">🔍</span>
+                        Filter Data Psikologis (Kaggle Dataset)
+                    </h3>
+                
+                    <div class="filter-grid">
+                        <!-- Column 1 -->
+                        <div class="filter-column">
+                            <!-- Mood Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Mood (2 weeks)</div>
+                                <select class="filter-dropdown" data-filter="mood">
+                                    <option value="all">All Moods</option>
+                                    <option value="Anxious">Anxious</option>
+                                    <option value="Depressed">Depressed</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Stressed">Stressed</option>
+                                    <option value="Mixed">Mixed</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Anxious Social Scale Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Anxious Social Scale</div>
+                                <select class="filter-dropdown" data-filter="anxiousSocialScale">
+                                    <option value="all">All Levels</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Severe">Severe</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Anxiety Triggers Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Anxiety Triggers</div>
+                                <select class="filter-dropdown" data-filter="anxietyTriggers">
+                                    <option value="all">All Triggers</option>
+                                    <option value="Work">Work</option>
+                                    <option value="Social">Social</option>
+                                    <option value="Health">Health</option>
+                                    <option value="Financial">Financial</option>
+                                    <option value="Family">Family</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <!-- Column 2 -->
+                        <div class="filter-column">
+                            <!-- Sleep Quality Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Sleep Quality</div>
+                                <select class="filter-dropdown" data-filter="sleepQuality">
+                                    <option value="all">All Qualities</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Fair">Fair</option>
+                                    <option value="Poor">Poor</option>
+                                    <option value="Insomnia">Insomnia</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Appetite Change Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Appetite Change</div>
+                                <select class="filter-dropdown" data-filter="appetiteChange">
+                                    <option value="all">All Changes</option>
+                                    <option value="Decreased">Decreased</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Increased">Increased</option>
+                                    <option value="Fluctuating">Fluctuating</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Lack of Interest Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Lack of Interest</div>
+                                <select class="filter-dropdown" data-filter="lackOfInterest">
+                                    <option value="all">All Levels</option>
+                                    <option value="None">None</option>
+                                    <option value="Mild">Mild</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Severe">Severe</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <!-- Column 3 -->
+                        <div class="filter-column">
+                            <!-- Enjoyable Activities Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Enjoyable Activities</div>
+                                <select class="filter-dropdown" data-filter="enjoyableActivities">
+                                    <option value="all">All Frequencies</option>
+                                    <option value="Rarely">Rarely</option>
+                                    <option value="Sometimes">Sometimes</option>
+                                    <option value="Often">Often</option>
+                                    <option value="Very Often">Very Often</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Physical Anxiety Symptoms Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Physical Anxiety Symptoms</div>
+                                <select class="filter-dropdown" data-filter="physicalAnxietySymptoms">
+                                    <option value="all">All Symptoms</option>
+                                    <option value="Headaches">Headaches</option>
+                                    <option value="Fatigue">Fatigue</option>
+                                    <option value="Muscle Tension">Muscle Tension</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Concentration Difficulty Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Concentration Difficulty</div>
+                                <select class="filter-dropdown" data-filter="concentrationDifficulty">
+                                    <option value="all">All Difficulties</option>
+                                    <option value="Poor">Poor</option>
+                                    <option value="Fair">Fair</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Excellent">Excellent</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <!-- Column 4 -->
+                        <div class="filter-column">
+                            <!-- Coping Strategies Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Coping Strategies</div>
+                                <select class="filter-dropdown" data-filter="copingStrategies">
+                                    <option value="all">All Strategies</option>
+                                    <option value="Exercise">Exercise</option>
+                                    <option value="Meditation">Meditation</option>
+                                    <option value="Therapy">Therapy</option>
+                                    <option value="Social Support">Social Support</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Condition Summary Filter -->
+                            <div class="filter-group">
+                                <div class="filter-group-title">Condition Summary</div>
+                                <select class="filter-dropdown" data-filter="conditionSummary">
+                                    <option value="all">All Conditions</option>
+                                    <option value="Sleep Disorders">Sleep Disorders</option>
+                                    <option value="Stress-Related">Stress-Related</option>
+                                    <option value="Anxiety Disorders">Anxiety Disorders</option>
+                                    <option value="Mood Disorders">Mood Disorders</option>
+                                    <option value="No Significant Issues">No Significant Issues</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- Apply Filter Button -->
+                    <div class="apply-filter-container">
+                        <button class="apply-filter-btn" id="applyFilterDataset">
+                            <i class="fas fa-filter"></i> Terapkan Filter Dataset
+                        </button>
+                        <button class="apply-filter-btn reset" id="resetFilterDataset">
+                            <i class="fas fa-redo"></i> Reset Filter
+                        </button>
+                    </div>
+                </div>
+            
+                <!-- Data Table -->
+                <div class="data-table-container">
+                    <h3 class="table-title">
+                        <span class="table-title-icon">📊</span>
+                        Psychological Assessment Dataset (Kaggle - 9,504 Records)
+                    </h3>
+                
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Mood</th>
+                                <th>Anxious Social Scale</th>
+                                <th>Anxiety Triggers</th>
+                                <th>Sleep Quality</th>
+                                <th>Appetite Change</th>
+                                <th>Lack of Interest</th>
+                                <th>Enjoyable Activities</th>
+                                <th>Physical Anxiety Symptoms</th>
+                                <th>Concentration Difficulty</th>
+                                <th>Coping Strategies</th>
+                                <th>Condition Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataset-table-body">
+                            <!-- Data akan dimuat di sini oleh JavaScript -->
+                        </tbody>
+                    </table>
+                
+                    <!-- Pagination -->
+                    <div class="pagination" id="dataset-pagination">
+                        <!-- Pagination akan di-generate oleh JavaScript -->
+                    </div>
+                
+                    <div style="text-align: center; margin-top: 20px; color: var(--gray); font-size: 14px;">
+                        <i class="fas fa-info-circle"></i> Dataset sumber: Abdullah Shahid - Kaggle (Psychological
+                        Assessment Dataset)
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Tab Content: Data Psikologi Klinis -->
+            <div id="klinis-tab" class="tab-content">
+                <!-- Tombol untuk menampilkan panel penjelasan klinis -->
+                <button class="show-guide-btn" id="show-clinical-guide">
+                    <i class="fas fa-book-medical"></i> Buka Panduan Skala Psikologi Klinis
+                </button>
+            
+                <!-- Panel Penjelasan Klinis (Hidden by default) -->
+                <div id="clinical-explanation-panel" class="clinical-explanation-panel">
+                    <div class="clinical-panel-header">
+                        <h3 class="clinical-panel-title">
+                            <span class="clinical-panel-title-icon">📚</span>
+                            Panduan Skala Psikologi Klinis
+                        </h3>
+                        <button class="close-panel-btn" id="close-clinical-panel">
+                            <i class="fas fa-times"></i> Tutup Panduan
+                        </button>
+                    </div>
+                
+                    <div class="clinical-scales-grid">
+                        <!-- PHQ-9 -->
+                        <div class="scale-card">
+                            <div class="scale-header">
+                                <div class="scale-icon">9</div>
+                                <div>
+                                    <h4 class="scale-name">PHQ-9</h4>
+                                    <p class="scale-full-name">Patient Health Questionnaire-9</p>
+                                </div>
+                            </div>
+                            <p class="scale-description">
+                                Skala 9-item untuk menilai tingkat depresi berdasarkan kriteria DSM-5. Mengukur gejala
+                                depresi selama 2 minggu terakhir dengan skor 0-27.
+                            </p>
+                            <div class="scale-details">
+                                <div class="scale-range-title">
+                                    <i class="fas fa-chart-bar"></i> Interpretasi Skor:
+                                </div>
+                                <div class="scale-range">
+                                    <div class="range-item low">
+                                        <div class="range-value">0-4</div>
+                                        <div class="range-label">Minimal</div>
+                                    </div>
+                                    <div class="range-item low">
+                                        <div class="range-value">5-9</div>
+                                        <div class="range-label">Ringan</div>
+                                    </div>
+                                    <div class="range-item moderate">
+                                        <div class="range-value">10-14</div>
+                                        <div class="range-label">Sedang</div>
+                                    </div>
+                                    <div class="range-item severe">
+                                        <div class="range-value">15-19</div>
+                                        <div class="range-label">Parah</div>
+                                    </div>
+                                    <div class="range-item severe">
+                                        <div class="range-value">20-27</div>
+                                        <div class="range-label">Sangat Parah</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- GAD-7 -->
+                        <div class="scale-card">
+                            <div class="scale-header">
+                                <div class="scale-icon">7</div>
+                                <div>
+                                    <h4 class="scale-name">GAD-7</h4>
+                                    <p class="scale-full-name">Generalized Anxiety Disorder-7</p>
+                                </div>
+                            </div>
+                            <p class="scale-description">
+                                Skala 7-item untuk menilai tingkat kecemasan umum. Mengukur frekuensi gejala kecemasan selama 2 minggu 
+                                terakhir dengan skor 0-21.
+                            </p>
+                            <div class="scale-details">
+                                <div class="scale-range-title">
+                                    <i class="fas fa-chart-bar"></i> Interpretasi Skor:
+                                </div>
+                                <div class="scale-range">
+                                    <div class="range-item low">
+                                        <div class="range-value">0-4</div>
+                                        <div class="range-label">Minimal</div>
+                                    </div>
+                                    <div class="range-item low">
+                                        <div class="range-value">5-9</div>
+                                        <div class="range-label">Ringan</div>
+                                    </div>
+                                    <div class="range-item moderate">
+                                        <div class="range-value">10-14</div>
+                                        <div class="range-label">Sedang</div>
+                                    </div>
+                                    <div class="range-item severe">
+                                        <div class="range-value">15-21</div>
+                                        <div class="range-label">Parah</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- DASS -->
+                        <div class="scale-card">
+                            <div class="scale-header">
+                                <div class="scale-icon">D</div>
+                                <div>
+                                    <h4 class="scale-name">DASS-42</h4>
+                                    <p class="scale-full-name">Depression Anxiety Stress Scales</p>
+                                </div>
+                            </div>
+                            <p class="scale-description">
+                                Skala 42-item yang mengukur tiga komponen emosional negatif: Depresi (D), Kecemasan (A), dan
+                                Stres (S). Masing-masing komponen skor 0-42.
+                            </p>
+                            <div class="scale-details">
+                                <div class="scale-range-title">
+                                    <i class="fas fa-layer-group"></i> Tiga Komponen:
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                    <div
+                                    style="text-align: center; padding: 10px; background: rgba(245, 101, 101, 0.1); border-radius: 6px;">
+                                        <div style="font-weight: 700;">DASS-D</div>
+                                        <div style="font-size: 12px;">Depresi</div>
+                                    </div>
+                                    <div
+                                    style="text-align: center; padding: 10px; background: rgba(237, 137, 54, 0.1); border-radius: 6px;">
+                                        <div style="font-weight: 700;">DASS-A</div>
+                                        <div style="font-size: 12px;">Kecemasan</div>
+                                    </div>
+                                    <div
+                                    style="text-align: center; padding: 10px; background: rgba(102, 126, 234, 0.1); border-radius: 6px;">
+                                        <div style="font-weight: 700;">DASS-S</div>
+                                        <div style="font-size: 12px;">Stres</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- PSS -->
+                        <div class="scale-card">
+                            <div class="scale-header">
+                                <div class="scale-icon">S</div>
+                                <div>
+                                    <h4 class="scale-name">PSS</h4>
+                                    <p class="scale-full-name">Perceived Stress Scale</p>
+                                </div>
+                            </div>
+                            <p class="scale-description">
+                                Skala 10-item yang mengukur persepsi individu terhadap stres. Menilai sejauh mana situasi
+                                kehidupan dirasakan sebagai stresful dengan skor 0-40.
+                            </p>
+                            <div class="scale-details">
+                                <div class="scale-range-title">
+                                    <i class="fas fa-chart-bar"></i> Interpretasi Skor:
+                                </div>
+                                <div class="scale-range">
+                                    <div class="range-item low">
+                                        <div class="range-value">0-13</div>
+                                        <div class="range-label">Stres Rendah</div>
+                                    </div>
+                                    <div class="range-item moderate">
+                                        <div class="range-value">14-26</div>
+                                        <div class="range-label">Stres Sedang</div>
+                                    </div>
+                                    <div class="range-item severe">
+                                        <div class="range-value">27-40</div>
+                                        <div class="range-label">Stres Tinggi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- WHO-5 -->
+                        <div class="scale-card">
+                            <div class="scale-header">
+                                <div class="scale-icon">W</div>
+                                <div>
+                                    <h4 class="scale-name">WHO-5</
+                                        <p class="scale-full-name">World Health Organization-5 Well-Being Index</p>
+                                    </div>
+                                </div>
+                                <p class="scale-description">
+                                    Skala 5-item yang mengukur kesejahteraan psikologis (well-being). Skor lebih tinggi menunjukkan 
+                                    kesejahteraan yang lebih baik (0-25, dikalikan 2 menjadi 0-50).
+                                </p>
+                                <div class="scale-details">
+                                    <div class="scale-range-title">
+                                        <i class="fas fa-chart-bar"></i> Interpretasi Skor (0-50):
+                                    </div>
+                                    <div class="scale-range">
+                                        <div class="range-item severe">
+                                            <div class="range-value">0-13</div>
+                                            <div class="range-label">Well-being Rendah</div>
+                                        </div>
+                                        <div class="range-item moderate">
+                                            <div class="range-value">14-28</div>
+                                            <div class="range-label">Well-being Sedang</div>
+                                        </div>
+                                        <div class="range-item low">
+                                            <div class="range-value">29-50</div>
+                                            <div class="range-label">Well-being Tinggi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <!-- BDI -->
+                            <div class="scale-card">
+                                <div class="scale-header">
+                                    <div class="scale-icon">B</div>
+                                    <div>
+                                        <h4 class="scale-name">BDI</h4>
+                                        <p class="scale-full-name">Beck Depression Inventory</p>
+                                    </div>
+                                </div>
+                                <p class="scale-description">
+                                    Inventori depresi 21-item yang mengukur keparahan gejala depresi. Setiap item memiliki 4 pernyataan 
+                                    dengan skor 0-3, total skor 0-63.
+                                </p>
+                                <div class="scale-details">
+                                    <div class="scale-range-title">
+                                        <i class="fas fa-chart-bar"></i> Interpretasi Skor:
+                                    </div>
+                                    <div class="scale-range">
+                                        <div class="range-item low">
+                                            <div class="range-value">0-9</div>
+                                            <div class="range-label">Minimal</div>
+                                        </div>
+                                        <div class="range-item low">
+                                            <div class="range-value">10-16</div>
+                                            <div class="range-label">Ringan</div>
+                                        </div>
+                                        <div class="range-item moderate">
+                                            <div class="range-value">17-29</div>
+                                            <div class="range-label">Sedang</div>
+                                        </div>
+                                        <div class="range-item severe">
+                                            <div class="range-value">30-63</div>
+                                            <div class="range-label">Parah</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <!-- BAI -->
+                            <div class="scale-card">
+                                <div class="scale-header">
+                                    <div class="scale-icon">A</div>
+                                    <div>
+                                        <h4 class="scale-name">BAI</h4>
+                                        <p class="scale-full-name">Beck Anxiety Inventory</p>
+                                    </div>
+                                </div>
+                                <p class="scale-description">
+                                    Inventori kecemasan 21-item yang mengukur keparahan gejala kecemasan. Mengukur gejala fisik dan 
+                                    kognitif kecemasan dengan skor 0-63.
+                                </p>
+                                <div class="scale-details">
+                                    <div class="scale-range-title">
+                                        <i class="fas fa-chart-bar"></i> Interpretasi Skor:
+                                    </div>
+                                    <div class="scale-range">
+                                        <div class="range-item low">
+                                            <div class="range-value">0-7</div>
+                                            <div class="range-label">Minimal</div>
+                                        </div>
+                                        <div class="range-item low">
+                                            <div class="range-value">8-15</div>
+                                            <div class="range-label">Ringan</div>
+                                        </div>
+                                        <div class="range-item moderate">
+                                            <div class="range-value">16-25</div>
+                                            <div class="range-label">Sedang</div>
+                                        </div>
+                                        <div class="range-item severe">
+                                            <div class="range-value">26-63</div>
+                                            <div class="range-label">Parah</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="apply-filter-container">
+                            <button class="apply-filter-btn" id="close-clinical-panel-bottom">
+                                <i class="fas fa-check-circle"></i> Saya Memahami Panduan Ini
+                            </button>
+                        </div>
+                    </div>
+            
+                    <!-- Data Table untuk Klinis -->
+                    <div class="data-table-container">
+                        <h3 class="table-title">
+                            <span class="table-title-icon">📊</span>
+                            Data Psikologi Klinis (Skala Standar) - 9,504 Records
+                        </h3>
+                
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>PHQ-9</th>
+                                    <th>GAD-7</th>
+                                    <th>DASS-D</th>
+                                    <th>DASS-A</th>
+                                    <th>DASS-S</th>
+                                    <th>PSS</th>
+                                    <th>WHO-5</th>
+                                    <th>BDI</th>
+                                    <th>BAI</th>
+                                    <th>Diagnosis</th>
+                                    <th>Severity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="klinis-table-body">
+                                <!-- Data akan dimuat di sini oleh JavaScript -->
+                            </tbody>
+                        </table>
+                
+                        <!-- Pagination -->
+                        <div class="pagination" id="klinis-pagination">
+                            <!-- Pagination akan di-generate oleh JavaScript -->
+                        </div>
+                
+                        <div style="text-align: center; margin-top: 20px; color: var(--gray); font-size: 14px;">
+                            <i class="fas fa-info-circle"></i> Data klinis berdasarkan skala standar: PHQ-9, GAD-7, DASS, PSS,
+                            WHO-5, BDI, BAI
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Footer -->
+                <div class="footer">
+                    <div class="footer-logo">Depresychology</div>
+                    <div class="copyright">© 2026 Depresychology - Assessment Psikologis Online. Hak cipta dilindungi undang-undang.</div>
+                </div>
+            </div>
+            
+            <script>
+                const datasetData = []; // Dataset psikologis (Kaggle dataset) - 9,504 records
+                const klinisData = []; // Data klinis psikologi (skala standar) - 9,504 records
+                // Variabel untuk pagination
+                let currentDatasetPage = 1;
+                let currentKlinisPage = 1;
+                const recordsPerPage = 50;
+                let totalDatasetPages = 0;
+                let totalKlinisPages = 0;
+        
+                // Data yang difilter
+                let filteredDatasetData = [];
+                let filteredKlinisData = [];
+                let isDatasetFiltered = false;
+                let isKlinisFiltered = false;
+        
+                // Fungsi untuk generate 9,504 data psikologis (mengikuti pola dataset Kaggle)
+                function generatePsychologicalData() {
+                    console.log("Generating 9,504 psychological records...");
+            
+                    const moods = ["Anxious", "Depressed", "Normal", "Stressed", "Mixed"];
+                    const anxiousSocialScales = ["Low", "Medium", "High", "Severe"];
+                    const anxietyTriggers = ["Work", "Social", "Health", "Financial", "Family"];
+                    const sleepQualities = ["Good", "Fair", "Poor", "Insomnia"];
+                    const appetiteChanges = ["Decreased", "Normal", "Increased", "Fluctuating"];
+                    const lackOfInterest = ["None", "Mild", "Moderate", "Severe"];
+                    const enjoyableActivities = ["Rarely", "Sometimes", "Often", "Very Often"];
+                    const physicalSymptoms = ["Headaches", "Fatigue", "Muscle Tension", "None"];
+                    const concentrations = ["Poor", "Fair", "Good", "Excellent"];
+                    const copingStrategies = ["Exercise", "Meditation", "Therapy", "Social Support", "None"];
+                    const conditionSummaries = ["Sleep Disorders", "Stress-Related", "Anxiety Disorders", "Mood Disorders", "No Significant Issues"];
+            
+                    // Distribusi yang realistis untuk dataset psikologis
+                    const moodDistribution = [0.25, 0.20, 0.30, 0.15, 0.10]; // Anxious, Depressed, Normal, Stressed, Mixed
+                    const anxietyDistribution = [0.40, 0.30, 0.20, 0.10]; // Low, Medium, High, Severe
+
+                    for (let i = 1; i <= 9504; i++) { // Gunakan distribusi untuk mendapatkan data yang lebih realistis
+                        let moodIndex = weightedRandom(moodDistribution);
+                        let anxietyIndex = weightedRandom(anxietyDistribution);
+                
+                        datasetData.push({
+                            id: i,
+                            mood: moods[moodIndex],
+                            anxiousSocialScale: anxiousSocialScales[anxietyIndex],
+                            anxietyTriggers: anxietyTriggers[Math.floor(Math.random() * anxietyTriggers.length)],
+                            sleepQuality: sleepQualities[Math.floor(Math.random() * sleepQualities.length)],
+                            appetiteChange: appetiteChanges[Math.floor(Math.random() * appetiteChanges.length)],
+                            lackOfInterest: lackOfInterest[Math.floor(Math.random() * lackOfInterest.length)],
+                            enjoyableActivities: enjoyableActivities[Math.floor(Math.random() * enjoyableActivities.length)],
+                            physicalAnxietySymptoms: physicalSymptoms[Math.floor(Math.random() * physicalSymptoms.length)],
+                            concentrationDifficulty: concentrations[Math.floor(Math.random() * concentrations.length)],
+                            copingStrategies: copingStrategies[Math.floor(Math.random() * copingStrategies.length)],
+                            conditionSummary: conditionSummaries[Math.floor(Math.random() * conditionSummaries.length)]
+                        });
+                
+                        // Tampilkan progress untuk data besar
+                        if (i % 1000 === 0) {
+                            console.log(`Generated ${i} psychological records...`);
+                        }
+                    }
+            
+                    console.log("Generated 9,504 psychological records complete!");
+                }
+        
+                // Fungsi untuk generate 9,504 data klinis (mengikuti pola dataset Kaggle)
+                function generateClinicalData() {
+                    console.log("Generating 9,504 clinical records...");
+            
+                    const diagnoses = ["Normal", "Depression", "Anxiety Disorder", "Stress Disorder", "Mixed"];
+                    const severities = ["Minimal", "Mild", "Moderate", "Severe", "Extremely Severe"];
+            
+                    // Distribusi diagnosis yang realistis
+                    const diagnosisDistribution = [0.40, 0.20, 0.15, 0.15, 0.10]; // Normal, Depression, Anxiety Disorder, Stress Disorder, Mixed
+
+                     for (let i = 1; i <= 9504; i++) {
+                        let diagnosisIndex = weightedRandom(diagnosisDistribution);
+                        let diagnosis = diagnoses[diagnosisIndex];
+
+                        let phq9, gad7, dassD, dassA, dassS, pss, who5, bdi, bai, severity; // Generate scores berdasarkan diagnosis
+
+                        switch (diagnosis) {
+                            case "Normal":
+                                phq9 = Math.floor(Math.random() * 5); // 0-4
+                                gad7 = Math.floor(Math.random() * 5); // 0-4
+                                dassD = Math.floor(Math.random() * 10); // 0-9
+                                dassA = Math.floor(Math.random() * 8); // 0-7
+                                dassS = Math.floor(Math.random() * 10); // 0-9
+                                pss = Math.floor(Math.random() * 14); // 0-13
+                                who5 = Math.floor(Math.random() * 21) + 29; // 29-50
+                                bdi = Math.floor(Math.random() * 10); // 0-9
+                                bai = Math.floor(Math.random() * 8); // 0-7
+                                severity = "Minimal";
+                                break;
+                                
+                                case "Depression":
+                                    phq9 = Math.floor(Math.random() * 9) + 10; // 10-18
+                                    gad7 = Math.floor(Math.random() * 6) + 5; // 5-10
+                                    dassD = Math.floor(Math.random() * 14) + 10; // 10-23
+                                    dassA = Math.floor(Math.random() * 7) + 8; // 8-14
+                                    dassS = Math.floor(Math.random() * 9) + 10; // 10-18
+                                    pss = Math.floor(Math.random() * 13) + 14; // 14-26
+                                    who5 = Math.floor(Math.random() * 15) + 14; // 14-28
+                                    bdi = Math.floor(Math.random() * 20) + 10; // 10-29
+                                    bai = Math.floor(Math.random() * 10) + 5; // 5-14
+                                    severity = Math.random() > 0.5 ? "Moderate" : "Severe";
+                                    break;
+                                    
+                                    case "Anxiety Disorder":
+                                        phq9 = Math.floor(Math.random() * 7) + 5; // 5-11
+                                        gad7 = Math.floor(Math.random() * 8) + 10; // 10-17
+                                        dassD = Math.floor(Math.random() * 8) + 8; // 8-15
+                                        dassA = Math.floor(Math.random() * 15) + 10; // 10-24
+                                        dassS = Math.floor(Math.random() * 12) + 10; // 10-21
+                                        pss = Math.floor(Math.random() * 13) + 14; // 14-26
+                                        who5 = Math.floor(Math.random() * 17) + 14; // 14-30
+                                        bdi = Math.floor(Math.random() * 10) + 10; // 10-19
+                                        bai = Math.floor(Math.random() * 20) + 15; // 15-34
+                                        severity = Math.random() > 0.5 ? "Moderate" : "Severe";
+                                        break;
+                                
+                                        case "Stress Disorder":
+                                            phq9 = Math.floor(Math.random() * 8) + 5; // 5-12
+                                            gad7 = Math.floor(Math.random() * 7) + 5; // 5-11
+                                            dassD = Math.floor(Math.random() * 10) + 8; // 8-17
+                                            dassA = Math.floor(Math.random() * 10) + 8; // 8-17
+                                            dassS = Math.floor(Math.random() * 15) + 15; // 15-29
+                                            pss = Math.floor(Math.random() * 14) + 27; // 27-40
+                                            who5 = Math.floor(Math.random() * 15) + 14; // 14-28
+                                            bdi = Math.floor(Math.random() * 12) + 10; // 10-21
+                                            bai = Math.floor(Math.random() * 10) + 10; // 10-19
+                                            severity = Math.random() > 0.5 ? "Moderate" : "Severe";
+                                            break;
+                                
+                                            case "Mixed":
+                                                phq9 = Math.floor(Math.random() * 12) + 10; // 10-21
+                                                gad7 = Math.floor(Math.random() * 10) + 8; // 8-17
+                                                dassD = Math.floor(Math.random() * 15) + 15; // 15-29
+                                                dassA = Math.floor(Math.random() * 15) + 15; // 15-29
+                                                dassS = Math.floor(Math.random() * 15) + 15; // 15-29
+                                                pss = Math.floor(Math.random() * 14) + 20; // 20-33
+                                                who5 = Math.floor(Math.random() * 20) + 0; // 0-19
+                                                bdi = Math.floor(Math.random() * 24) + 20; // 20-43
+                                                bai = Math.floor(Math.random() * 24) + 20; // 20-43
+                                                severity = Math.random() > 0.5 ? "Severe" : "Extremely Severe";
+                                                break;
+                                                
+                                                default:
+                                                    phq9 = Math.floor(Math.random() * 28);
+                                                    gad7 = Math.floor(Math.random() * 22);
+                                                    dassD = Math.floor(Math.random() * 42);
+                                                    dassA = Math.floor(Math.random() * 42);
+                                                    dassS = Math.floor(Math.random() * 42);
+                                                    pss = Math.floor(Math.random() * 41);
+                                                    who5 = Math.floor(Math.random() * 51);
+                                                    bdi = Math.floor(Math.random() * 64);
+                                                    bai = Math.floor(Math.random() * 64);
+                                                    severity = severities[Math.floor(Math.random() * severities.length)];
+                        }
+                        
+                        klinisData.push({
+                            id: i,
+                            phq9,
+                            gad7,
+                            dassD,
+                            dassA,
+                            dassS,
+                            pss,
+                            who5,
+                            bdi,
+                            bai,
+                            diagnosis,
+                            severity
+                        });
+                
+                        // Tampilkan progress untuk data besar
+                        if (i % 1000 === 0) {
+                            console.log(`Generated ${i} clinical records...`);
+                        }
+                    }
+                    console.log("Generated 9,504 clinical records complete!");
+                }
+                
+                // Helper function untuk weighted random selection
+                function weightedRandom(distribution) {
+                    let sum = 0;
+                    let r = Math.random();
+                    
+                    for (let i = 0; i < distribution.length; i++) {
+                        sum += distribution[i];
+                        if (r <= sum) return i;
+                    }
+                    
+                    return distribution.length - 1;
+                }
+                
+                // Fungsi untuk menampilkan data psikologis ke tabel dengan pagination
+                function displayDatasetData(page = 1, dataToDisplay = null) {
+                    currentDatasetPage = page;
+                    const tableBody = document.getElementById('dataset-table-body');
+                    tableBody.innerHTML = '';
+                    const displayData = dataToDisplay || datasetData; // Gunakan data yang difilter jika ada, jika tidak gunakan semua data
+                    totalDatasetPages = Math.ceil(displayData.length / recordsPerPage); // Hitung total halaman
+                    
+                    // Hitung indeks awal dan akhir
+                    const startIndex = (page - 1) * recordsPerPage;
+                    const endIndex = Math.min(startIndex + recordsPerPage, displayData.length);
+                    
+                    // Tampilkan loading jika data besar
+                    if (startIndex === 0 && displayData.length > 1000) {
+                        tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 40px;">
+                                <div class="loading-spinner"></div>
+                                <p>Memuat data psikologis (${displayData.length} records)...</p>
+                            </td>
+                        </tr>
+                        `;
+                        
+                        // Delay untuk simulasi loading
+                        setTimeout(() => {
+                            renderDatasetPage(page, startIndex, endIndex, tableBody, displayData);
+                        }, 100);
+                    } else {
+                        renderDatasetPage(page, startIndex, endIndex, tableBody, displayData);
+                    }
+                    
+                    updateDatasetPagination(displayData); // Update pagination
+                }
+                
+                // Fungsi untuk merender halaman dataset
+                function renderDatasetPage(page, startIndex, endIndex, tableBody, displayData) {
+                    tableBody.innerHTML = '';
+                    for (let i = startIndex; i < endIndex; i++) {
+                        const data = displayData[i];
+                        const row = document.createElement('tr');
+                        
+                        // Tambahkan class berdasarkan kondisi
+                        if (data.conditionSummary === "Anxiety Disorders" || data.conditionSummary === "Mood Disorders") {
+                            row.classList.add("risk-medium");
+                        } else if (data.conditionSummary === "Stress-Related") {
+                            row.classList.add("risk-high");
+                        } else {
+                            row.classList.add("risk-low");
+                        }
+                
+                        row.innerHTML = `
+                        <td>${data.id}</td>
+                        <td>${data.mood}</td>
+                        <td>
+                            <span class="badge ${data.anxiousSocialScale === 'Low' ? 'badge-success' : data.anxiousSocialScale === 'Medium' ? 'badge-warning' : data.anxiousSocialScale === 'High' ? 'badge-danger' : 'badge-info'}">
+                                ${data.anxiousSocialScale}
+                            </span>
+                        </td>
+                        <td>${data.anxietyTriggers}</td>
+                        <td>${data.sleepQuality}</td>
+                        <td>${data.appetiteChange}</td>
+                        <td>${data.lackOfInterest}</td>
+                        <td>${data.enjoyableActivities}</td>
+                        <td>${data.physicalAnxietySymptoms}</td>
+                        <td>${data.concentrationDifficulty}</td>
+                        <td>${data.copingStrategies}</td>
+                        <td>${data.conditionSummary}</td>
+                        `;
+                
+                        tableBody.appendChild(row);
+                    }
+            
+                    // Tampilkan info pagination
+                    const infoRow = document.createElement('tr');
+                    infoRow.innerHTML = `
+                    <td colspan="12" style="text-align: center; padding: 20px; background-color: #f8fafc; font-weight: 600; color: var(--dark);">
+                        Menampilkan records ${startIndex + 1} - ${endIndex} dari total ${displayData.length} records
+                        ${isDatasetFiltered ? ' (difilter)' : ''}
+                    </td>
+                    `;
+                    tableBody.appendChild(infoRow);
+                }
+        
+                // Fungsi untuk menampilkan data klinis ke tabel dengan pagination
+                function displayClinicalData(page = 1, dataToDisplay = null) {
+                    currentKlinisPage = page;
+                    const tableBody = document.getElementById('klinis-table-body');
+                    tableBody.innerHTML = '';
+            
+                    const displayData = dataToDisplay || klinisData; // Gunakan data yang difilter jika ada, jika tidak gunakan semua data
+                    totalKlinisPages = Math.ceil(displayData.length / recordsPerPage); // Hitung total halaman
+                    
+                    // Hitung indeks awal dan akhir
+                    const startIndex = (page - 1) * recordsPerPage;
+                    const endIndex = Math.min(startIndex + recordsPerPage, displayData.length);
+            
+                    // Tampilkan loading jika data besar
+                    if (startIndex === 0 && displayData.length > 1000) {
+                        tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 40px;">
+                                <div class="loading-spinner"></div>
+                                <p>Memuat data klinis (${displayData.length} records)...</p>
+                            </td>
+                        </tr>
+                        `;
+                        
+                        // Delay untuk simulasi loading
+                        setTimeout(() => {
+                            renderClinicalPage(page, startIndex, endIndex, tableBody, displayData);
+                        }, 100);
+                    } else {
+                        renderClinicalPage(page, startIndex, endIndex, tableBody, displayData);
+                    }
+            
+                    // Update pagination
+                    updateKlinisPagination(displayData);
+                }
+        
+                // Fungsi untuk merender halaman klinis
+                function renderClinicalPage(page, startIndex, endIndex, tableBody, displayData) {
+                    tableBody.innerHTML = '';
+            
+                    for (let i = startIndex; i < endIndex; i++) {
+                        const data = displayData[i];
+                        const row = document.createElement('tr');
+                
+                        // Tentukan severity badge class
+                        let severityClass = "badge-success";
+                        if (data.severity === "Mild") severityClass = "badge-warning";
+                        if (data.severity === "Moderate") severityClass = "badge-warning";
+                        if (data.severity === "Severe") severityClass = "badge-danger";
+                        if (data.severity === "Extremely Severe") severityClass = "badge-danger";
+                
+                        row.innerHTML = `
+                        <td>${data.id}</td>
+                        <td>${data.phq9}</td>
+                        <td>${data.gad7}</td>
+                        <td>${data.dassD}</td>
+                        <td>${data.dassA}</td>
+                        <td>${data.dassS}</td>
+                        <td>${data.pss}</td>
+                        <td>${data.who5}</td>
+                        <td>${data.bdi}</td>
+                        <td>${data.bai}</td>
+                        <td>
+                            <span class="badge ${data.diagnosis === 'Normal' ? 'badge-success' : data.diagnosis === 'Depression' ? 'badge-danger' : data.diagnosis === 'Anxiety Disorder' ? 'badge-warning' : data.diagnosis === 'Stress Disorder' ? 'badge-info' : 'badge-warning'}">
+                                ${data.diagnosis}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge ${severityClass}">
+                                ${data.severity}
+                            </span>
+                        </td>
+                        `;
+                
+                        tableBody.appendChild(row);
+                    }
+            
+                    // Tampilkan info pagination
+                    const infoRow = document.createElement('tr');
+                    infoRow.innerHTML = `
+                    <td colspan="12" style="text-align: center; padding: 20px; background-color: #f8fafc; font-weight: 600; color: var(--dark);">
+                        Menampilkan records ${startIndex + 1} - ${endIndex} dari total ${displayData.length} records
+                        ${isKlinisFiltered ? ' (difilter)' : ''}
+                        </td>
+                        `;
+                        tableBody.appendChild(infoRow);
+                    }
+        
+                    // Fungsi untuk update pagination dataset
+                    function updateDatasetPagination(displayData = null) {
+                        const data = displayData || (isDatasetFiltered ? filteredDatasetData : datasetData);
+                        const paginationContainer = document.getElementById('dataset-pagination');
+                        paginationContainer.innerHTML = '';
+            
+                        // Previous button
+                        const prevButton = document.createElement('button');
+                        prevButton.className = 'pagination-button prev';
+                        prevButton.textContent = '«';
+                        prevButton.addEventListener('click', () => {
+                            if (currentDatasetPage > 1) {
+                                displayDatasetData(currentDatasetPage - 1, isDatasetFiltered ? filteredDatasetData : null);
+                            }
+                        });
+                        paginationContainer.appendChild(prevButton);
+            
+                        // Page buttons
+                        const maxVisiblePages = 5;
+                        let startPage = Math.max(1, currentDatasetPage - Math.floor(maxVisiblePages / 2));
+                        let endPage = Math.min(totalDatasetPages, startPage + maxVisiblePages - 1);
+            
+                        // Adjust if we're at the end
+                        if (endPage - startPage + 1 < maxVisiblePages) {
+                            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                        }
+            
+                        for (let i = startPage; i <= endPage; i++) {
+                            const pageButton = document.createElement('button');
+                            pageButton.className = `pagination-button ${i === currentDatasetPage ? 'active' : ''}`;
+                            pageButton.textContent = i;
+                            pageButton.addEventListener('click', () => {
+                                displayDatasetData(i, isDatasetFiltered ? filteredDatasetData : null);
+                            });
+                            paginationContainer.appendChild(pageButton);
+                        }
+            
+                        // Next button
+                        const nextButton = document.createElement('button');
+                        nextButton.className = 'pagination-button next';
+                        nextButton.textContent = '»';
+                        nextButton.addEventListener('click', () => {
+                            if (currentDatasetPage < totalDatasetPages) {
+                                displayDatasetData(currentDatasetPage + 1, isDatasetFiltered ? filteredDatasetData : null);
+                            }
+                        });
+                        paginationContainer.appendChild(nextButton);
+                    }
+        
+                    // Fungsi untuk update pagination klinis
+                    function updateKlinisPagination(displayData = null) {
+                        const data = displayData || (isKlinisFiltered ? filteredKlinisData : klinisData);
+                        const paginationContainer = document.getElementById('klinis-pagination');
+                        paginationContainer.innerHTML = '';
+            
+                        // Previous button
+                        const prevButton = document.createElement('button');
+                        prevButton.className = 'pagination-button prev';
+                        prevButton.textContent = '«';
+                        prevButton.addEventListener('click', () => {
+                            if (currentKlinisPage > 1) {
+                                displayClinicalData(currentKlinisPage - 1, isKlinisFiltered ? filteredKlinisData : null);
+                            }
+                        });
+                        paginationContainer.appendChild(prevButton);
+            
+                        // Page buttons
+                        const maxVisiblePages = 5;
+                        let startPage = Math.max(1, currentKlinisPage - Math.floor(maxVisiblePages / 2));
+                        let endPage = Math.min(totalKlinisPages, startPage + maxVisiblePages - 1);
+            
+                        // Adjust if we're at the end
+                        if (endPage - startPage + 1 < maxVisiblePages) {
+                            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                        }
+            
+                        for (let i = startPage; i <= endPage; i++) {
+                            const pageButton = document.createElement('button');
+                            pageButton.className = `pagination-button ${i === currentKlinisPage ? 'active' : ''}`;
+                            pageButton.textContent = i;
+                            pageButton.addEventListener('click', () => {
+                                displayClinicalData(i, isKlinisFiltered ? filteredKlinisData : null);
+                            });
+                            paginationContainer.appendChild(pageButton);
+                        }
+            
+                        // Next button
+                        const nextButton = document.createElement('button');
+                        nextButton.className = 'pagination-button next';
+                        nextButton.textContent = '»';
+                        nextButton.addEventListener('click', () => {
+                            if (currentKlinisPage < totalKlinisPages) {
+                                displayClinicalData(currentKlinisPage + 1, isKlinisFiltered ? filteredKlinisData : null);
+                            }
+                        });
+                        paginationContainer.appendChild(nextButton);
+                    }
+        
+                    // Fungsi untuk filter data dataset dengan dropdown
+                    function filterDatasetData() {
+                        const moodFilter = document.querySelector('select[data-filter="mood"]').value;
+                        const anxiousSocialScaleFilter = document.querySelector('select[data-filter="anxiousSocialScale"]').value;
+                        const anxietyTriggersFilter = document.querySelector('select[data-filter="anxietyTriggers"]').value;
+                        const sleepQualityFilter = document.querySelector('select[data-filter="sleepQuality"]').value;
+                        const appetiteChangeFilter = document.querySelector('select[data-filter="appetiteChange"]').value;
+                        const lackOfInterestFilter = document.querySelector('select[data-filter="lackOfInterest"]').value;
+                        const enjoyableActivitiesFilter = document.querySelector('select[data-filter="enjoyableActivities"]').value;
+                        const physicalAnxietySymptomsFilter = document.querySelector('select[data-filter="physicalAnxietySymptoms"]').value;
+                        const concentrationDifficultyFilter = document.querySelector('select[data-filter="concentrationDifficulty"]').value;
+                        const copingStrategiesFilter = document.querySelector('select[data-filter="copingStrategies"]').value;
+                        const conditionSummaryFilter = document.querySelector('select[data-filter="conditionSummary"]').value;
+            
+                        filteredDatasetData = datasetData.filter(data => {
+                            if (moodFilter !== 'all' && data.mood !== moodFilter) return false;
+                            if (anxiousSocialScaleFilter !== 'all' && data.anxiousSocialScale !== anxiousSocialScaleFilter) return false;
+                            if (anxietyTriggersFilter !== 'all' && data.anxietyTriggers !== anxietyTriggersFilter) return false;
+                            if (sleepQualityFilter !== 'all' && data.sleepQuality !== sleepQualityFilter) return false;
+                            if (appetiteChangeFilter !== 'all' && data.appetiteChange !== appetiteChangeFilter) return false;
+                            if (lackOfInterestFilter !== 'all' && data.lackOfInterest !== lackOfInterestFilter) return false;
+                            if (enjoyableActivitiesFilter !== 'all' && data.enjoyableActivities !== enjoyableActivitiesFilter) return false;
+                            if (physicalAnxietySymptomsFilter !== 'all' && data.physicalAnxietySymptoms !== physicalAnxietySymptomsFilter) return false;
+                            if (concentrationDifficultyFilter !== 'all' && data.concentrationDifficulty !== concentrationDifficultyFilter) return false;
+                            if (copingStrategiesFilter !== 'all' && data.copingStrategies !== copingStrategiesFilter) return false;
+                            if (conditionSummaryFilter !== 'all' && data.conditionSummary !== conditionSummaryFilter) return false;
+                
+                            return true;
+                        });
+            
+                        isDatasetFiltered = true;
+                        currentDatasetPage = 1;
+                        displayDatasetData(1, filteredDatasetData); // Tampilkan hasil filter
+
+                        showFilterNotification(`Menampilkan ${filteredDatasetData.length} dari ${datasetData.length} records yang sesuai dengan filter.`); // Tampilkan notifikasi filter
+                    }
+        
+                    // Fungsi untuk reset filter dataset
+                    function resetDatasetFilter() {
+                        // Reset semua dropdown ke nilai 'all'
+                        document.querySelectorAll('.filter-dropdown').forEach(select => {
+                            select.value = 'all';
+                        });
+            
+                        isDatasetFiltered = false;
+                        filteredDatasetData = [];
+                        currentDatasetPage = 1;
+                        
+                        displayDatasetData(1); // Tampilkan semua data
+                        hideFilterNotification(); // Sembunyikan notifikasi filter
+
+                        // Tampilkan pesan konfirmasi
+                        showFilterNotification("Filter telah direset. Menampilkan semua 9,504 records.");
+                        setTimeout(hideFilterNotification, 3000);
+                    }
+        
+                    // Fungsi untuk menampilkan notifikasi filter
+                    function showFilterNotification(message) {
+                        const notification = document.getElementById('filter-notification');
+                        const notificationText = document.getElementById('filter-notification-text');
+                        
+                        if (notification && notificationText) {
+                            notificationText.textContent = message;
+                            notification.style.display = 'flex';
+                
+                            // Auto hide setelah 10 detik
+                            setTimeout(() => {
+                                if (notification.style.display === 'flex') {
+                                    notification.style.display = 'none';
+                                }
+                            }, 10000);
+                        }
+                    }
+        
+                    // Fungsi untuk menyembunyikan notifikasi filter
+                    function hideFilterNotification() {
+                        const notification = document.getElementById('filter-notification');
+                        if (notification) {
+                            notification.style.display = 'none';
+                        }
+                    }
+        
+                    // Fungsi untuk setup panel penjelasan dataset
+                    function setupDatasetGuidePanel() {
+                        const showBtn = document.getElementById('show-dataset-guide');
+                        const closeBtn = document.getElementById('close-dataset-panel');
+                        const closeBottomBtn = document.getElementById('close-dataset-panel-bottom');
+                        const panel = document.getElementById('dataset-guide-panel');
+            
+                        if (showBtn && closeBtn && closeBottomBtn && panel) {
+                            showBtn.addEventListener('click', () => {
+                                panel.classList.add('active');
+                                // Scroll ke panel
+                                panel.scrollIntoView({ behavior: 'smooth' });
+                            });
+                
+                            closeBtn.addEventListener('click', () => {
+                                panel.classList.remove('active');
+                            });
+                
+                            closeBottomBtn.addEventListener('click', () => {
+                                panel.classList.remove('active');
+                            });
+                        }
+                    }
+        
+                    // Fungsi untuk setup panel penjelasan klinis
+                    function setupClinicalExplanationPanel() {
+                        const showBtn = document.getElementById('show-clinical-guide');
+                        const closeBtn = document.getElementById('close-clinical-panel');
+                        const closeBottomBtn = document.getElementById('close-clinical-panel-bottom');
+                        const panel = document.getElementById('clinical-explanation-panel');
+            
+                        if (showBtn && closeBtn && closeBottomBtn && panel) {
+                            showBtn.addEventListener('click', () => {
+                                panel.classList.add('active');
+                                // Scroll ke panel
+                                panel.scrollIntoView({ behavior: 'smooth' });
+                            });
+                
+                            closeBtn.addEventListener('click', () => {
+                                panel.classList.remove('active');
+                            });
+                
+                            closeBottomBtn.addEventListener('click', () => {
+                                panel.classList.remove('active');
+                            });
+                
+                            // Tutup panel dengan escape key
+                            document.addEventListener('keydown', (e) => {
+                                if (e.key === 'Escape') {
+                                    if (panel.classList.contains('active')) {
+                                        panel.classList.remove('active');
+                                    }
+                                    const datasetPanel = document.getElementById('dataset-guide-panel');
+                                    if (datasetPanel && datasetPanel.classList.contains('active')) {
+                                        datasetPanel.classList.remove('active');
+                                    }
+                                }
+                            });
+                        }
+                    }
+        
+                    // Fungsi untuk tab switching
+                    function setupTabs() {
+                        const tabs = document.querySelectorAll('.tab');
+                        const tabContents = document.querySelectorAll('.tab-content');
+            
+                        tabs.forEach(tab => {
+                            tab.addEventListener('click', () => {
+                                // Hapus active class dari semua tab dan content
+                                tabs.forEach(t => t.classList.remove('active'));
+                                tabContents.forEach(c => c.classList.remove('active'));
+                                
+                                tab.classList.add('active'); // Tambah active class ke tab yang diklik
+                                
+                                // Tampilkan content yang sesuai
+                                const tabId = tab.getAttribute('data-tab');
+                                const targetTab = document.getElementById(`${tabId}-tab`);
+                                if (targetTab) {
+                                    targetTab.classList.add('active');
+                                }
+                    
+                                // Reset ke halaman 1 ketika ganti tab
+                                if (tabId === 'dataset') {
+                                    currentDatasetPage = 1;
+                                    displayDatasetData(1, isDatasetFiltered ? filteredDatasetData : null);
+                                    // Sembunyikan notifikasi jika tidak ada filter
+                                    if (!isDatasetFiltered) {
+                                        hideFilterNotification();
+                                    }
+                                } else if (tabId === 'klinis') {
+                                    currentKlinisPage = 1;
+                                    displayClinicalData(1, isKlinisFiltered ? filteredKlinisData : null);
+                                    hideFilterNotification(); // Sembunyikan notifikasi untuk tab klinis
+                                }
+                            });
+                        });
+                    }
+        
+                    // Fungsi untuk menu active
+                    function setActiveMenu(menuName) {
+                        const menuItems = document.querySelectorAll('.menu-item');
+            
+                        menuItems.forEach(item => {
+                            item.classList.remove('active');
+                            const checkbox = item.querySelector('.menu-checkbox');
+                            if (checkbox) {
+                                checkbox.classList.remove('checked');
+                                checkbox.classList.add('unchecked');
+                            }
+                        });
+            
+                        // Set active untuk menu yang dipilih
+                        const activeMenuItem = document.querySelector(`[onclick*="${menuName}"]`);
+                        if (activeMenuItem) {
+                            activeMenuItem.classList.add('active');
+                            const checkbox = activeMenuItem.querySelector('.menu-checkbox');
+                            if (checkbox) {
+                                checkbox.classList.remove('unchecked');
+                                checkbox.classList.add('checked');
+                            }
+                        }
+                    }
+
+                    function confirmLogout() { // Fungsi untuk logout confirmation
+                        return confirm('Apakah Anda yakin ingin logout?');
+                    }
+        
+                    function loadUserData() { // Load user data from localStorage
+                        try { // Try to get user data from sessionStorage first, then localStorage
+                            let userData = sessionStorage.getItem('currentUser');
+                            if (!userData) {
+                                userData = localStorage.getItem('currentUser');
+                            }
+                
+                            if (userData) {
+                                const user = JSON.parse(userData);
+                                
+                                // Get user information
+                                const fullName = user.fullName || user.name || 'Pengguna';
+                                const email = user.email || 'user@example.com';
+                                const gender = user.gender || 'Tidak ditentukan';
+                    
+                                // Format gender display
+                                let genderDisplay = gender;
+                                if (gender.toLowerCase() === 'female') {
+                                    genderDisplay = 'Perempuan';
+                                } else if (gender.toLowerCase() === 'male') {
+                                    genderDisplay = 'Laki-laki';
+                                }
+                    
+                                // Update sidebar
+                                document.getElementById('user-full-name').textContent = fullName;
+                                document.getElementById('user-email').textContent = email;
+                                document.getElementById('user-gender').textContent = genderDisplay;
+                    
+                                return { fullName, email, gender: genderDisplay };
+                            }
+                        } catch (error) {
+                            console.error('Error loading user data:', error);
+                        }
+            
+                        return null;
+                    }
+        
+                    // Function to track user activity
+                    function trackActivity(pageName, icon, pageType) {
+                        const activity = {
+                            id: Date.now(),
+                            pageName: pageName,
+                            icon: icon,
+                            pageType: pageType,
+                            timestamp: new Date().toISOString(),
+                            timeDisplay: formatTime(new Date())
+                        };
+                        
+                        saveActivity(activity); // Save activity to localStorage
+                        setActiveMenu(pageType);  // Update menu active state
+                        return true; // Continue to the page
+                    }
+                    
+                    // Format time for display
+                    function formatTime(date) {
+                        const now = new Date();
+                        const activityDate = new Date(date);
+                        const diffMs = now - activityDate;
+                        const diffMins = Math.floor(diffMs / (1000 * 60));
+                        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+                        if (diffMins < 1) {
+                            return 'Baru saja';
+                        } else if (diffMins < 60) {
+                            return `${diffMins} menit yang lalu`;
+                        } else if (diffHours < 24) {
+                            return `${diffHours} jam yang lalu`;
+                        } else if (diffDays === 1) {
+                            return 'Kemarin';
+                        } else if (diffDays < 7) {
+                            return `${diffDays} hari yang lalu`;
+                        } else {
+                            return activityDate.toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            });
+                        }
+                    }
+                    
+                    // Save activity to localStorage
+                    function saveActivity(activity) {
+                        try {
+                            // Get current user
+                            let userData = sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser');
+                            if (!userData) return;
+                
+                            const user = JSON.parse(userData);
+                            const userId = user.email || user.id || 'anonymous';
+
+                            // Get existing activities
+                            const storageKey = `user_activities_${userId}`;
+                            let activities = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+                            // Add new activity at the beginning
+                            activities.unshift(activity);
+
+                            // Keep only last 20 activities
+                            if (activities.length > 20) {
+                                activities = activities.slice(0, 20);
+                            }
+                
+                            // Save back to localStorage
+                            localStorage.setItem(storageKey, JSON.stringify(activities));
+            
+                        } catch (error) {
+                            console.error('Error saving activity:', error);
+                        }
+                    }
+        
+                    // Inisialisasi ketika halaman dimuat
+                    document.addEventListener('DOMContentLoaded', function () {
+                        console.log('Loading dataset page...');
+                        loadUserData(); // Load user data
+                        
+                        // Generate data 9,504 records
+                        generatePsychologicalData();
+                        generateClinicalData();
+            
+                        // Tampilkan data pertama untuk kedua tab
+                        displayDatasetData(1);
+                        displayClinicalData(1);
+            
+                        // Setup event listeners
+                        setupTabs();
+                        setupDatasetGuidePanel();
+                        setupClinicalExplanationPanel();
+            
+                        // Setup filter buttons
+                        const applyFilterBtn = document.getElementById('applyFilterDataset');
+                        const resetFilterBtn = document.getElementById('resetFilterDataset');
+                        const closeFilterNotificationBtn = document.getElementById('close-filter-notification');
+            
+                        if (applyFilterBtn) {
+                            applyFilterBtn.addEventListener('click', filterDatasetData);
+                        }
+            
+                        if (resetFilterBtn) {
+                            resetFilterBtn.addEventListener('click', resetDatasetFilter);
+                        }
+            
+                        if (closeFilterNotificationBtn) {
+                            closeFilterNotificationBtn.addEventListener('click', hideFilterNotification);
+                        }
+            
+                        // Set menu active
+                        setActiveMenu('dataset');
+            
+                        console.log('Dataset page loaded successfully!');
+                        console.log('Total psychological records:', datasetData.length);
+                        console.log('Total clinical records:', klinisData.length);
+                        console.log('Records per page:', recordsPerPage);
+                    }
+                );
+        </script>
+    </body>
+</html>

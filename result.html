@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Klasifikasi - PsychoClass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .sidebar-user {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            flex: 1;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #1a2980;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* CONTENT CARDS */
+        .content-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        /* RESULT SCORE CIRCLE */
+        .score-circle-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .score-circle {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: conic-gradient(#43e97b 0deg,
+                    #43e97b 85deg,
+                    transparent 85deg,
+                    transparent 360deg);
+            margin: 0 auto 30px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(67, 233, 123, 0.3);
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: white;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .score-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            text-align: center;
+        }
+
+        .score-display #totalScore {
+            font-size: 48px;
+            font-weight: 900;
+            color: #1a2980;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .score-display .score-percent {
+            font-size: 20px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-color: #26d0ce;
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 36px;
+            color: #26d0ce;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a2980;
+            margin-bottom: 8px;
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .badge-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-good {
+            background: #c3e6cb;
+            color: #155724;
+        }
+
+        .badge-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* RECOMMENDATIONS */
+        .recommendations-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #26d0ce;
+        }
+
+        /* TABLE */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-x: auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 41, 128, 0.4);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1a2980;
+            border: 2px solid #1a2980;
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-brain"></i> PsychoClass</h2>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar" id="userAvatar"><!-- Avatar --></div>
+            <div id="userInfo">
+                <h4>Loading...</h4>
+                <p id="userEmail">Loading...</p>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="analisa.html" class="nav-item">
+                <i class="fas fa-database"></i> Dataset
+            </a>
+            <a href="input.html" class="nav-item">
+                <i class="fas fa-edit"></i> Tes Psikologis
+            </a>
+            <a href="hasil.html" class="nav-item active">
+                <i class="fas fa-chart-bar"></i> Hasil Tes
+            </a>
+            <a href="riwayat.html" class="nav-item">
+                <i class="fas fa-history"></i> Riwayat
+            </a>
+            <a href="tentang.html" class="nav-item">
+                <i class="fas fa-info-circle"></i> Tentang Sistem Website
+            </a>
+            <a href="#" class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- HEADER -->
+        <div class="header">
+            <h1><i class="fas fa-award"></i> Hasil Klasifikasi</h1>
+            <p>Analisis Hybrid AHP & Logistic Regression berdasarkan Psychological Assessment Dataset</p>
+        </div>
+
+        <!-- RESULT SCORE -->
+        <div class="content-card">
+            <div class="score-circle-container">
+                <div class="score-circle" id="scoreCircle" data-score="85">
+                    <div class="score-display">
+                        <div id="totalScore">85</div>
+                        <div class="score-percent">%</div>
+                    </div>
+                </div>
+                <div style="font-size: 28px; font-weight: bold; color: #1a2980; margin-top: 20px;">
+                    <span id="categoryBadge">Kondisi Sangat Baik</span>
+                </div>
+                <p style="color: #666; font-size: 18px; margin-top: 10px;">
+                    Skor Anda berada di atas rata-rata dataset (87.23% akurasi model)
+                </p>
+            </div>
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="content-card">
+            <h2 style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px;">
+                <i class="fas fa-chart-pie"></i> Statistik Assessment
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-value" id="totalScoreStats">85</div>
+                    <div class="stat-label">Skor Total</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-brain"></i></div>
+                    <div class="stat-value">8/10</div>
+                    <div class="stat-label">Aspek Unggul</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="stat-value">87.23%</div>
+                    <div class="stat-label">Akurasi Model</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECOMMENDATIONS -->
+        <div class="content-card">
+            <h2 style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px;">
+                <i class="fas fa-lightbulb"></i> Rekomendasi Tindak Lanjut
+            </h2>
+            <ul class="recommendations-list">
+                <li>
+                    <i class="fas fa-check-circle" style="color: #43e97b; font-size: 20px; margin-top: 2px;"></i>
+                    <span><strong>Pertahankan</strong> pola hidup sehat dan aktivitas positif yang sudah
+                        dilakukan</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color: #43e97b; font-size: 20px; margin-top: 2px;"></i>
+                    <span>Lakukan evaluasi rutin setiap <strong>6 bulan</strong> untuk monitoring perkembangan</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color: #43e97b; font-size: 20px; margin-top: 2px;"></i>
+                    <span>Pertimbangkan untuk <strong>berbagi pengalaman</strong> atau menjadi mentor bagi orang
+                        lain</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <a href="dashboard.html" class="btn btn-outline">
+                <i class="fas fa-tachometer-alt"></i> Kembali ke Dashboard
+            </a>
+            <a href="input.html" class="btn btn-primary">
+                <i class="fas fa-redo"></i> Lakukan Tes Baru
+            </a>
+            <a href="riwayat.html" class="btn btn-outline">
+                <i class="fas fa-history"></i> Lihat Riwayat
+            </a>
+        </div>
+    </div>
+
+    <script src="consistent-auth.js"></script>
+    <script>
+        // Load assessment result from sessionStorage
+        document.addEventListener('DOMContentLoaded', function () {
+            const assessment = JSON.parse(sessionStorage.getItem('currentAssessment'));
+            if (assessment) {
+                document.getElementById('totalScore').textContent = assessment.totalScore || 85;
+                document.getElementById('totalScoreStats').textContent = assessment.totalScore || 85;
+                document.getElementById('categoryBadge').textContent = assessment.category || 'Kondisi Sangat Baik';
+            }
+        });
+    </script>
+
+    <script>
+        // Animate score circle berdasarkan skor
+        function animateScoreCircle() {
+            const scoreCircle = document.getElementById('scoreCircle');
+            const totalScoreEl = document.getElementById('totalScore');
+            const assessment = JSON.parse(sessionStorage.getItem('currentAssessment'));
+
+            const score = assessment?.totalScore || 85;
+            const percentage = (score / 100) * 360; // Full circle = 360deg
+
+            // Update gradient berdasarkan skor
+            const greenEnd = Math.min(percentage, 360);
+            scoreCircle.style.background = `
+        conic-gradient(
+            #43e97b 0deg, 
+            #43e97b ${greenEnd}deg, 
+            transparent ${greenEnd}deg, 
+            transparent 360deg
+        )
+    `;
+
+            // Animate counter
+            let current = 0;
+            const timer = setInterval(() => {
+                current += 1;
+                if (current <= score) {
+                    totalScoreEl.textContent = current;
+                } else {
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+
+        // Jalankan setelah halaman load
+        document.addEventListener('DOMContentLoaded', animateScoreCircle);
+    </script>
+</body>
+</html>
