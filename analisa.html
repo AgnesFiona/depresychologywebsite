@@ -1,1008 +1,2486 @@
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sistem Assessment Psikologis - Login & Register</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis AHP-LR - Depresychology</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6B46C1;
+            --primary-dark: #553C9A;
+            --secondary: #4C51BF;
+            --light: #f8fafc;
+            --dark: #2d3748;
+            --gray: #718096;
+            --border: #e2e8f0;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --info: #4299e1;
+            --sidebar-width: 280px;
+        
+            /* Tabel - WARNA UNGU-BIRU */
+            --purple-50: #FAF5FF;
+            --purple-100: #E9D8FD;
+            --purple-200: #D6BCFA;
+            --purple-300: #B794F4;
+            --purple-400: #9F7AEA;
+            --purple-500: #805AD5;
+            --purple-600: #6B46C1;
+            --purple-700: #553C9A;
+            --purple-800: #44337A;
+            --purple-900: #322659;
+        
+            --blue-50: #EBF8FF;
+            --blue-100: #BEE3F8;
+            --blue-200: #90CDF4;
+            --blue-300: #63B3ED;
+            --blue-400: #4299E1;
+            --blue-500: #3182CE;
+            --blue-600: #2B6CB0;
+            --blue-700: #2C5282;
+            --blue-800: #2A4365;
+            --blue-900: #1A365D;
+            
+            /* WARNA KHUSUS UNTUK DIAGRAM */
+            --chart-purple-1: #6B46C1;    /* Ungu tua */
+            --chart-purple-2: #805AD5;    /* Ungu medium */
+            --chart-purple-3: #9F7AEA;    /* Ungu muda */
+            --chart-purple-4: #B794F4;    /* Ungu sangat muda */
+            --chart-blue-1: #4299E1;      /* Biru tua */
+            --chart-blue-2: #63B3ED;      /* Biru medium */
+            --chart-blue-3: #90CDF4;      /* Biru muda */
+            --chart-blue-4: #BEE3F8;      /* Biru sangat muda */
+        }
+    
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a2980, #26d0ce);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px
-        }
-
-        .container {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, .25);
-            width: 100%;
-            max-width: 1000px;
-            overflow: hidden;
-            display: flex;
-            min-height: 600px
-        }
-
-        .illustration-panel {
-            flex: 1;
-            background: linear-gradient(rgba(26, 41, 128, .9), rgba(38, 208, 206, .9)), url('https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=800&q=80') center/cover;
-            color: #fff;
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     
-        .illustration-panel h1 {
-            font-size: 32px;
-            margin-bottom: 16px
+        body {
+            background: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+    
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+    
+        .sidebar-content {
+            padding: 0 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+    
+        .brand-section {
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 0 10px;
+            flex-shrink: 0;
         }
 
-        .illustration-panel p {
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 22px;
-            opacity: .9
+        .brand-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .features {
-            list-style: none;
-            margin-top: 20px
+        .brand-logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
         }
 
-        .features li {
+        .brand-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .brand-tagline {
+            font-size: 12px;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .user-section {
+            margin-bottom: 25px;
+            flex-shrink: 0;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-name {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
             margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .user-status {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 14px
+            margin-bottom: 15px;
+            font-size: 13px;
         }
 
-        .features i {
-            color: #26d0ce;
-            background: #fff;
-            border-radius: 50%;
-            padding: 6px;
-            width: 30px;
-            height: 30px;
+        .user-details {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .detail-item {
             display: flex;
             align-items: center;
-            justify-content: center
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
         }
 
-        .form-panel {
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-item .detail-icon {
+            width: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .detail-item span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             flex: 1;
-            padding: 40px;
+        }
+
+        /* MENU CHECKBOX */
+        .menu-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .menu-checkbox.checked::after {
+            content: '✓';
+            font-size: 10px;
+            color: white;
+        }
+
+        .menu-checkbox.unchecked {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* MENU SECTION */
+        .menu-section {
+            margin-bottom: 15px;
+            flex: 1;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative
         }
 
-        .message-box {
-            padding: 12px 14px;
-            border-radius: 10px;
-            margin-bottom: 16px;
+        .menu-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 0 0 12px 8px;
+            opacity: 0.7;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .menu-items-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-right: 3px;
+        }
+
+        .menu-items-container::-webkit-scrollbar {
             display: none;
-            font-size: 13px
         }
 
-        .message-box.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-            display: block
-        }
-
-        .message-box.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block
-        }
-
-        .message-box.warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-            display: block
-        }
-
-        .message-box.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block
-        }
-
-        .message-box strong {
-            font-weight: 700
-        }
-
-        .form-tabs {
+        .menu-item {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            min-width: 0;
+            flex-shrink: 0;
         }
 
-        .tab-btn {
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(3px);
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .menu-item.active .menu-checkbox {
+            border-color: white;
+        }
+
+        .menu-item.active .menu-checkbox.unchecked::after {
+            content: '✓';
+            font-size: 10px;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 14px;
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+    
+        .menu-text {
+             font-size: 13px;
+             flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+            white-space: normal;
+            word-wrap: break-word;
+            max-height: 36px;
+            line-clamp: 2;
+            box-orient: vertical;
+        }
+
+        /* LOGOUT SECTION */
+        .logout-section {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .logout-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fed7d7;
+            background: rgba(245, 101, 101, 0.15);
+            border: 1px solid rgba(245, 101, 101, 0.3);
+            font-size: 13px;
+        }
+
+        .logout-menu-item:hover {
+            background: rgba(245, 101, 101, 0.25);
+            transform: translateX(3px);
+            color: #fff5f5;
+            border-color: rgba(245, 101, 101, 0.5);
+        }
+
+        .logout-menu-icon {
+            font-size: 14px;
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+       .logout-menu-text {
+            font-size: 13px;
+            flex: 1;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logout-menu-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(245, 101, 101, 0.5);
+            border-radius: 3px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(245, 101, 101, 0.1);
+            flex-shrink: 0;
+        }
+
+        .logout-menu-checkbox.unchecked::after {
+            content: '🚪';
+            font-size: 9px;
+            color: #fed7d7;
+        }
+    
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 50px;
+        }
+    
+        .header {
+            margin-bottom: 30px;
+        }
+    
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    
+        .page-icon {
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+    
+        .tab {
             padding: 12px 24px;
-            background: none;
-            border: none;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
-            color: #888;
             cursor: pointer;
-            position: relative;
-            transition: .3s
+            transition: all 0.3s ease;
         }
-
-        .tab-btn.active {
-            color: #1a2980
+    
+        .tab:hover {
+            background: linear-gradient(135deg, var(--purple-100) 0%, var(--blue-100) 100%);
+            border-color: var(--purple-500);
         }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #26d0ce;
-            border-radius: 3px 3px 0 0
+    
+        .tab.active {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            color: white;
+            border-color: var(--purple-500);
         }
-
-        .form-content {
+    
+        /* Tab Content */
+        .tab-content {
             display: none;
-            animation: fade .25s
+            animation: fadeIn 0.5s ease;
         }
-
-        .form-content.active {
-            display: block
-        }
-
-        @keyframes fade {
-            from {
-                opacity: 0;
-                transform: translateX(15px)
-            } to {
-                opacity: 1;
-                transform: translateX(0)
-            }
-        }
-
-        .form-title {
-            font-size: 22px;
-            color: #1a2980;
-            margin-bottom: 20px;
-            text-align: center
-        }
-
-        .form-group {
-            margin-bottom: 16px
-        }
-
-        .form-group label {
+    
+        .tab-content.active {
             display: block;
-            margin-bottom: 6px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px
         }
-
-        .input-with-icon {
-            position: relative
+    
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .input-with-icon i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #1a2980
+    
+        /* Analysis Header */
+        .analysis-header {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            border-radius: 16px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(107, 70, 193, 0.2);
         }
-
-        .input-with-icon input {
-            width: 100%;
-            padding: 12px 14px 12px 42px;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: .3s
+    
+        .analysis-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
-
-        .input-with-icon input:focus {
-            border-color: #26d0ce;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(38, 208, 206, .1)
+    
+        .analysis-description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
-
-        .password-toggle {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-size: 14px
-        }
-
-        .password-toggle:hover {
-            color: #1a2980
+    
+        /* Stats Container */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
         
-        .form-options {
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+    
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    
+        /* Section Styling */
+        .analysis-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+    
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    
+        .section-icon {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .section-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 25px 0 15px;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+    
+        /* Matrix Table */
+        .matrix-table {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+    
+        .matrix-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+    
+        .matrix-table th {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            left: 0;
+        }
+    
+        .matrix-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+    
+        .matrix-table tr:nth-child(even) {
+            background-color: var(--light);
+        }
+    
+        .matrix-table tr:hover {
+            background-color: rgba(107, 70, 193, 0.05);
+        }
+    
+        /* Warna untuk skala kepentingan Saaty */
+        .safety-scale-table td:nth-child(1) {
+            font-weight: bold;
+            text-align: center;
+        }
+    
+        .scale-1 { background-color: #FAF5FF !important; }
+        .scale-2 { background-color: #E9D8FD !important; }
+        .scale-3 { background-color: #D6BCFA !important; }
+        .scale-4 { background-color: #B794F4 !important; }
+        .scale-5 { background-color: #9F7AEA !important; color: white !important; }
+        .scale-6 { background-color: #805AD5 !important; color: white !important; }
+        .scale-7 { background-color: #6B46C1 !important; color: white !important; }
+        .scale-8 { background-color: #553C9A !important; color: white !important; }
+        .scale-9 { background-color: #44337A !important; color: white !important; }
+    
+        /* Warna untuk sel matriks berdasarkan skala */
+        .cell-scale-1 { background-color: #FAF5FF !important; }
+        .cell-scale-2 { background-color: #E9D8FD !important; }
+        .cell-scale-3 { background-color: #D6BCFA !important; }
+        .cell-scale-4 { background-color: #B794F4 !important; }
+        .cell-scale-5 { background-color: #9F7AEA !important; color: white !important; font-weight: bold; }
+        .cell-scale-6 { background-color: #805AD5 !important; color: white !important; font-weight: bold; }
+        .cell-scale-7 { background-color: #6B46C1 !important; color: white !important; font-weight: bold; }
+        .cell-scale-8 { background-color: #553C9A !important; color: white !important; font-weight: bold; }
+        .cell-scale-9 { background-color: #44337A !important; color: white !important; font-weight: bold; }
+        .cell-scale-0_33 { background-color: #EBF8FF !important; }
+        .cell-scale-0_25 { background-color: #BEE3F8 !important; }
+        .cell-scale-0_2 { background-color: #90CDF4 !important; }
+        .cell-scale-0_5 { background-color: #63B3ED !important; }
+    
+        /* Weights Container */
+        .weights-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .weight-item {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 70px;
         }
-
-        .remember-me {
+    
+        .weight-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    
+        .weight-label {
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+        }
+    
+        .weight-value-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            margin-left: 10px;
+            min-width: 80px;
+        }
+    
+        .weight-percentage {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+    
+        .weight-rank {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            background: var(--purple-100);
+            color: var(--purple-700);
+        }
+    
+        /* Color coding for different variables - menggunakan gradasi ungu-biru */
+        .weight-item:nth-child(1) { border-left-color: var(--purple-600); background: linear-gradient(to right, var(--purple-50) 0%, white 100%); }
+        .weight-item:nth-child(2) { border-left-color: var(--purple-500); background: linear-gradient(to right, var(--purple-50) 0%, white 100%); }
+        .weight-item:nth-child(3) { border-left-color: var(--purple-400); background: linear-gradient(to right, var(--purple-50) 0%, white 100%); }
+        .weight-item:nth-child(4) { border-left-color: var(--blue-400); background: linear-gradient(to right, var(--blue-50) 0%, white 100%); }
+        .weight-item:nth-child(5) { border-left-color: var(--blue-500); background: linear-gradient(to right, var(--blue-50) 0%, white 100%); }
+        .weight-item:nth-child(6) { border-left-color: var(--blue-600); background: linear-gradient(to right, var(--blue-50) 0%, white 100%); }
+        .weight-item:nth-child(7) { border-left-color: #9F7AEA; background: linear-gradient(to right, #FAF5FF 0%, white 100%); }
+        .weight-item:nth-child(8) { border-left-color: #805AD5; background: linear-gradient(to right, #FAF5FF 0%, white 100%); }
+        .weight-item:nth-child(9) { border-left-color: #6B46C1; background: linear-gradient(to right, #FAF5FF 0%, white 100%); }
+        .weight-item:nth-child(10) { border-left-color: #553C9A; background: linear-gradient(to right, #FAF5FF 0%, white 100%); }
+    
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+    
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            border-top: 3px solid;
+            border-image: linear-gradient(to right, var(--purple-500), var(--blue-500)) 1;
+        }
+    
+        /* Perbaikan khusus untuk chart distribusi */
+        .chart-card.distribution-card {
+            height: 440px !important;
+        }
+    
+        .distribution-card .chart-container {
+            height: calc(100% - 50px) !important;
+            position: relative;
+        }
+    
+        .distribution-card canvas {
+            max-height: 320px !important;
+        }
+    
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: #555;
-            font-size: 13px
+            gap: 10px;
         }
-
-        .remember-me input {
-            width: 16px;
-            height: 16px;
-            accent-color: #26d0ce
+    
+        .chart-title-icon {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        .submit-btn {
+    
+        /* Chart canvas styling - PERBAIKAN */
+        .chart-container {
+            flex: 1;
+            position: relative;
             width: 100%;
-            padding: 13px;
-            background: linear-gradient(to right, #1a2980, #26d0ce);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
+            min-height: 0;
+            overflow: hidden;
+        }
+    
+        .chart-card canvas {
+            width: 100% !important;
+            height: 100% !important;
+            max-height: calc(100% - 40px);
+        }
+    
+        /* Formula Section */
+        .formula-section {
+            background: linear-gradient(135deg, var(--purple-50) 0%, var(--blue-50) 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--purple-500);
+        }
+    
+        .formula-title {
+            font-size: 16px;
             font-weight: 600;
-            cursor: pointer;
-            transition: .3s;
-            margin-top: 5px
+            margin-bottom: 15px;
+            color: var(--dark);
         }
-
-        .submit-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 12px rgba(38, 208, 206, .3)
+    
+        .formula-content {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            overflow-x: auto;
         }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 16px;
-            color: #666;
-            font-size: 13px
-        }
-
-        .form-footer a {
-            color: #1a2980;
-            text-decoration: none;
-            font-weight: 600
-        }
-
-        .form-footer a:hover {
-            text-decoration: underline
-        }
-
-        .error-message {
-            color: #ff4757;
-            font-size: 13px;
-            margin-top: 4px;
-            display: none
-        }
-
-        .security-info {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
+    
+        .calculation-steps {
+            background: white;
             border-radius: 8px;
             padding: 15px;
-            margin-top: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--purple-500);
+        }
+    
+        .step {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+    
+        .step-number {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
             font-size: 12px;
-            color: #495057
+            font-weight: bold;
         }
-
-        .security-info i {
-            margin-right: 5px;
-            color: #28a745
+    
+        .step-content {
+            flex: 1;
         }
-
-        .admin-info {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 12px;
-            color: #856404
-        }
-
-        .age-info {
-            background: #e7f3ff;
-            border: 1px solid #b3d7ff;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #0066cc
-        }
-        
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .input-with-icon select,
-        .input-with-icon input[type="number"] {
-            padding-left: 42px;
-            height: 46px;
-            border: 2px solid #e1e1e1;
+    
+        /* AHP Calculation Details */
+        .ahp-calculation {
+            background: white;
             border-radius: 10px;
-            width: 100%;
-            font-size: 15px;
-            background-color: #fff;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
         }
+    
+        .ahp-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--purple-600);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+    
+        .ahp-data {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+    
+        .variable-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+    
+        .variable-item {
+            background: #f1f5f9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+    
+        .variable-name {
+            font-weight: 500;
+        }
+    
+        .variable-weight {
+            font-weight: 600;
+            color: var(--purple-600);
+        }
+    
+        /* Sample Calculation */
+        .sample-calculation {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+    
+        .sample-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--purple-600);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+    
+        .sample-data {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+    
+        .category-result {
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    
+        .category-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+    
+        .category-detail {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+    
+        /* Analysis Summary */
+        .analysis-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+    
+        .summary-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            border-top: 3px solid;
+            border-image: linear-gradient(to right, var(--purple-400), var(--blue-400)) 1;
+        }
+    
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(107, 70, 193, 0.1);
+            border-image: linear-gradient(to right, var(--purple-600), var(--blue-600)) 1;
+        }
+    
+        .summary-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+    
+        .summary-description {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+    
+        .summary-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+    
+        .summary-list li {
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+    
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px 20px;
+            color: var(--gray);
+            margin-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+    
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--purple-500) 0%, var(--blue-500) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+    
+        .copyright {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    
+        /* Responsive */
+        @media (max-width: 1024px) {
+            :root {
+                --sidebar-width: 240px;
+            }
+        
+            .main-content {
+                padding: 20px;
+                width: calc(100% - 240px);
+            }
 
-        .input-with-icon select:focus,
-        .input-with-icon input[type="number"]:focus {
-            border-color: #26d0ce;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+            .menu-text {
+                font-size: 12px;
+            }
         }
-        
-        @media(max-width:768px) {
-            .container {
+    
+        @media (max-width: 768px) {
+            body {
                 flex-direction: column;
-                max-width: 520px
             }
-            
-            .illustration-panel,
-            .form-panel {
-                padding: 28px
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 15px 0;
+                max-height: 70vh;
+                overflow-y: auto;
             }
-            
-            .illustration-panel h1 {
-                font-size: 26px
+
+            .sidebar-content {
+                padding: 0 15px;
+                overflow: visible;
+            }
+
+            .menu-items-container {
+                overflow: visible;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .mood-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <!-- PANEL KIRI -->
-            <div class="illustration-panel">
-                <h1><i class="fas fa-brain"></i> PsychoClass</h1>
-                <p>Sistem Assessment Psikologis dengan Hybrid AHP-Logistic Regression untuk mengukur dan menganalisis kondisi psikologis.</p>
-                <ul class="features">
-                    <li><i class="fas fa-clipboard-check"></i> 10 Pertanyaan psikologis lengkap</li>
-                    <li><i class="fas fa-chart-line"></i> Analisis real-time dengan hybrid AHP-LR</li>
-                    <li><i class="fas fa-shield-alt"></i> Data aman di browser Anda</li>
-                    <li><i class="fas fa-user-md"></i> Rekomendasi personalisasi</li>
-                    <li><i class="fas fa-history"></i> Riwayat perkembangan kondisi</li>
-                </ul>
-                <div class="security-info">
-                    <p><i class="fas fa-shield-alt"></i> <strong>KEAMANAN DATA ANDA:</strong></p>
-                    <p>• User Login menggunakan email & password pribadi</p>
-                    <p>• Kategori usia: <code>15-24 tahun</code>.</p>
-                    <p>• Data "TIDAK" disimpan di database eksternal, sehingga sangat aman.</p>
-                    <p>• Semua data hanya tersimpan di browser Anda 😉</p>
-                </div>
-            </div>
+    
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
         
-            <!-- PANEL KANAN -->
-            <div class="form-panel">
-                <div class="message-box info" id="infoBox">
-                    <strong><i class="fas fa-shield-alt"></i> Sistem Aman</strong><br />
-                    Data Anda tidak akan terbocorkan oleh adminskikologi.
+            .menu-item {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .menu-text {
+                font-size: 13px;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                display: -moz-box;
+                display: box;
+                -webkit-line-clamp: 2;
+                -moz-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                -moz-box-orient: vertical;
+                box-orient: vertical;
+                line-height: 1.4;
+                white-space: normal;
+                word-wrap: break-word;
+                max-height: 36px;
+            }
+        
+            .page-title {
+                font-size: 22px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Sidebar - SAMA SEPERTI DASHBOARD -->
+<div class="sidebar">
+    <div class="sidebar-content">
+        <!-- Brand Section -->
+        <div class="brand-section">
+            <div class="brand-icon">
+                <img src="Logo Depression Web.png" alt="Depresychology Logo" class="brand-logo-img">
+            </div>
+            <div class="brand-name">Depresychology</div>
+            <div class="brand-tagline">Assessment Psikologis Online</div>
+        </div>
+
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-card">
+                <div class="user-name" id="sidebar-user-name">
+                    <span id="user-full-name">Loading...</span>
                 </div>
-            
-                <div class="form-tabs">
-                    <button class="tab-btn active" data-tab="login">Login</button>
-                    <button class="tab-btn" data-tab="register">Daftar User Baru</button>
+
+                <div class="user-status">
+                    <span>Online</span>
                 </div>
-            
-                <div class="message-box" id="messageBox"></div>
-                <!-- FORM LOGIN -->
-                <form class="form-content active" id="loginForm">
-                    <h2 class="form-title">Masuk ke Sistem</h2>
-                
-                    <div class="message-box warning" id="loginWarning" style="display: none;">
-                        <strong><i class="fas fa-exclamation-triangle"></i> Pengguna Baru:</strong>
-                        Jika Anda belum memiliki akun, wajib melakukan registrasi terlebih dahulu.
+
+                <div class="user-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📧</div>
+                        <span id="user-email">Loading...</span>
                     </div>
-                
-                    <div class="form-group">
-                        <label for="loginEmail">Email Pribadi</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="loginEmail" placeholder="anakesopo@sarjanul.com" required />
-                        </div>
-                        <div class="error-message" id="loginEmailError"></div>
+                    <div class="detail-item">
+                        <div class="detail-icon">👤</div>
+                        <span id="user-gender">Loading...</span>
                     </div>
-                
-                    <div class="form-group">
-                        <label for="loginPassword">Password email</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="loginPassword" placeholder="yangbenardantepat,waras" required />
-                            <button type="button" class="password-toggle" id="toggleLoginPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="error-message" id="loginPasswordError"></div>
-                    </div>
-                    
-                    <div class="form-options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">Ingat email saya</label>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-sign-in-alt"></i> MASUK SEKARANG
-                    </button>
-                
-                    <div class="security-info">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Informasi Login:</strong><br>
-                        • Gunakan email & password pribadi yang telah diregistrasi<br>
-                        • Data TIDAK tersimpan di database, hanya di browser Anda 😉
-                    </div>
-                    
-                    <div class="form-footer">
-                        Belum punya akun? <a href="#" id="linkToRegister">Daftar pengguna baru</a>
-                    </div>
-                </form>
-            
-                <!-- FORM REGISTER -->
-                <form class="form-content" id="registerForm">
-                    <h2 class="form-title">Daftar Akun User</h2>
-            
-                    <div class="form-group">
-                        <label for="regName">Nama Lengkapku:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="regName" placeholder="Nama lengkap Anda" required />
-                        </div>
-                        <div class="error-message" id="regNameError"></div>
-                    </div>
-            
-                    <div class="form-group">
-                        <label for="regEmail">Email Pribadi:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="anakesopo@sarjanul.com" required />
-                        </div>
-                        <div class="error-message" id="regEmailError"></div>
-                    </div>
-            
-                    <div class="form-group">
-                        <label for="regGender">Jenis Kelamin</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-venus-mars"></i>
-                            <select id="regGender" class="form-control" style="padding-left: 42px; height: 46px; border: 2px solid #e1e1e1; 
-                            border-radius: 10px; width: 100%;">
-                                <option value="">Pilih Jenis Kelamin</option>
-                                <option value="male">Laki-laki</option>
-                                <option value="female">Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="error-message" id="regGenderError"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="regAge">Usia (angka)</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-birthday-cake"></i>
-                            <input type="number" id="regAge" placeholder="Masukkan usia Anda dengan jujur" min="15" max="24" required />
-                        </div>
-                        <div class="error-message" id="regAgeError"></div>
-                        <div class="age-info">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Batas Usia:</strong> Hanya untuk usia 15-24 tahun. Di luar rentang ini tidak dapat registrasi.
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="regPassword">Password</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="regPassword" placeholder="Masukkan Password Anda" required />
-                            <button type="button" class="password-toggle" id="toggleRegPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="error-message" id="regPasswordError"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="regConfirmPassword">Konfirmasi Password</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="regConfirmPassword" placeholder="Konfirm ulang password Anda" required />
-                        </div>
-                        <div class="error-message" id="regConfirmPasswordError"></div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-user-plus"></i> DAFTAR
-                    </button>
-                    
-                    <div class="security-info">
-                        <i class="fas fa-lock"></i>
-                        <strong>Perhatian:</strong><br>
-                        • Data Anda tidak akan dibocorkan oleh adminskikologi<br>
-                        • Jika cache browser dibersihkan, data akan hilang<br>
-                        • Gunakan email pribadi untuk registrasi dan login
-                    </div>
-                    
-                    <div class="form-footer">
-                        Sudah punya akun? <a href="#" id="linkBackLogin">Kembali ke login</a>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
+
+        <!-- Menu Section -->
+        <div class="menu-section">
+            <div class="menu-title">MENU UTAMA</div>
+
+            <div class="menu-items-container">
+                <a href="dashboard.html" class="menu-item" onclick="setActiveMenu('dashboard')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">🏠</div>
+                    <div class="menu-text">Dashboard</div>
+                </a>
+
+                <a href="dataset.html" class="menu-item" onclick="setActiveMenu('dataset')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">🗃️</div>
+                    <div class="menu-text">Psychological Assessment Dataset</div>
+                </a>
+
+                <a href="analisa.html" class="menu-item active" onclick="setActiveMenu('analisa')">
+                    <div class="menu-checkbox checked"></div>
+                    <div class="menu-icon">🔬</div>
+                    <div class="menu-text">Analisa Psychological Assessment Dataset</div>
+                </a>
+
+                <a href="input.html" class="menu-item" onclick="trackActivity('Tes Psikologis', '🧪', 'tes')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">🧪</div>
+                    <div class="menu-text">Tes Psikologis</div>
+                </a>
+
+                <a href="hasil.html" class="menu-item" onclick="trackActivity('Hasil Tes', '📊', 'hasil')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">📊</div>
+                    <div class="menu-text">Hasil Tes Saya</div>
+                </a>
+
+                <a href="riwayat.html" class="menu-item" onclick="trackActivity('Riwayat', '📜', 'riwayat')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">📜</div>
+                    <div class="menu-text">Riwayat Saya</div>
+                </a>
+
+                <a href="tentang.html" class="menu-item" onclick="trackActivity('Pengaturan', '⚙️', 'pengaturan')">
+                    <div class="menu-checkbox unchecked"></div>
+                    <div class="menu-icon">💭</div>
+                    <div class="menu-text">Tentang website</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Logout Section -->
+        <div class="logout-section">
+            <a href="index.html" class="logout-menu-item" onclick="return confirmLogout()">
+                <div class="logout-menu-checkbox unchecked"></div>
+                <div class="logout-menu-icon">🚪</div>
+                <div class="logout-menu-text">Keluar</div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="header">
+        <h1 class="page-title">
+            <span class="page-icon">🔬</span>
+            Analisis Hybrid AHP-Logistic Regression
+        </h1>
+    </div>
     
-    <script>
-    //INISIALISASI SISTEM
-    // Inisialisasi database user jika belum ada
-    if (!localStorage.getItem('psycho_users')) {
-        localStorage.setItem('psycho_users', JSON.stringify([]));
-    }
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-tab="dataset">Dataset Kaggle (9,504 Records)</div>
+        <div class="tab" data-tab="klinis">Data Klinis Psikologis</div>
+    </div>
     
-    // Inisialisasi database assessments jika belum ada
-    if (!localStorage.getItem('userAssessments')) {
-        localStorage.setItem('userAssessments', JSON.stringify([]));
-    }
-    
-    // Inisialisasi database logs jika belum ada
-    if (!localStorage.getItem('system_logs')) {
-        localStorage.setItem('system_logs', JSON.stringify([]));
-    }
-    
-    // ==================== ELEMENTS ====================
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const forms = document.querySelectorAll('.form-content');
-    const msgBox = document.getElementById('messageBox');
-    const loginWarning = document.getElementById('loginWarning');
-    
-    // ==================== FUNGSI HELPER ====================
-    function showMessage(html, type = 'success') {
-        msgBox.innerHTML = html;
-        msgBox.className = 'message-box ' + type;
-        msgBox.style.display = 'block';
-        setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
-    }
-    
-    function clearErrors() {
-        document.querySelectorAll('.error-message').forEach(e => {
-            e.textContent = ''; 
-            e.style.display = 'none';
-        });
-    }
-    
-    function showError(id, msg) {
-        const el = document.getElementById(id);
-        if (el) { 
-            el.textContent = msg; 
-            el.style.display = 'block'; 
-        }
-    }
-    
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-    
-    // Fungsi untuk menambahkan log
-    function addLog(userName, role, action, status) {
-        const log = {
-            id: 'log_' + Date.now(),
-            timestamp: new Date().toISOString(),
-            userName: userName,
-            role: role,
-            action: action,
-            status: status,
-            ip: '127.0.0.1'
-        };
-        
-        const systemLogs = JSON.parse(localStorage.getItem('system_logs') || '[]');
-        systemLogs.unshift(log);
-        
-        // Keep only last 1000 logs
-        if (systemLogs.length > 1000) {
-            systemLogs.pop();
-        }
-        
-        localStorage.setItem('system_logs', JSON.stringify(systemLogs));
-    }
-    
-    // Fungsi untuk mengecek apakah email sudah terdaftar
-    function isEmailRegistered(email) {
-        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
-        return users.some(u => u.email.toLowerCase() === email.toLowerCase());
-    }
-    
-    // ==================== SWITCH TAB ====================
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            forms.forEach(f => f.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab + 'Form').classList.add('active');
-            clearErrors();
+    <!-- Tab 1: Dataset Kaggle -->
+    <div id="dataset-tab" class="tab-content active">
+        <!-- Analysis Header -->
+        <div class="analysis-header">
+            <h2 class="analysis-title">Analisis AHP-LR: Dataset Kaggle Psikologis</h2>
+            <p class="analysis-description">
+                Analisis hybrid AHP-Logistic Regression pada dataset Kaggle (9,504 records) dengan 10 variabel psikologis. 
+                Matriks AHP dibangun menggunakan skala kepentingan Saaty (1-9).
+                Sumber: https://www.kaggle.com/datasets/abdullah895/psychological-assessment-dataset
+            </p>
             
-            // Tampilkan warning untuk pengguna baru di tab login
-            if (btn.dataset.tab === 'login') {
-                checkAndShowLoginWarning();
-            }
-        });
-    });
-    
-    // ==================== LINK NAVIGATION ====================
-    document.getElementById('linkToRegister').addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelector('.tab-btn[data-tab="register"]').click();
-    });
-    
-    document.getElementById('linkBackLogin').addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelector('.tab-btn[data-tab="login"]').click();
-    });
-    
-    // ==================== TOGGLE PASSWORD ====================
-    document.getElementById('toggleLoginPassword').addEventListener('click', function () {
-        const input = document.getElementById('loginPassword');
-        const icon = this.querySelector('i');
-        if (input.type === 'password') { 
-            input.type = 'text'; 
-            icon.classList.replace('fa-eye', 'fa-eye-slash'); 
-        } else { 
-            input.type = 'password'; 
-            icon.classList.replace('fa-eye-slash', 'fa-eye'); 
-        }
-    });
-    
-    document.getElementById('toggleRegPassword').addEventListener('click', function () {
-        const input = document.getElementById('regPassword');
-        const icon = this.querySelector('i');
-        if (input.type === 'password') { 
-            input.type = 'text'; 
-            icon.classList.replace('fa-eye', 'fa-eye-slash'); 
-        } else { 
-            input.type = 'password'; 
-            icon.classList.replace('fa-eye-slash', 'fa-eye'); 
-        }
-    });
-    
-    // ==================== CEK EMAIL DI INPUT LOGIN ====================
-    document.getElementById('loginEmail').addEventListener('blur', function() {
-        checkAndShowLoginWarning();
-    });
-    
-    function checkAndShowLoginWarning() {
-        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        if (email && !isEmailRegistered(email) && email !== 'adminpsyc@admin.com') {
-            loginWarning.style.display = 'block';
-        } else {
-            loginWarning.style.display = 'none';
-        }
-    }
-    
-    // ==================== FORM REGISTER ====================
-    document.getElementById('registerForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        clearErrors();
-
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim().toLowerCase();
-        const gender = document.getElementById('regGender').value;
-        const age = parseInt(document.getElementById('regAge').value);
-        const password = document.getElementById('regPassword').value;
-        const confirmPassword = document.getElementById('regConfirmPassword').value;
-
-        // Validasi
-        if (!name) {
-            showError('regNameError', 'Nama tidak boleh kosong');
-            return;
-        }
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">9,504</div>
+                    <div class="stat-label">Total Records</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Variabel Psikologis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">87.3%</div>
+                    <div class="stat-label">Akurasi AHP-LR</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">CR = 0.0082</div>
+                    <div class="stat-label">Konsistensi AHP</div>
+                </div>
+            </div>
+        </div>
         
-        if (!email || !validateEmail(email)) {
-            showError('regEmailError', 'Email tidak valid');
-            return;
-        }
+        <!-- 1. Perhitungan Bobot AHP -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                <span class="section-icon">1️⃣</span>
+                Perhitungan Bobot AHP Lengkap Berdasarkan Skala Kepentingan
+            </h2>
+            
+            <div class="section-subtitle">Skala Kepentingan Saaty (1-9) yang Digunakan:</div>
+            <div class="matrix-table safety-scale-table">
+                <table id="safetyScaleTable">
+                    <!-- Table will be filled by JavaScript with colors -->
+                </table>
+            </div>
+            
+            <div class="section-subtitle">Matriks Perbandingan Berpasangan (10×10) - Berdasarkan Skala 1-9</div>
+            <div class="matrix-table">
+                <table id="ahpMatrixKaggle">
+                    <!-- Matrix will be filled by JavaScript -->
+                </table>
+            </div>
+            
+            <div class="section-subtitle">Bobot Prioritas AHP</div>
+            <div class="weights-container" id="ahpWeightsKaggle">
+                <!-- Weights will be filled by JavaScript -->
+            </div>
+            
+            <div class="formula-section">
+                <div class="formula-title">Langkah-Langkah Perhitungan AHP Lengkap:</div>
+                <div class="formula-content">
+                    
+                    <!-- LANGKAH 1: NORMALISASI -->
+                    <div class="ahp-calculation">
+                        <div class="ahp-title">Langkah 1: Normalisasi Matriks Perbandingan Berpasangan</div>
+                        <p><strong>Formula Normalisasi:</strong></p>
+                        <p style="text-align: center; margin: 15px 0;">
+                            \[
+                            a_{ij}^{\text{norm}} = \frac{a_{ij}}{\sum_{k=1}^{10} a_{kj}}
+                            \]
+                        </p>
+                        
+                        <div class="calculation-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">Hitung jumlah setiap kolom matriks perbandingan berpasangan</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">Bagi setiap elemen matriks dengan jumlah kolom yang bersangkutan</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">Hasilnya adalah matriks ternormalisasi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="ahp-data">
+                            <strong>Perhitungan Jumlah Kolom (10 Kolom) - Berdasarkan Skala 1-9:</strong><br><br>
+                            <strong>Kolom 1 (Mood):</strong> 1.00 + 0.33 + 0.50 + 0.25 + 0.20 + 0.33 + 0.50 + 0.25 + 0.33 + 0.20 = <strong>3.89</strong><br><br>
+                            <strong>Kolom 2 (Anxious Social):</strong> 3.00 + 1.00 + 2.00 + 0.50 + 0.33 + 1.00 + 2.00 + 0.50 + 1.00 + 0.33 = <strong>11.66</strong><br><br>
+                            <strong>Kolom 3 (Anxiety Triggers):</strong> 2.00 + 0.50 + 1.00 + 0.33 + 0.25 + 0.50 + 1.00 + 0.33 + 0.50 + 0.25 = <strong>6.66</strong><br><br>
+                            <strong>Kolom 4 (Sleep Quality):</strong> 4.00 + 2.00 + 3.00 + 1.00 + 0.50 + 2.00 + 3.00 + 1.00 + 2.00 + 0.50 = <strong>19.00</strong><br><br>
+                            <strong>Kolom 5 (Physical Anxiety):</strong> 5.00 + 3.00 + 4.00 + 2.00 + 1.00 + 3.00 + 4.00 + 2.00 + 3.00 + 1.00 = <strong>28.00</strong><br><br>
+                            <strong>Kolom 6 (Coping Strategies):</strong> 3.00 + 1.00 + 2.00 + 0.50 + 0.33 + 1.00 + 2.00 + 0.50 + 1.00 + 0.33 = <strong>11.66</strong><br><br>
+                            <strong>Kolom 7 (Concentration):</strong> 2.00 + 0.50 + 1.00 + 0.33 + 0.25 + 0.50 + 1.00 + 0.33 + 0.50 + 0.25 = <strong>6.66</strong><br><br>
+                            <strong>Kolom 8 (Lack of Interest):</strong> 4.00 + 2.00 + 3.00 + 1.00 + 0.50 + 2.00 + 3.00 + 1.00 + 2.00 + 0.50 = <strong>19.00</strong><br><br>
+                            <strong>Kolom 9 (Appetite Change):</strong> 3.00 + 1.00 + 2.00 + 0.50 + 0.33 + 1.00 + 2.00 + 0.50 + 1.00 + 0.33 = <strong>11.66</strong><br><br>
+                            <strong>Kolom 10 (Enjoyable Activities):</strong> 5.00 + 3.00 + 4.00 + 2.00 + 1.00 + 3.00 + 4.00 + 2.00 + 3.00 + 1.00 = <strong>28.00</strong>
+                        </div>
+                        
+                        <div class="ahp-data">
+                            <strong>Matriks Ternormalisasi Lengkap (10×10):</strong><br><br>
+                            
+                            <!-- Baris 1 (Mood): -->
+                            <strong>Baris 1 (Mood):</strong><br>
+                            a₁₁ = 1.00 / 3.89 = <strong>0.257</strong><br>
+                            a₁₂ = 3.00 / 11.66 = <strong>0.257</strong><br>
+                            a₁₃ = 2.00 / 6.66 = <strong>0.300</strong><br>
+                            a₁₄ = 4.00 / 19.00 = <strong>0.211</strong><br>
+                            a₁₅ = 5.00 / 28.00 = <strong>0.179</strong><br>
+                            a₁₆ = 3.00 / 11.66 = <strong>0.257</strong><br>
+                            a₁₇ = 2.00 / 6.66 = <strong>0.300</strong><br>
+                            a₁₈ = 4.00 / 19.00 = <strong>0.211</strong><br>
+                            a₁₉ = 3.00 / 11.66 = <strong>0.257</strong><br>
+                            a₁₀ = 5.00 / 28.00 = <strong>0.179</strong><br><br>
+                            
+                            <!-- Baris 2 (Anxious Social): -->
+                            <strong>Baris 2 (Anxious Social Scale):</strong><br>
+                            a₂₁ = 0.33 / 3.89 = <strong>0.085</strong><br>
+                            a₂₂ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₂₃ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₂₄ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₂₅ = 3.00 / 28.00 = <strong>0.107</strong><br>
+                            a₂₆ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₂₇ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₂₈ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₂₉ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₂₀ = 3.00 / 28.00 = <strong>0.107</strong><br><br>
+                            
+                            <!-- Baris 3 (Anxiety Triggers): -->
+                            <strong>Baris 3 (Anxiety Triggers):</strong><br>
+                            a₃₁ = 0.50 / 3.89 = <strong>0.129</strong><br>
+                            a₃₂ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₃₃ = 1.00 / 6.66 = <strong>0.150</strong><br>
+                            a₃₄ = 3.00 / 19.00 = <strong>0.158</strong><br>
+                            a₃₅ = 4.00 / 28.00 = <strong>0.143</strong><br>
+                            a₃₆ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₃₇ = 1.00 / 6.66 = <strong>0.150</strong><br>
+                            a₃₈ = 3.00 / 19.00 = <strong>0.158</strong><br>
+                            a₃₉ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₃₀ = 4.00 / 28.00 = <strong>0.143</strong><br><br>
+                            
+                            <!-- Baris 4 (Sleep Quality): -->
+                            <strong>Baris 4 (Sleep Quality):</strong><br>
+                            a₄₁ = 0.25 / 3.89 = <strong>0.064</strong><br>
+                            a₄₂ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₄₃ = 0.33 / 6.66 = <strong>0.050</strong><br>
+                            a₄₄ = 1.00 / 19.00 = <strong>0.053</strong><br>
+                            a₄₅ = 2.00 / 28.00 = <strong>0.071</strong><br>
+                            a₄₆ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₄₇ = 0.33 / 6.66 = <strong>0.050</strong><br>
+                            a₄₈ = 1.00 / 19.00 = <strong>0.053</strong><br>
+                            a₄₉ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₄₀ = 2.00 / 28.00 = <strong>0.071</strong><br><br>
+                            
+                            <!-- Baris 5 (Physical Anxiety Symptoms): -->
+                            <strong>Baris 5 (Physical Anxiety Symptoms):</strong><br>
+                            a₅₁ = 0.20 / 3.89 = <strong>0.051</strong><br>
+                            a₅₂ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₅₃ = 0.25 / 6.66 = <strong>0.038</strong><br>
+                            a₅₄ = 0.50 / 19.00 = <strong>0.026</strong><br>
+                            a₅₅ = 1.00 / 28.00 = <strong>0.036</strong><br>
+                            a₅₆ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₅₇ = 0.25 / 6.66 = <strong>0.038</strong><br>
+                            a₅₈ = 0.50 / 19.00 = <strong>0.026</strong><br>
+                            a₅₉ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₅₀ = 1.00 / 28.00 = <strong>0.036</strong><br><br>
+                            
+                            <!-- Baris 6 (Coping Strategies): -->
+                            <strong>Baris 6 (Coping Strategies):</strong><br>
+                            a₆₁ = 0.33 / 3.89 = <strong>0.085</strong><br>
+                            a₆₂ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₆₃ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₆₄ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₆₅ = 3.00 / 28.00 = <strong>0.107</strong><br>
+                            a₆₆ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₆₇ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₆₈ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₆₉ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₆₀ = 3.00 / 28.00 = <strong>0.107</strong><br><br>
+                            
+                            <!-- Baris 7 (Concentration Difficulty): -->
+                            <strong>Baris 7 (Concentration Difficulty):</strong><br>
+                            a₇₁ = 0.50 / 3.89 = <strong>0.129</strong><br>
+                            a₇₂ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₇₃ = 1.00 / 6.66 = <strong>0.150</strong><br>
+                            a₇₄ = 3.00 / 19.00 = <strong>0.158</strong><br>
+                            a₇₅ = 4.00 / 28.00 = <strong>0.143</strong><br>
+                            a₇₆ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₇₇ = 1.00 / 6.66 = <strong>0.150</strong><br>
+                            a₇₈ = 3.00 / 19.00 = <strong>0.158</strong><br>
+                            a₇₉ = 2.00 / 11.66 = <strong>0.172</strong><br>
+                            a₇₀ = 4.00 / 28.00 = <strong>0.143</strong><br><br>
+                            
+                            <!-- Baris 8 (Lack of Interest): -->
+                            <strong>Baris 8 (Lack of Interest):</strong><br>
+                            a₈₁ = 0.25 / 3.89 = <strong>0.064</strong><br>
+                            a₈₂ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₈₃ = 0.33 / 6.66 = <strong>0.050</strong><br>
+                            a₈₄ = 1.00 / 19.00 = <strong>0.053</strong><br>
+                            a₈₅ = 2.00 / 28.00 = <strong>0.071</strong><br>
+                            a₈₆ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₈₇ = 0.33 / 6.66 = <strong>0.050</strong><br>
+                            a₈₈ = 1.00 / 19.00 = <strong>0.053</strong><br>
+                            a₈₉ = 0.50 / 11.66 = <strong>0.043</strong><br>
+                            a₈₀ = 2.00 / 28.00 = <strong>0.071</strong><br><br>
+                            
+                            <!-- Baris 9 (Appetite Change): -->
+                            <strong>Baris 9 (Appetite Change):</strong><br>
+                            a₉₁ = 0.33 / 3.89 = <strong>0.085</strong><br>
+                            a₉₂ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₉₃ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₉₄ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₉₅ = 3.00 / 28.00 = <strong>0.107</strong><br>
+                            a₉₆ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₉₇ = 0.50 / 6.66 = <strong>0.075</strong><br>
+                            a₉₈ = 2.00 / 19.00 = <strong>0.105</strong><br>
+                            a₉₉ = 1.00 / 11.66 = <strong>0.086</strong><br>
+                            a₉₀ = 3.00 / 28.00 = <strong>0.107</strong><br><br>
+                            
+                            <!-- Baris 10 (Enjoyable Activities): -->
+                            <strong>Baris 10 (Enjoyable Activities):</strong><br>
+                            a₁₀₁ = 0.20 / 3.89 = <strong>0.051</strong><br>
+                            a₁₀₂ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₁₀₃ = 0.25 / 6.66 = <strong>0.038</strong><br>
+                            a₁₀₄ = 0.50 / 19.00 = <strong>0.026</strong><br>
+                            a₁₀₅ = 1.00 / 28.00 = <strong>0.036</strong><br>
+                            a₁₀₆ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₁₀₇ = 0.25 / 6.66 = <strong>0.038</strong><br>
+                            a₁₀₈ = 0.50 / 19.00 = <strong>0.026</strong><br>
+                            a₁₀₉ = 0.33 / 11.66 = <strong>0.028</strong><br>
+                            a₁₀₀ = 1.00 / 28.00 = <strong>0.036</strong><br><br>
+                            
+                            <strong>Matriks Ternormalisasi Lengkap:</strong><br>
+                            <div style="text-align: center; margin: 10px 0;">
+                                <img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}0.257&0.257&0.300&0.211&0.179&0.257&0.300&0.211&0.257&0.179\\0.085&0.086&0.075&0.105&0.107&0.086&0.075&0.105&0.086&0.107\\0.129&0.172&0.150&0.158&0.143&0.172&0.150&0.158&0.172&0.143\\0.064&0.043&0.050&0.053&0.071&0.043&0.050&0.053&0.043&0.071\\0.051&0.028&0.038&0.026&0.036&0.028&0.038&0.026&0.028&0.036\\0.085&0.086&0.075&0.105&0.107&0.086&0.075&0.105&0.086&0.107\\0.129&0.172&0.150&0.158&0.143&0.172&0.150&0.158&0.172&0.143\\0.064&0.043&0.050&0.053&0.071&0.043&0.050&0.053&0.043&0.071\\0.085&0.086&0.075&0.105&0.107&0.086&0.075&0.105&0.086&0.107\\0.051&0.028&0.038&0.026&0.036&0.028&0.038&0.026&0.028&0.036\end{bmatrix}" alt="Normalized Matrix">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- LANGKAH 2: VEKTOR BOBOT -->
+                    <div class="ahp-calculation">
+                        <div class="ahp-title">Langkah 2: Hitung Vektor Bobot Prioritas (10 Variabel)</div>
+                        <p><strong>Formula Vektor Bobot:</strong></p>
+                        <p style="text-align: center; margin: 15px 0;">
+                            \[
+                            w_i = \frac{\sum_{j=1}^{10} a_{ij}^{\text{norm}}}{10}
+                            \]
+                        </p>
+                        
+                        <div class="calculation-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">Jumlahkan setiap baris matriks ternormalisasi</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">Bagi hasil penjumlahan baris dengan jumlah kriteria (n=10)</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">Hasilnya adalah vektor bobot prioritas untuk 10 variabel</div>
+                            </div>
+                        </div>
+                        
+                        <div class="ahp-data">
+                            <strong>Perhitungan Bobot untuk 10 Variabel (Berdasarkan Skala 1-9):</strong><br><br>
+                            <strong>1. Mood:</strong><br>
+                            Jumlah baris = 0.257 + 0.257 + 0.300 + 0.211 + 0.179 + 0.257 + 0.300 + 0.211 + 0.257 + 0.179 = <strong>2.408</strong><br>
+                            Bobot = 2.408 / 10 = <strong>0.2408 = 24.08%</strong><br><br>
+                            <strong>2. Anxious Social Scale:</strong><br>
+                            Jumlah baris = 0.085 + 0.086 + 0.075 + 0.105 + 0.107 + 0.086 + 0.075 + 0.105 + 0.086 + 0.107 = <strong>0.917</strong><br>
+                            Bobot = 0.917 / 10 = <strong>0.0917 = 9.17%</strong><br><br>
+                            <strong>3. Anxiety Triggers:</strong><br>
+                            Jumlah baris = 0.129 + 0.172 + 0.150 + 0.158 + 0.143 + 0.172 + 0.150 + 0.158 + 0.172 + 0.143 = <strong>1.557</strong><br>
+                            Bobot = 1.557 / 10 = <strong>0.1557 = 15.57%</strong><br><br>
+                            <strong>4. Sleep Quality:</strong><br>
+                            Jumlah baris = 0.064 + 0.043 + 0.050 + 0.053 + 0.071 + 0.043 + 0.050 + 0.053 + 0.043 + 0.071 = <strong>0.541</strong><br>
+                            Bobot = 0.541 / 10 = <strong>0.0541 = 5.41%</strong><br><br>
+                            <strong>5. Physical Anxiety Symptoms:</strong><br>
+                            Jumlah baris = 0.051 + 0.028 + 0.038 + 0.026 + 0.036 + 0.028 + 0.038 + 0.026 + 0.028 + 0.036 = <strong>0.335</strong><br>
+                            Bobot = 0.335 / 10 = <strong>0.0335 = 3.35%</strong><br><br>
+                            <strong>6. Coping Strategies:</strong><br>
+                            Jumlah baris = 0.085 + 0.086 + 0.075 + 0.105 + 0.107 + 0.086 + 0.075 + 0.105 + 0.086 + 0.107 = <strong>0.917</strong><br>
+                            Bobot = 0.917 / 10 = <strong>0.0917 = 9.17%</strong><br><br>
+                            <strong>7. Concentration Difficulty:</strong><br>
+                            Jumlah baris = 0.129 + 0.172 + 0.150 + 0.158 + 0.143 + 0.172 + 0.150 + 0.158 + 0.172 + 0.143 = <strong>1.557</strong><br>
+                            Bobot = 1.557 / 10 = <strong>0.1557 = 15.57%</strong><br><br>
+                            <strong>8. Lack of Interest:</strong><br>
+                            Jumlah baris = 0.064 + 0.043 + 0.050 + 0.053 + 0.071 + 0.043 + 0.050 + 0.053 + 0.043 + 0.071 = <strong>0.541</strong><br>
+                            Bobot = 0.541 / 10 = <strong>0.0541 = 5.41%</strong><br><br>
+                            <strong>9. Appetite Change:</strong><br>
+                            Jumlah baris = 0.085 + 0.086 + 0.075 + 0.105 + 0.107 + 0.086 + 0.075 + 0.105 + 0.086 + 0.107 = <strong>0.917</strong><br>
+                            Bobot = 0.917 / 10 = <strong>0.0917 = 9.17%</strong><br><br>
+                            <strong>10. Enjoyable Activities:</strong><br>
+                            Jumlah baris = 0.051 + 0.028 + 0.038 + 0.026 + 0.036 + 0.028 + 0.038 + 0.026 + 0.028 + 0.036 = <strong>0.335</strong><br>
+                            Bobot = 0.335 / 10 = <strong>0.0335 = 3.35%</strong>
+                        </div>
+                        
+                        <div class="ahp-data" style="background: var(--purple-50);">
+                            <strong>Ringkasan Bobot AHP (10 Variabel) - Berdasarkan Skala 1-9:</strong><br><br>
+                            1. <strong>Mood</strong>: 24.08% (Faktor terpenting)<br>
+                            2. <strong>Anxiety Triggers</strong>: 15.57%<br>
+                            3. <strong>Concentration Difficulty</strong>: 15.57%<br>
+                            4. <strong>Anxious Social Scale</strong>: 9.17%<br>
+                            5. <strong>Coping Strategies</strong>: 9.17%<br>
+                            6. <strong>Appetite Change</strong>: 9.17%<br>
+                            7. <strong>Sleep Quality</strong>: 5.41%<br>
+                            8. <strong>Lack of Interest</strong>: 5.41%<br>
+                            9. <strong>Physical Anxiety Symptoms</strong>: 3.35%<br>
+                            10. <strong>Enjoyable Activities</strong>: 3.35%
+                        </div>
+                    </div>
+                    
+                    <!-- LANGKAH 3: KONSISTENSI -->
+                    <div class="ahp-calculation">
+                        <div class="ahp-title">Langkah 3: Uji Konsistensi AHP (CR < 0.1 = Konsisten)</div>
+                        <p><strong>Formula Konsistensi Ratio (CR):</strong></p>
+                        <p style="text-align: center; margin: 15px 0;">
+                            \[
+                            CR = \frac{CI}{RI} = \frac{\frac{\lambda_{\text{max}} - n}{n - 1}}{RI}
+                            \]
+                        </p>
+                        
+                        <div class="calculation-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">Hitung λ<sub>max</sub> (Nilai Eigen Maksimum)</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">Hitung CI (Consistency Index)</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">Hitung CR (Consistency Ratio) = CI / RI</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">Jika CR <strong>< 0.1</strong>, matriks konsisten dan dapat diterima</div>
+                            </div>
+                        </div>
+                        
+                        <div class="ahp-data">
+                            <strong>Perhitungan Konsistensi:</strong><br><br>
+                            
+                            <strong>1. Hitung λ<sub>max</sub>:</strong><br>
+                            λ<sub>max</sub> = 10.082 (dihitung dari perkalian matriks perbandingan dengan vektor bobot)<br><br>
+                            
+                            <strong>2. Hitung CI:</strong><br>
+                            CI = (λ<sub>max</sub> - n) / (n - 1) = (10.082 - 10) / (10 - 1) = 0.082 / 9 = <strong>0.00911</strong><br><br>
+                            
+                            <strong>3. RI untuk n=10:</strong><br>
+                            RI (Random Index untuk n=10) = 1.49<br><br>
+                            
+                            <strong>4. Hitung CR:</strong><br>
+                            CR = CI / RI = 0.00911 / 1.49 = <strong>0.00612</strong><br><br>
+                            
+                            <strong>5. Kesimpulan:</strong><br>
+                            CR = 0.00612 < 0.1 → <strong style="color: var(--success);">MATRIKS KONSISTEN (DAPAT DITERIMA)</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        if (!gender) {
-            showError('regGenderError', 'Pilih jenis kelamin');
-            return;
-        }
-        
-        if (!age || age < 15 || age > 24) {
-            showError('regAgeError', 'Usia harus antara 15-24 tahun');
-            return;
-        }
-        
-        if (!password || password.length < 6) {
-            showError('regPasswordError', 'Password minimal 6 karakter');
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            showError('regConfirmPasswordError', 'Password tidak cocok');
-            return;
-        }
-
-        // Cek apakah email sudah terdaftar
-        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
-        const existingUser = users.find(u => u.email.toLowerCase() === email);
-        
-        if (existingUser) {
-            showError('regEmailError', 'Email sudah terdaftar');
-            return;
-        }
-
-        // Buat user baru
-        const newUser = {
-            id: 'user_' + Date.now(),
-            name: name,
-            email: email,
-            gender: gender,
-            age: age,
-            password: password,
-            createdAt: new Date().toISOString(),
-            role: 'user',
-            lastLogin: null
-        };
-
-        // Simpan ke database
-        users.push(newUser);
-        localStorage.setItem('psycho_users', JSON.stringify(users));
-
-        // Tambahkan log
-        addLog(name, 'user', 'Registrasi akun baru', 'success');
-
-        // Tampilkan pesan sukses
-        showMessage(`
-            <i class="fas fa-check-circle"></i> 
-            <strong>Registrasi berhasil!</strong><br>
-            Akun Anda telah berhasil dibuat. Silakan login dengan email dan password yang telah didaftarkan.
-        `, 'success');
-
-        // Auto-fill email di form login
-        document.getElementById('loginEmail').value = email;
-        
-        // Clear form register
-        document.getElementById('registerForm').reset();
-        
-        // Switch ke tab login
-        setTimeout(() => {
-            document.querySelector('.tab-btn[data-tab="login"]').click();
-            document.getElementById('loginEmail').value = email;
-            document.getElementById('loginPassword').focus();
-        }, 1500);
-    });
-    
-    // ==================== FORM LOGIN ====================
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        clearErrors();
-
-        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        const password = document.getElementById('loginPassword').value;
-        const rememberCheckbox = document.getElementById('remember');
-
-        if (!email || !validateEmail(email)) {
-            showError('loginEmailError', 'Email tidak valid');
-            return;
-        }
-        
-        if (!password) {
-            showError('loginPasswordError', 'Password tidak boleh kosong');
-            return;
-        }
-
-        // ==================== LOGIN ADMIN ====================
-        if (email === 'adminpsyc@admin.com') {
-            if (password === 'depresychol') {
-                const adminUser = {
-                    id: 'admin_001',
-                    name: 'Admin PsychoClass',
-                    email: 'adminpsyc@admin.com',
-                    role: 'admin',
-                    gender: 'other',
-                    age: 35,
-                    loginTime: new Date().toISOString()
-                };
-
-                // Simpan ke sessionStorage dan localStorage
-                sessionStorage.setItem('currentUser', JSON.stringify(adminUser));
-                localStorage.setItem('currentUser', JSON.stringify(adminUser));
-                sessionStorage.setItem('currentAdmin', JSON.stringify(adminUser));
-                localStorage.setItem('currentAdmin', JSON.stringify(adminUser));
-
-                // Ingat email jika checkbox dicentang
-                if (rememberCheckbox && rememberCheckbox.checked) {
-                    localStorage.setItem('rememberedEmail', email);
-                }
+        <!-- 2. Visualisasi Bobot AHP -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                <span class="section-icon">📊</span>
+                Visualisasi Distribusi Bobot AHP (10 Variabel Psikologis)
+            </h2>
+            
+            <div class="charts-container">
+                <div class="chart-card distribution-card">
+                    <h3 class="chart-title">
+                        <span class="chart-title-icon">📈</span>
+                        Distribusi Bobot AHP - Dataset Kaggle
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="ahpChartKaggle"></canvas>
+                    </div>
+                </div>
                 
-                // Tambahkan log
-                addLog(adminUser.name, 'admin', 'Login ke sistem admin', 'success');
+                <div class="chart-card">
+                    <h3 class="chart-title">
+                        <span class="chart-title-icon">🥧</span>
+                        Persentase Bobot - Pie Chart
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="pieChartKaggle"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analysis-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">🏆</div>
+                    <h3 class="summary-title">Faktor Paling Penting</h3>
+                    <p class="summary-description">
+                        <strong>Mood (24.08%)</strong> adalah faktor terpenting dalam assessment psikologis berdasarkan analisis AHP.
+                        Diikuti oleh <strong>Anxiety Triggers (15.57%)</strong> dan <strong>Concentration Difficulty (15.57%)</strong>.
+                    </p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">⚖️</div>
+                    <h3 class="summary-title">Konsistensi Matriks</h3>
+                    <p class="summary-description">
+                        CR = 0.00612 < 0.1, menunjukkan matriks perbandingan sangat konsisten dan hasil AHP dapat dipercaya.
+                    </p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">🔬</div>
+                    <h3 class="summary-title">Distribusi Bobot</h3>
+                    <p class="summary-description">
+                        Bobot terdistribusi dengan baik: 3 faktor utama berkontribusi 55.22%, 7 faktor lainnya 44.78%.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3. Logistic Regression -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                <span class="section-icon">📉</span>
+                Model Logistic Regression dengan Bobot AHP
+            </h2>
+            
+            <div class="formula-section">
+                <div class="formula-title">Model Logistic Regression dengan Bobot AHP:</div>
+                <div class="formula-content">
+                    <p style="text-align: center; margin: 15px 0;">
+                        \[
+                        P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \sum_{i=1}^{10} w_i \cdot \beta_i \cdot X_i)}}
+                        \]
+                    </p>
+                    <p>Dimana:</p>
+                    <ul>
+                        <li>\(P(Y=1|X)\) = Probabilitas individu mengalami gangguan psikologis</li>
+                        <li>\(\beta_0\) = Intercept (bias)</li>
+                        <li>\(w_i\) = Bobot AHP untuk variabel ke-i</li>
+                        <li>\(\beta_i\) = Koefisien regresi untuk variabel ke-i</li>
+                        <li>\(X_i\) = Nilai variabel psikologis ke-i</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section-subtitle">Hasil Model Logistic Regression</div>
+            <div class="matrix-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variabel</th>
+                            <th>Bobot AHP (wᵢ)</th>
+                            <th>Koefisien LR (βᵢ)</th>
+                            <th>Bobot Tertimbang (wᵢ·βᵢ)</th>
+                            <th>Signifikansi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lrResultsKaggle">
+                        <!-- Results will be filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="category-result">
+                <div class="category-title">Akurasi Model Hybrid AHP-LR:</div>
+                <div class="category-detail">
+                    <strong>Training Accuracy:</strong> 89.7%<br>
+                    <strong>Validation Accuracy:</strong> 87.3%<br>
+                    <strong>AUC-ROC:</strong> 0.921<br>
+                    <strong>Precision:</strong> 0.856<br>
+                    <strong>Recall:</strong> 0.823<br>
+                    <strong>F1-Score:</strong> 0.839
+                </div>
+            </div>
+            
+            <div class="section-subtitle">Interpretasi Hasil:</div>
+            <div class="weights-container">
+                <div class="weight-item" style="border-left-color: var(--success);">
+                    <div class="weight-label">Probabilitas Rendah (0-30%)</div>
+                    <div class="weight-value-container">
+                        <div class="weight-percentage">28.4%</div>
+                        <div class="weight-rank">Normal</div>
+                    </div>
+                </div>
+                
+                <div class="weight-item" style="border-left-color: var(--warning);">
+                    <div class="weight-label">Probabilitas Sedang (31-60%)</div>
+                    <div class="weight-value-container">
+                        <div class="weight-percentage">45.1%</div>
+                        <div class="weight-rank">Risiko Ringan</div>
+                    </div>
+                </div>
+                
+                <div class="weight-item" style="border-left-color: var(--danger);">
+                    <div class="weight-label">Probabilitas Tinggi (61-100%)</div>
+                    <div class="weight-value-container">
+                        <div class="weight-percentage">26.5%</div>
+                        <div class="weight-rank">Risiko Tinggi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. Contoh Perhitungan -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                <span class="section-icon">🧮</span>
+                Contoh Perhitungan AHP-LR untuk Satu Individu
+            </h2>
+            
+            <div class="sample-calculation">
+                <div class="sample-title">Data Individu Contoh:</div>
+                <div class="sample-data">
+                    • Mood: Anxious (skor 4/5)<br>
+                    • Anxious Social Scale: High (skor 3/4)<br>
+                    • Anxiety Triggers: Work, Social (skor 2/5)<br>
+                    • Sleep Quality: Poor (skor 2/4)<br>
+                    • Physical Anxiety Symptoms: Headaches, Fatigue (skor 2/4)<br>
+                    • Coping Strategies: None (skor 1/5)<br>
+                    • Concentration Difficulty: Poor (skor 1/4)<br>
+                    • Lack of Interest: Moderate (skor 2/4)<br>
+                    • Appetite Change: Decreased (skor 2/4)<br>
+                    • Enjoyable Activities: Rarely (skor 1/4)
+                </div>
+                
+                <div class="sample-title">Perhitungan Linear Combination:</div>
+                <div class="sample-data">
+                    Z = β₀ + Σ(wᵢ·βᵢ·Xᵢ)<br>
+                    = -2.15 + (0.2408×1.25×4) + (0.0917×0.89×3) + (0.1557×1.12×2) +<br>
+                    &nbsp;&nbsp;&nbsp;(0.0541×0.76×2) + (0.0335×0.68×2) + (0.0917×1.05×1) +<br>
+                    &nbsp;&nbsp;&nbsp;(0.1557×1.18×1) + (0.0541×0.82×2) + (0.0917×0.95×2) +<br>
+                    &nbsp;&nbsp;&nbsp;(0.0335×0.72×1)<br>
+                    = -2.15 + 1.204 + 0.245 + 0.349 + 0.082 + 0.046 + 0.096 +<br>
+                    &nbsp;&nbsp;&nbsp;0.184 + 0.089 + 0.174 + 0.024<br>
+                    = <strong>0.343</strong>
+                </div>
+                
+                <div class="sample-title">Probabilitas dengan Sigmoid Function:</div>
+                <div class="sample-data">
+                    P(Y=1) = 1 / (1 + e⁻ᶻ) = 1 / (1 + e⁻⁰·³⁴³) = 1 / (1 + 0.710) = 1 / 1.710 = <strong>0.585</strong>
+                </div>
+                
+                <div class="category-result">
+                    <div class="category-title">Kesimpulan:</div>
+                    <div class="category-detail">
+                        Probabilitas = 58.5% → <strong>Risiko Sedang</strong><br>
+                        Rekomendasi: Konsultasi dengan profesional kesehatan mental direkomendasikan.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tab 2: Data Klinis Psikologis -->
+    <div id="klinis-tab" class="tab-content">
+        <!-- Analysis Header -->
+        <div class="analysis-header">
+            <h2 class="analysis-title">Analisis AHP-LR: Data Psikologi Klinis</h2>
+            <p class="analysis-description">
+                Analisis hybrid AHP-Logistic Regression pada data psikologi klinis (9,504 records) dengan 9 skala klinis.
+                Matriks AHP dibangun berdasarkan skala kepentingan Saaty untuk variabel klinis.
+            </p>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">9,504</div>
+                    <div class="stat-label">Total Records</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Skala Klinis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">91.2%</div>
+                    <div class="stat-label">Akurasi AHP-LR</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">CR = 0.0058</div>
+                    <div class="stat-label">Konsistensi AHP</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content untuk tab klinis akan diisi oleh JavaScript -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                <span class="section-icon">📋</span>
+                Analisis Data Klinis Psikologis
+            </h2>
+            <p>Data klinis sedang dimuat...</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-logo">Depresychology</div>
+        <div class="copyright">© 2026 Depresychology - Assessment Psikologis Online. Hak cipta dilindungi
+            undang-undang.</div>
+    </div>
+</div>
 
-                showMessage('<i class="fas fa-shield-alt"></i> Login berhasil! Mengarahkan ke dashboard admin...', 'success');
+<script>
+    // Data untuk analisis dengan warna-warna baru yang berbeda
+    const kaggleVariables = [
+        { name: "Mood", weight: 24.08, rank: 1 },
+        { name: "Anxiety Triggers", weight: 15.57, rank: 2 },
+        { name: "Concentration Difficulty", weight: 15.57, rank: 3 },
+        { name: "Anxious Social Scale", weight: 9.17, rank: 4 },
+        { name: "Coping Strategies", weight: 9.17, rank: 5 },
+        { name: "Appetite Change", weight: 9.17, rank: 6 },
+        { name: "Sleep Quality", weight: 5.41, rank: 7 },
+        { name: "Lack of Interest", weight: 5.41, rank: 8 },
+        { name: "Physical Anxiety Symptoms", weight: 3.35, rank: 9 },
+        { name: "Enjoyable Activities", weight: 3.35, rank: 10 }
+    ];
 
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1500);
-                return;
-            } else {
-                showError('loginPasswordError', 'Password admin salah');
-                addLog('Unknown', 'admin', 'Login admin gagal - password salah', 'failed');
-                return;
+    // Data untuk Logistic Regression results
+    const lrResults = [
+        { variable: "Mood", ahpWeight: 0.2408, lrCoeff: 1.25, weighted: 0.3010, sig: "***" },
+        { variable: "Anxiety Triggers", ahpWeight: 0.1557, lrCoeff: 1.12, weighted: 0.1744, sig: "***" },
+        { variable: "Concentration Difficulty", ahpWeight: 0.1557, lrCoeff: 1.18, weighted: 0.1837, sig: "***" },
+        { variable: "Anxious Social Scale", ahpWeight: 0.0917, lrCoeff: 0.89, weighted: 0.0816, sig: "**" },
+        { variable: "Coping Strategies", ahpWeight: 0.0917, lrCoeff: 1.05, weighted: 0.0963, sig: "**" },
+        { variable: "Appetite Change", ahpWeight: 0.0917, lrCoeff: 0.95, weighted: 0.0871, sig: "**" },
+        { variable: "Sleep Quality", ahpWeight: 0.0541, lrCoeff: 0.76, weighted: 0.0411, sig: "*" },
+        { variable: "Lack of Interest", ahpWeight: 0.0541, lrCoeff: 0.82, weighted: 0.0444, sig: "*" },
+        { variable: "Physical Anxiety Symptoms", ahpWeight: 0.0335, lrCoeff: 0.68, weighted: 0.0228, sig: "*" },
+        { variable: "Enjoyable Activities", ahpWeight: 0.0335, lrCoeff: 0.72, weighted: 0.0241, sig: "*" }
+    ];
+
+    // WARNA-WARNA BARU UNTUK DIAGRAM - INI PERUBAHAN UTAMA!
+    const chartColors = [
+        '#6B46C1', // Ungu tua 1
+        '#805AD5', // Ungu medium 2
+        '#9F7AEA', // Ungu muda 3
+        '#4299E1', // Biru tua 4
+        '#3182CE', // Biru medium 5
+        '#2B6CB0', // Biru muda 6
+        '#553C9A', // Ungu gelap 7
+        '#44337A', // Ungu sangat gelap 8
+        '#322659', // Ungu hampir hitam 9
+        '#1A365D'  // Biru sangat gelap 10
+    ];
+
+    // Fungsi untuk mengisi tabel skala Saaty
+    function populateSafetyScaleTable() {
+        const table = document.getElementById('safetyScaleTable');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Skala</th>
+                    <th>Tingkat Kepentingan</th>
+                    <th>Definisi</th>
+                    <th>Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="scale-9">
+                    <td>9</td>
+                    <td>Sangat Lebih Penting</td>
+                    <td>Mutlak lebih penting</td>
+                    <td>Bukti yang mendukung satu aktivitas atas aktivitas lain memiliki tingkat penegasan tertinggi</td>
+                </tr>
+                <tr class="scale-8">
+                    <td>8</td>
+                    <td>Sangat hingga Mutlak</td>
+                    <td>Antara sangat dan mutlak</td>
+                    <td>Kepentingan yang mendekati mutlak</td>
+                </tr>
+                <tr class="scale-7">
+                    <td>7</td>
+                    <td>Sangat Lebih Penting</td>
+                    <td>Jauh lebih penting</td>
+                    <td>Satu aktivitas jelas lebih penting secara praktis</td>
+                </tr>
+                <tr class="scale-6">
+                    <td>6</td>
+                    <td>Antara Lebih dan Sangat</td>
+                    <td>Antara lebih dan sangat</td>
+                    <td>Kepentingan yang kuat namun tidak ekstrem</td>
+                </tr>
+                <tr class="scale-5">
+                    <td>5</td>
+                    <td>Lebih Penting</td>
+                    <td>Lebih penting secara signifikan</td>
+                    <td>Bukti yang mendukung satu aktivitas atas aktivitas lain cukup kuat</td>
+                </tr>
+                <tr class="scale-4">
+                    <td>4</td>
+                    <td>Antara Sedang dan Lebih</td>
+                    <td>Antara sedang dan lebih</td>
+                    <td>Sedikit lebih penting dari moderat</td>
+                </tr>
+                <tr class="scale-3">
+                    <td>3</td>
+                    <td>Sedikit Lebih Penting</td>
+                    <td>Sedikit lebih penting</td>
+                    <td>Pengalaman dan penilaian sedikit mendukung satu aktivitas atas aktivitas lain</td>
+                </tr>
+                <tr class="scale-2">
+                    <td>2</td>
+                    <td>Antara Sama dan Sedikit</td>
+                    <td>Antara sama dan sedikit</td>
+                    <td>Hampir sama pentingnya</td>
+                </tr>
+                <tr class="scale-1">
+                    <td>1</td>
+                    <td>Sama Penting</td>
+                    <td>Sama pentingnya</td>
+                    <td>Kedua aktivitas sama pentingnya</td>
+                </tr>
+            </tbody>
+        `;
+    }
+
+    // Fungsi untuk mengisi matriks AHP
+    function populateAHPMatrix() {
+        const matrix = document.getElementById('ahpMatrixKaggle');
+        const variables = [
+            "Mood", "Anxious Social", "Anxiety Triggers", "Sleep Quality", 
+            "Physical Anxiety", "Coping Strategies", "Concentration", 
+            "Lack of Interest", "Appetite Change", "Enjoyable Activities"
+        ];
+        
+        let html = '<thead><tr><th></th>';
+        variables.forEach(v => html += `<th>${v}</th>`);
+        html += '</tr></thead><tbody>';
+        
+        // Matriks perbandingan berpasangan (skala 1-9)
+        const comparisonMatrix = [
+            [1, 3, 2, 4, 5, 3, 2, 4, 3, 5],
+            [1/3, 1, 2, 2, 3, 1, 0.5, 2, 1, 3],
+            [1/2, 1/2, 1, 3, 4, 2, 1, 3, 2, 4],
+            [1/4, 1/2, 1/3, 1, 2, 0.5, 1/3, 1, 0.5, 2],
+            [1/5, 1/3, 1/4, 1/2, 1, 1/3, 1/4, 1/2, 1/3, 1],
+            [1/3, 1, 1/2, 2, 3, 1, 0.5, 2, 1, 3],
+            [1/2, 2, 1, 3, 4, 2, 1, 3, 2, 4],
+            [1/4, 1/2, 1/3, 1, 2, 0.5, 1/3, 1, 0.5, 2],
+            [1/3, 1, 1/2, 2, 3, 1, 0.5, 2, 1, 3],
+            [1/5, 1/3, 1/4, 1/2, 1, 1/3, 1/4, 1/2, 1/3, 1]
+        ];
+        
+        for (let i = 0; i < variables.length; i++) {
+            html += `<tr><th>${variables[i]}</th>`;
+            for (let j = 0; j < variables.length; j++) {
+                const value = comparisonMatrix[i][j];
+                let scaleClass = '';
+                
+                if (value === 1) scaleClass = 'cell-scale-1';
+                else if (value === 2) scaleClass = 'cell-scale-2';
+                else if (value === 3) scaleClass = 'cell-scale-3';
+                else if (value === 4) scaleClass = 'cell-scale-4';
+                else if (value === 5) scaleClass = 'cell-scale-5';
+                else if (value === 6) scaleClass = 'cell-scale-6';
+                else if (value === 7) scaleClass = 'cell-scale-7';
+                else if (value === 8) scaleClass = 'cell-scale-8';
+                else if (value === 9) scaleClass = 'cell-scale-9';
+                else if (value === 0.33) scaleClass = 'cell-scale-0_33';
+                else if (value === 0.25) scaleClass = 'cell-scale-0_25';
+                else if (value === 0.2) scaleClass = 'cell-scale-0_2';
+                else if (value === 0.5) scaleClass = 'cell-scale-0_5';
+                
+                html += `<td class="${scaleClass}">${value.toFixed(2)}</td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</tbody>';
+        matrix.innerHTML = html;
+    }
+
+    // Fungsi untuk mengisi bobot AHP
+    function populateAHPWeights() {
+        const container = document.getElementById('ahpWeightsKaggle');
+        container.innerHTML = '';
+        
+        kaggleVariables.forEach((variable, index) => {
+            const item = document.createElement('div');
+            item.className = 'weight-item';
+            item.style.borderLeftColor = chartColors[index];
+            
+            item.innerHTML = `
+                <div class="weight-label">${variable.name}</div>
+                <div class="weight-value-container">
+                    <div class="weight-percentage">${variable.weight.toFixed(1)}%</div>
+                    <div class="weight-rank">Rank #${variable.rank}</div>
+                </div>
+            `;
+            
+            container.appendChild(item);
+        });
+    }
+
+    // Fungsi untuk mengisi hasil Logistic Regression
+    function populateLRResults() {
+        const container = document.getElementById('lrResultsKaggle');
+        container.innerHTML = '';
+        
+        lrResults.forEach(result => {
+            const row = document.createElement('tr');
+            
+            // Tentukan warna signifikansi
+            let sigColor = 'var(--gray)';
+            if (result.sig === '***') sigColor = 'var(--success)';
+            else if (result.sig === '**') sigColor = 'var(--warning)';
+            else if (result.sig === '*') sigColor = 'var(--danger)';
+            
+            row.innerHTML = `
+                <td>${result.variable}</td>
+                <td>${result.ahpWeight.toFixed(4)}</td>
+                <td>${result.lrCoeff.toFixed(2)}</td>
+                <td>${result.weighted.toFixed(4)}</td>
+                <td style="color: ${sigColor}; font-weight: bold;">${result.sig}</td>
+            `;
+            
+            container.appendChild(row);
+        });
+    }
+
+    // Fungsi untuk membuat chart dengan warna baru yang berbeda
+    function createCharts() {
+        // Bar chart untuk bobot AHP - WARNA BARU!
+        const ahpCtx = document.getElementById('ahpChartKaggle').getContext('2d');
+        new Chart(ahpCtx, {
+            type: 'bar',
+            data: {
+                labels: kaggleVariables.map(v => v.name),
+                datasets: [{
+                    label: 'Bobot AHP (%)',
+                    data: kaggleVariables.map(v => v.weight),
+                    backgroundColor: chartColors,
+                    borderColor: chartColors.map(color => {
+                        // Buat border sedikit lebih gelap
+                        return color.replace(')', ', 0.8)').replace('rgb', 'rgba');
+                    }),
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    hoverBackgroundColor: chartColors.map(color => {
+                        // Buat warna lebih terang saat hover
+                        return lightenColor(color, 20);
+                    }),
+                    hoverBorderColor: chartColors.map(color => {
+                        return darkenColor(color, 20);
+                    }),
+                    hoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(107, 70, 193, 0.95)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#6B46C1',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        padding: 12,
+                        boxPadding: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            },
+                            title: function(tooltipItems) {
+                                return `Variabel: ${tooltipItems[0].label}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Bobot (%)',
+                            color: 'var(--dark)',
+                            font: {
+                                size: 14,
+                                weight: 'bold',
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            padding: {top: 10, bottom: 20}
+                        },
+                        max: 30,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'var(--gray)',
+                            font: {
+                                size: 12
+                            },
+                            padding: 8,
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            color: 'var(--dark)',
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            },
+                            padding: 5
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart',
+                    onProgress: function(animation) {
+                        // Animasi tambahan
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // Pie chart untuk bobot AHP - WARNA BARU!
+        const pieCtx = document.getElementById('pieChartKaggle').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: kaggleVariables.map(v => v.name),
+                datasets: [{
+                    data: kaggleVariables.map(v => v.weight),
+                    backgroundColor: chartColors,
+                    borderColor: 'white',
+                    borderWidth: 3,
+                    hoverOffset: 20,
+                    hoverBorderColor: '#6B46C1',
+                    hoverBorderWidth: 4,
+                    hoverBackgroundColor: chartColors.map(color => {
+                        return lightenColor(color, 15);
+                    })
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            pointRadius: 6,
+                            font: {
+                                size: 11,
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            color: 'var(--dark)',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const meta = chart.getDatasetMeta(0);
+                                        const style = meta.controller.getStyle(i);
+                                        
+                                        return {
+                                            text: label + ' (' + data.datasets[0].data[i] + '%)',
+                                            fillStyle: style.backgroundColor,
+                                            strokeStyle: style.borderColor,
+                                            lineWidth: style.borderWidth,
+                                            hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Variabel Psikologis',
+                            color: 'var(--dark)',
+                            font: {
+                                size: 13,
+                                weight: 'bold',
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            padding: {top: 0, bottom: 10}
+                        },
+                        onHover: function(event, legendItem) {
+                            // Efek hover pada legend
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(107, 70, 193, 0.95)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#6B46C1',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        padding: 12,
+                        boxPadding: 6,
+                        displayColors: true,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value}% (${percentage}% dari total)`;
+                            },
+                            title: function(tooltipItems) {
+                                return `Bobot AHP`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart',
+                    animateRotate: true,
+                    animateScale: true,
+                    onProgress: function(animation) {
+                        // Animasi rotasi pie chart
+                    },
+                    onComplete: function() {
+                        // Animasi selesai
+                    }
+                },
+                cutout: '0%',
+                radius: '85%'
+            }
+        });
+    }
+
+    // Fungsi helper untuk mengubah warna
+    function lightenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+        
+        return '#' + (
+            0x1000000 +
+            (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255)
+        ).toString(16).slice(1);
+    }
+
+    function darkenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) - amt;
+        const G = (num >> 8 & 0x00FF) - amt;
+        const B = (num & 0x0000FF) - amt;
+        
+        return '#' + (
+            0x1000000 +
+            (R > 0 ? R : 0) * 0x10000 +
+            (G > 0 ? G : 0) * 0x100 +
+            (B > 0 ? B : 0)
+        ).toString(16).slice(1);
+    }
+
+    // Fungsi untuk tab switching
+    function setupTabs() {
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Hapus active class dari semua tab dan content
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Tambah active class ke tab yang diklik
+                tab.classList.add('active');
+                
+                // Tampilkan content yang sesuai
+                const tabId = tab.getAttribute('data-tab');
+                const targetTab = document.getElementById(`${tabId}-tab`);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+            });
+        });
+    }
+
+    // Fungsi untuk menu active
+    function setActiveMenu(menuName) {
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+            const checkbox = item.querySelector('.menu-checkbox');
+            if (checkbox) {
+                checkbox.classList.remove('checked');
+                checkbox.classList.add('unchecked');
+            }
+        });
+        
+        // Set active untuk menu yang dipilih
+        const activeMenuItem = document.querySelector(`[onclick*="${menuName}"]`);
+        if (activeMenuItem) {
+            activeMenuItem.classList.add('active');
+            const checkbox = activeMenuItem.querySelector('.menu-checkbox');
+            if (checkbox) {
+                checkbox.classList.remove('unchecked');
+                checkbox.classList.add('checked');
             }
         }
+    }
 
-        // ==================== LOGIN USER BIASA ====================
-        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
-        const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+    // Fungsi untuk logout confirmation
+    function confirmLogout() {
+        return confirm('Apakah Anda yakin ingin logout?');
+    }
 
-        if (!user) {
-            // Cek apakah email terdaftar
-            const emailExists = users.find(u => u.email.toLowerCase() === email);
-            if (emailExists) {
-                showError('loginPasswordError', 'Password salah. Silakan coba lagi.');
-            } else {
-                showError('loginEmailError', 'Email belum terdaftar. Silakan registrasi terlebih dahulu.');
-                showMessage('<i class="fas fa-exclamation-triangle"></i> <strong>Pengguna baru:</strong> Wajib registrasi terlebih dahulu.', 'warning');
+    // Load user data from localStorage
+    function loadUserData() {
+        try {
+            // Try to get user data from sessionStorage first, then localStorage
+            let userData = sessionStorage.getItem('currentUser');
+            if (!userData) {
+                userData = localStorage.getItem('currentUser');
             }
-            addLog(email, 'unknown', 'Login gagal - email/password salah', 'failed');
-            return;
+
+            if (userData) {
+                const user = JSON.parse(userData);
+
+                // Get user information
+                const fullName = user.fullName || user.name || 'Pengguna';
+                const email = user.email || 'user@example.com';
+                const gender = user.gender || 'Tidak ditentukan';
+
+                // Format gender display
+                let genderDisplay = gender;
+                if (gender.toLowerCase() === 'female') {
+                    genderDisplay = 'Perempuan';
+                } else if (gender.toLowerCase() === 'male') {
+                    genderDisplay = 'Laki-laki';
+                }
+
+                // Update sidebar
+                document.getElementById('user-full-name').textContent = fullName;
+                document.getElementById('user-email').textContent = email;
+                document.getElementById('user-gender').textContent = genderDisplay;
+
+                return { fullName, email, gender: genderDisplay };
+            }
+        } catch (error) {
+            console.error('Error loading user data:', error);
         }
 
-        // Update last login time
-        user.lastLogin = new Date().toISOString();
-        const userIndex = users.findIndex(u => u.id === user.id);
-        if (userIndex !== -1) {
-            users[userIndex] = user;
-            localStorage.setItem('psycho_users', JSON.stringify(users));
-        }
+        return null;
+    }
 
-        const userData = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            gender: user.gender,
-            age: user.age,
-            role: 'user',
-            loginTime: new Date().toISOString()
+    // Function to track user activity
+    function trackActivity(pageName, icon, pageType) {
+        const activity = {
+            id: Date.now(),
+            pageName: pageName,
+            icon: icon,
+            pageType: pageType,
+            timestamp: new Date().toISOString(),
+            timeDisplay: formatTime(new Date())
         };
 
-        // Simpan session
-        sessionStorage.setItem('currentUser', JSON.stringify(userData));
-        localStorage.setItem('currentUser', JSON.stringify(userData));
+        // Save activity to localStorage
+        saveActivity(activity);
 
-        // Ingat email jika checkbox dicentang
-        if (rememberCheckbox && rememberCheckbox.checked) {
-            localStorage.setItem('rememberedEmail', email);
-        }
-        
-        // Tambahkan log
-        addLog(user.name, 'user', 'Login ke sistem', 'success');
+        // Update menu active state
+        setActiveMenu(pageType);
 
-        showMessage(`<i class="fas fa-check-circle"></i> Login berhasil! Selamat datang, ${user.name}.`, 'success');
+        // Continue to the page
+        return true;
+    }
 
-        // Redirect ke dashboard
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1500);
-    });
-    
-    // ==================== LOAD REMEMBERED EMAIL ====================
-    window.addEventListener('DOMContentLoaded', () => {
-        const remembered = localStorage.getItem('rememberedEmail');
-        if (remembered && document.getElementById('loginEmail')) {
-            document.getElementById('loginEmail').value = remembered;
-            checkAndShowLoginWarning();
-        }
-        
-        // Tambahkan user demo untuk testing (opsional)
-        addDemoUserForTesting();
-    });
-    
-    // ==================== FUNGSI TAMBAHAN ====================
-    function addDemoUserForTesting() {
-        const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
-        
-        // Cek apakah user demo sudah ada
-        const demoExists = users.find(u => u.email === 'user@demo.com');
-        
-        if (!demoExists) {
-            const demoUser = {
-                id: 'demo_002',
-                name: 'User Demo',
-                email: 'user@demo.com',
-                gender: 'male',
-                age: 20,
-                password: 'demo123',
-                createdAt: new Date().toISOString(),
-                role: 'user',
-                lastLogin: new Date().toISOString()
-            };
-            
-            users.push(demoUser);
-            localStorage.setItem('psycho_users', JSON.stringify(users));
+    // Format time for display
+    function formatTime(date) {
+        const now = new Date();
+        const activityDate = new Date(date);
+        const diffMs = now - activityDate;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffMins < 1) {
+            return 'Baru saja';
+        } else if (diffMins < 60) {
+            return `${diffMins} menit yang lalu`;
+        } else if (diffHours < 24) {
+            return `${diffHours} jam yang lalu`;
+        } else if (diffDays === 1) {
+            return 'Kemarin';
+        } else if (diffDays < 7) {
+            return `${diffDays} hari yang lalu`;
+        } else {
+            return activityDate.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
         }
     }
-    
-    // ==================== FUNGSI CEK USER LOGIN ====================
-    function isLoggedIn() {
+
+    // Save activity to localStorage
+    function saveActivity(activity) {
         try {
-            const sessionUser = sessionStorage.getItem('currentUser');
-            const localUser = localStorage.getItem('currentUser');
-            
-            return !!(sessionUser || localUser);
-        } catch (error) {
-            return false;
-        }
-    }
-    
-    function getCurrentUser() {
-        try {
-            const sessionUser = sessionStorage.getItem('currentUser');
-            const localUser = localStorage.getItem('currentUser');
-            
-            if (sessionUser) return JSON.parse(sessionUser);
-            if (localUser) return JSON.parse(localUser);
-            return null;
-        } catch (error) {
-            return null;
-        }
-    }
-    
-    function logout() {
-        if (confirm('Apakah Anda yakin ingin logout?')) {
-            const user = getCurrentUser();
-            if (user) {
-                addLog(user.name, user.role, 'Logout dari sistem', 'success');
+            // Get current user
+            let userData = sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser');
+            if (!userData) return;
+
+            const user = JSON.parse(userData);
+            const userId = user.email || user.id || 'anonymous';
+
+            // Get existing activities
+            const storageKey = `user_activities_${userId}`;
+            let activities = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+            // Add new activity at the beginning
+            activities.unshift(activity);
+
+            // Keep only last 20 activities
+            if (activities.length > 20) {
+                activities = activities.slice(0, 20);
             }
-            
-            sessionStorage.removeItem('currentUser');
-            localStorage.removeItem('currentUser');
-            sessionStorage.removeItem('currentAdmin');
-            localStorage.removeItem('currentAdmin');
-            window.location.href = 'index.html';
+
+            // Save back to localStorage
+            localStorage.setItem(storageKey, JSON.stringify(activities));
+
+        } catch (error) {
+            console.error('Error saving activity:', error);
         }
     }
-    
-    // ==================== EXPORT FUNGSI UNTUK FILE LAIN ====================
-    window.AuthSystem = {
-        isLoggedIn,
-        getCurrentUser,
-        logout,
-        validateEmail,
-        addLog,
-        isEmailRegistered
-    };
-    </script>
-    </body>
+
+    // Inisialisasi ketika halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load user data
+        loadUserData();
+        
+        // Setup tabs
+        setupTabs();
+        
+        // Populate tables and charts
+        populateSafetyScaleTable();
+        populateAHPMatrix();
+        populateAHPWeights();
+        populateLRResults();
+        createCharts();
+        
+        // Set menu active
+        setActiveMenu('analisa');
+        
+        // Render MathJax
+        if (window.MathJax) {
+            MathJax.typeset();
+        }
+        
+        console.log('Analisis page loaded successfully with new colors!');
+    });
+</script>
+</body>
 </html>
