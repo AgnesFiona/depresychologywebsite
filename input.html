@@ -1437,6 +1437,94 @@
                     color: "info"
                 },
                 {
+                    id: "psqi",
+                    name: "Pittsburgh Sleep Quality Index",
+                    acronym: "PSQI",
+                    icon: "😴",
+                    description: "Mengukur kualitas dan pola tidur",
+                    questions: 19,
+                    duration: "10-12 menit",
+                    category: "Tidur",
+                    tags: ["tidur", "kualitas", "pola", "kesehatan"],
+                    validity: "Tinggi",
+                    about: "PSQI adalah instrumen yang menilai kualitas tidur dan gangguan tidur selama satu bulan terakhir. Mengidentifikasi 'poor sleepers'.",
+                    instructions: [
+                        "19 pertanyaan tentang kebiasaan tidur bulan lalu",
+                        "Termasuk waktu tidur, durasi, gangguan, dan obat",
+                        "Jawab berdasarkan pengalaman rata-rata",
+                        "Akurat jika menggambarkan pola tidur biasa"
+                    ],
+                    interpretation: "Skor global 0-21, >5 menunjukkan kualitas tidur yang buruk.",
+                    url: "test.html?type=psqi",
+                    color: "secondary"
+                },
+                {
+                    id: "shaps",
+                    name: "Snaith-Hamilton Pleasure Scale",
+                    acronym: "SHAPS",
+                    icon: "🎭",
+                    description: "Mengukur kemampuan mengalami kesenangan (anhedonia)",
+                    questions: 14,
+                    duration: "5-10 menit",
+                    category: "Depresi",
+                    tags: ["anhedonia", "kesenangan", "emosi", "klinis"],
+                    validity: "Tinggi",
+                    about: "SHAPS mengukur anhedonia (ketidakmampuan merasakan kesenangan) yang merupakan gejala inti depresi dan gangguan psikiatri lainnya.",
+                    instructions: [
+                        "14 situasi yang mungkin menyenangkan",
+                        "Tunjukkan seberapa setuju Anda bisa merasakan kesenangan",
+                        "Bayangkan diri Anda dalam situasi tersebut",
+                        "Jawab sesuai kemampuan Anda saat ini"
+                    ],
+                    interpretation: "Skor ≥3 menunjukkan adanya anhedonia klinis yang signifikan.",
+                    url: "test.html?type=shaps",
+                    color: "warning"
+                },
+                {
+                    id: "dsst",
+                    name: "Digit Symbol Substitution Test",
+                    acronym: "DSST",
+                    icon: "🔢",
+                    description: "Tes kecepatan pemrosesan kognitif dan perhatian",
+                    questions: "93-133 item",
+                    duration: "2-5 menit",
+                    category: "Kognitif",
+                    tags: ["kognitif", "kecepatan", "perhatian", "neuropsikologi"],
+                    validity: "Tinggi",
+                    about: "DSST adalah tes neuropsikologi yang mengukur kecepatan pemrosesan, perhatian visual, dan koordinasi mata-tangan.",
+                    instructions: [
+                        "Mencocokkan simbol dengan angka sesuai kunci",
+                        "Kerjakan secepat dan seakurat mungkin",
+                        "Waktu terbatas (biasanya 90-120 detik)",
+                        "Fokus pada akurasi dan kecepatan"
+                    ],
+                    interpretation: "Skor lebih tinggi menunjukkan kecepatan pemrosesan dan perhatian yang lebih baik.",
+                    url: "test.html?type=dsst",
+                    color: "success"
+                },
+                {
+                    id: "briefcope",
+                    name: "Brief COPE Inventory",
+                    acronym: "Brief COPE",
+                    icon: "🛡️",
+                    description: "Mengukur strategi koping terhadap stres",
+                    questions: 28,
+                    duration: "10-15 menit",
+                    category: "Koping",
+                    tags: ["koping", "stres", "strategi", "adaptasi"],
+                    validity: "Tinggi",
+                    about: "Brief COPE mengukur berbagai strategi koping yang digunakan individu dalam menanggapi situasi stres. Terdiri dari 14 subskala.",
+                    instructions: [
+                        "28 pernyataan tentang cara menghadapi stres",
+                        "Pilih seberapa sering Anda menggunakan setiap cara",
+                        "Berdasarkan pengalaman dengan stresor baru-baru ini",
+                        "Tidak ada strategi yang benar atau salah"
+                    ],
+                    interpretation: "Mengidentifikasi pola koping: adaptif vs maladaptif, berfokus pada masalah vs emosi.",
+                    url: "test.html?type=briefcope",
+                    color: "primary"
+                },
+                {
                     id: "dass42",
                     name: "Depression Anxiety Stress Scales-42",
                     acronym: "DASS-42",
@@ -1545,94 +1633,6 @@
                     interpretation: "Skor 0-7: Minimal, 8-15: Ringan, 16-25: Sedang, 26-63: Parah.",
                     url: "test.html?type=bai",
                     color: "info"
-                },
-                {
-                    id: "psqi",
-                    name: "Pittsburgh Sleep Quality Index",
-                    acronym: "PSQI",
-                    icon: "😴",
-                    description: "Mengukur kualitas dan pola tidur",
-                    questions: 19,
-                    duration: "10-12 menit",
-                    category: "Tidur",
-                    tags: ["tidur", "kualitas", "pola", "kesehatan"],
-                    validity: "Tinggi",
-                    about: "PSQI adalah instrumen yang menilai kualitas tidur dan gangguan tidur selama satu bulan terakhir. Mengidentifikasi 'poor sleepers'.",
-                    instructions: [
-                        "19 pertanyaan tentang kebiasaan tidur bulan lalu",
-                        "Termasuk waktu tidur, durasi, gangguan, dan obat",
-                        "Jawab berdasarkan pengalaman rata-rata",
-                        "Akurat jika menggambarkan pola tidur biasa"
-                    ],
-                    interpretation: "Skor global 0-21, >5 menunjukkan kualitas tidur yang buruk.",
-                    url: "test.html?type=psqi",
-                    color: "secondary"
-                },
-                {
-                    id: "shaps",
-                    name: "Snaith-Hamilton Pleasure Scale",
-                    acronym: "SHAPS",
-                    icon: "🎭",
-                    description: "Mengukur kemampuan mengalami kesenangan (anhedonia)",
-                    questions: 14,
-                    duration: "5-10 menit",
-                    category: "Depresi",
-                    tags: ["anhedonia", "kesenangan", "emosi", "klinis"],
-                    validity: "Tinggi",
-                    about: "SHAPS mengukur anhedonia (ketidakmampuan merasakan kesenangan) yang merupakan gejala inti depresi dan gangguan psikiatri lainnya.",
-                    instructions: [
-                        "14 situasi yang mungkin menyenangkan",
-                        "Tunjukkan seberapa setuju Anda bisa merasakan kesenangan",
-                        "Bayangkan diri Anda dalam situasi tersebut",
-                        "Jawab sesuai kemampuan Anda saat ini"
-                    ],
-                    interpretation: "Skor ≥3 menunjukkan adanya anhedonia klinis yang signifikan.",
-                    url: "test.html?type=shaps",
-                    color: "warning"
-                },
-                {
-                    id: "dsst",
-                    name: "Digit Symbol Substitution Test",
-                    acronym: "DSST",
-                    icon: "🔢",
-                    description: "Tes kecepatan pemrosesan kognitif dan perhatian",
-                    questions: "93-133 item",
-                    duration: "2-5 menit",
-                    category: "Kognitif",
-                    tags: ["kognitif", "kecepatan", "perhatian", "neuropsikologi"],
-                    validity: "Tinggi",
-                    about: "DSST adalah tes neuropsikologi yang mengukur kecepatan pemrosesan, perhatian visual, dan koordinasi mata-tangan.",
-                    instructions: [
-                        "Mencocokkan simbol dengan angka sesuai kunci",
-                        "Kerjakan secepat dan seakurat mungkin",
-                        "Waktu terbatas (biasanya 90-120 detik)",
-                        "Fokus pada akurasi dan kecepatan"
-                    ],
-                    interpretation: "Skor lebih tinggi menunjukkan kecepatan pemrosesan dan perhatian yang lebih baik.",
-                    url: "test.html?type=dsst",
-                    color: "success"
-                },
-                {
-                    id: "briefcope",
-                    name: "Brief COPE Inventory",
-                    acronym: "Brief COPE",
-                    icon: "🛡️",
-                    description: "Mengukur strategi koping terhadap stres",
-                    questions: 28,
-                    duration: "10-15 menit",
-                    category: "Koping",
-                    tags: ["koping", "stres", "strategi", "adaptasi"],
-                    validity: "Tinggi",
-                    about: "Brief COPE mengukur berbagai strategi koping yang digunakan individu dalam menanggapi situasi stres. Terdiri dari 14 subskala.",
-                    instructions: [
-                        "28 pernyataan tentang cara menghadapi stres",
-                        "Pilih seberapa sering Anda menggunakan setiap cara",
-                        "Berdasarkan pengalaman dengan stresor baru-baru ini",
-                        "Tidak ada strategi yang benar atau salah"
-                    ],
-                    interpretation: "Mengidentifikasi pola koping: adaptif vs maladaptif, berfokus pada masalah vs emosi.",
-                    url: "test.html?type=briefcope",
-                    color: "primary"
                 },
                 {
                     id: "combined",
