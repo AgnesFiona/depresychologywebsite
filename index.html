@@ -559,18 +559,15 @@
     
     <script>
     //INISIALISASI SISTEM
-    // Inisialisasi database user jika belum ada
-    if (!localStorage.getItem('psycho_users')) {
+    if (!localStorage.getItem('psycho_users')) { // Inisialisasi database user jika belum ada
         localStorage.setItem('psycho_users', JSON.stringify([]));
     }
     
-    // Inisialisasi database assessments jika belum ada
-    if (!localStorage.getItem('userAssessments')) {
+    if (!localStorage.getItem('userAssessments')) { // Inisialisasi database assessments jika belum ada
         localStorage.setItem('userAssessments', JSON.stringify([]));
     }
     
-    // Inisialisasi database logs jika belum ada
-    if (!localStorage.getItem('system_logs')) {
+    if (!localStorage.getItem('system_logs')) { // Inisialisasi database logs jika belum ada
         localStorage.setItem('system_logs', JSON.stringify([]));
     }
     
@@ -607,8 +604,7 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
     
-    // Fungsi untuk menambahkan log
-    function addLog(userName, role, action, status) {
+    function addLog(userName, role, action, status) {// Fungsi untuk menambahkan log
         const log = {
             id: 'log_' + Date.now(),
             timestamp: new Date().toISOString(),
@@ -622,16 +618,14 @@
         const systemLogs = JSON.parse(localStorage.getItem('system_logs') || '[]');
         systemLogs.unshift(log);
         
-        // Keep only last 1000 logs
-        if (systemLogs.length > 1000) {
+        if (systemLogs.length > 1000) { // Keep only last 1000 logs
             systemLogs.pop();
         }
         
         localStorage.setItem('system_logs', JSON.stringify(systemLogs));
     }
     
-    // Fungsi untuk mengecek apakah email sudah terdaftar
-    function isEmailRegistered(email) {
+    function isEmailRegistered(email) { // Fungsi untuk mengecek apakah email sudah terdaftar
         const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
         return users.some(u => u.email.toLowerCase() === email.toLowerCase());
     }
@@ -645,8 +639,7 @@
             document.getElementById(btn.dataset.tab + 'Form').classList.add('active');
             clearErrors();
             
-            // Tampilkan warning untuk pengguna baru di tab login
-            if (btn.dataset.tab === 'login') {
+            if (btn.dataset.tab === 'login') { // Tampilkan warning untuk pengguna baru di tab login
                 checkAndShowLoginWarning();
             }
         });
@@ -714,8 +707,7 @@
         const password = document.getElementById('regPassword').value;
         const confirmPassword = document.getElementById('regConfirmPassword').value;
 
-        // Validasi
-        if (!name) {
+        if (!name) { // Validasi nama
             showError('regNameError', 'Nama tidak boleh kosong');
             return;
         }
@@ -754,8 +746,7 @@
             return;
         }
 
-        // Buat user baru
-        const newUser = {
+        const newUser = { // Buat user baru
             id: 'user_' + Date.now(),
             name: name,
             email: email,
@@ -771,8 +762,7 @@
         users.push(newUser);
         localStorage.setItem('psycho_users', JSON.stringify(users));
 
-        // Tambahkan log
-        addLog(name, 'user', 'Registrasi akun baru', 'success');
+        addLog(name, 'user', 'Registrasi akun baru', 'success'); // Tambahkan log
 
         // Tampilkan pesan sukses
         showMessage(`
@@ -781,14 +771,11 @@
             Akun Anda telah berhasil dibuat. Silakan login dengan email dan password yang telah didaftarkan.
         `, 'success');
 
-        // Auto-fill email di form login
-        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginEmail').value = email; // Auto-fill email di form login
         
-        // Clear form register
-        document.getElementById('registerForm').reset();
+        document.getElementById('registerForm').reset(); // Clear form register
         
-        // Switch ke tab login
-        setTimeout(() => {
+        setTimeout(() => { // Switch ke tab login
             document.querySelector('.tab-btn[data-tab="login"]').click();
             document.getElementById('loginEmail').value = email;
             document.getElementById('loginPassword').focus();
@@ -833,14 +820,11 @@
                 sessionStorage.setItem('currentAdmin', JSON.stringify(adminUser));
                 localStorage.setItem('currentAdmin', JSON.stringify(adminUser));
 
-                // Ingat email jika checkbox dicentang
-                if (rememberCheckbox && rememberCheckbox.checked) {
+                if (rememberCheckbox && rememberCheckbox.checked) { // Ingat email jika checkbox dicentang
                     localStorage.setItem('rememberedEmail', email);
                 }
                 
-                // Tambahkan log
-                addLog(adminUser.name, 'admin', 'Login ke sistem admin', 'success');
-
+                addLog(adminUser.name, 'admin', 'Login ke sistem admin', 'success'); // Tambahkan log
                 showMessage('<i class="fas fa-shield-alt"></i> Login berhasil! Mengarahkan ke dashboard admin...', 'success');
 
                 setTimeout(() => {
@@ -859,8 +843,7 @@
         const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
 
         if (!user) {
-            // Cek apakah email terdaftar
-            const emailExists = users.find(u => u.email.toLowerCase() === email);
+            const emailExists = users.find(u => u.email.toLowerCase() === email); // Cek apakah email terdaftar
             if (emailExists) {
                 showError('loginPasswordError', 'Password salah. Silakan coba lagi.');
             } else {
@@ -871,8 +854,7 @@
             return;
         }
 
-        // Update last login time
-        user.lastLogin = new Date().toISOString();
+        user.lastLogin = new Date().toISOString(); // Update last login time
         const userIndex = users.findIndex(u => u.id === user.id);
         if (userIndex !== -1) {
             users[userIndex] = user;
@@ -893,18 +875,14 @@
         sessionStorage.setItem('currentUser', JSON.stringify(userData));
         localStorage.setItem('currentUser', JSON.stringify(userData));
 
-        // Ingat email jika checkbox dicentang
-        if (rememberCheckbox && rememberCheckbox.checked) {
+        if (rememberCheckbox && rememberCheckbox.checked) { // Ingat email jika checkbox dicentang
             localStorage.setItem('rememberedEmail', email);
         }
         
-        // Tambahkan log
-        addLog(user.name, 'user', 'Login ke sistem', 'success');
-
+        addLog(user.name, 'user', 'Login ke sistem', 'success'); // Tambahkan log
         showMessage(`<i class="fas fa-check-circle"></i> Login berhasil! Selamat datang, ${user.name}.`, 'success');
 
-        // Redirect ke dashboard
-        setTimeout(() => {
+        setTimeout(() => { // Redirect ke dashboard
             window.location.href = 'dashboard.html';
         }, 1500);
     });
@@ -917,20 +895,18 @@
             checkAndShowLoginWarning();
         }
         
-        // Tambahkan user demo untuk testing (opsional)
-        addDemoUserForTesting();
+        addDemoUserForTesting(); // Tambahkan user demo untuk testing (opsional)
     });
     
     // ==================== FUNGSI TAMBAHAN ====================
     function addDemoUserForTesting() {
         const users = JSON.parse(localStorage.getItem('psycho_users') || '[]');
         
-        // Cek apakah user demo sudah ada
-        const demoExists = users.find(u => u.email === 'user@demo.com');
+        const demoExists = users.find(u => u.email === 'user@demo.com'); // Cek apakah user demo sudah ada
         
         if (!demoExists) {
             const demoUser = {
-                id: 'demo_002',
+                id: 'demo_001',
                 name: 'User Demo',
                 email: 'user@demo.com',
                 gender: 'male',
