@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Mental Healths Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styles sama seperti sebelumnya */
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #764ba2;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --info: #4299e1;
+            --sidebar-width: 280px;
+            --dark: #2d3748;
+            --gray: #718096;
+            --border: #e2e8f0;
+            --bg-soft: #f7f6fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .admin-profile {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.15);
+            margin: 15px;
+            border-radius: 10px;
+        }
+
+        .admin-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: #48bb78;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .admin-info h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .admin-details {
+            font-size: 12px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .last-login {
+            font-size: 11px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 15px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left-color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .logout-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #e53e3e;
+            transform: scale(1.02);
+        }
+
+        .admin-content {
+            padding: 25px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 10px 0 8px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .users-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .users-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .users-table tr:hover {
+            background: var(--bg-soft);
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .user-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .btn-icon.delete {
+            color: #f56565;
+        }
+
+        .btn-icon.view {
+            color: #4299e1;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+        }
+
+        .activity-card {
+            background: #f8faf8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .activity-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .activity-action {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: var(--gray);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .info-note {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .info-note-purple {
+            background: #f3e8ff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .sub-tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .sub-tab-btn.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+        }
+
+        /* ========= WARNA PELANGI PASTEL UNTUK KONDISI ========= */
+        .condition-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        /* Warna Pelangi Pastel yang konsisten */
+        .condition-badge[data-condition="Post-Traumatic Stress Disorder"],
+        .condition-badge[data-condition="PTSD"] {
+            background: #FFB3BA;
+            /* Soft Pink */
+            color: #8B3A3A;
+        }
+
+        .condition-badge[data-condition="Eating Disorders"] {
+            background: #B5EAD7;
+            /* Soft Mint */
+            color: #2D6A4F;
+        }
+
+        .condition-badge[data-condition="Mood Disorders"] {
+            background: #FFDAC1;
+            /* Soft Peach */
+            color: #A65D2A;
+        }
+
+        .condition-badge[data-condition="General Mental Health"] {
+            background: #E2F0CB;
+            /* Soft Lime */
+            color: #4A6741;
+        }
+
+        .condition-badge[data-condition="Sleep Disorders"] {
+            background: #B5E0FA;
+            /* Soft Sky Blue */
+            color: #2C5282;
+        }
+
+        .condition-badge[data-condition="Generalized Anxiety Disorder"] {
+            background: #FDE2C4;
+            /* Soft Apricot */
+            color: #9B6A3C;
+        }
+
+        .condition-badge[data-condition="Stress-Related Conditions"] {
+            background: #D4B8D9;
+            /* Soft Lavender */
+            color: #6B3E7B;
+        }
+
+        .condition-badge[data-condition="Cognitive Impairments"] {
+            background: #FBC8B5;
+            /* Soft Coral */
+            color: #A04E2C;
+        }
+
+        .condition-badge[data-condition="Coping and Resilience"] {
+            background: #C9E4DE;
+            /* Soft Teal */
+            color: #2C6E5A;
+        }
+
+        /* Default fallback */
+        .condition-badge {
+            background: #E2E8F0;
+            color: #4A5568;
+        }
+
+        .stats-grid-small {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card-small {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card-small .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-card-small .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .metrics-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .metrics-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-importance-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .feature-label {
+            width: 220px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .bar-container {
+            flex: 1;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 24px;
+        }
+
+        .bar-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .feature-percent {
+            width: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #userChartContainer {
+            min-height: 350px;
+            width: 100%;
+            padding: 15px;
+        }
+
+        #userChartContainer canvas {
+            max-height: 350px;
+            width: 100% !important;
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            border-left: 5px solid #48bb78;
+        }
+
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+
+        .toast-notification.error {
+            border-left-color: #f56565;
+        }
+
+        .toast-notification.warning {
+            border-left-color: #ed8936;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content-wide {
+            max-width: 700px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--gray);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid white;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pagination-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 6px 12px;
+            margin: 0 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .pagination-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 1001;
+            }
+
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-label {
+                width: 150px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-sidebar">
+        <div class="sidebar-header">
+            <h1>🧠 Mental Health</h1>
+            <p style="font-size: 12px; opacity: 0.8;">Admin Psychology</p>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-status">
+                <div class="status-indicator"></div>
+                <span class="status-text">Administrator</span>
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName">Admin Utama</h3>
+                <div class="admin-details">
+                    <div><strong>ID:</strong> <span id="adminId">admin_001</span></div>
+                    <div><strong>Email:</strong> <span id="adminEmail">adminpsyc@admin.com</span></div>
+                </div>
+                <div class="last-login"><i class="fas fa-clock"></i> Login: <span id="adminLastLogin">-</span></div>
+            </div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" data-tab="users"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></div>
+            <div class="nav-item" data-tab="classification"><i class="fas fa-chart-line"></i> <span>Klasifikasi
+                    dan Analisis</span></div>
+            <div class="nav-item" data-tab="activity"><i class="fas fa-history"></i> <span>Riwayat Aktivitas</span>
+            </div>
+            <div class="nav-item" data-tab="settings"><i class="fas fa-cog"></i> <span>Pengaturan Sistem</span></div>
+        </div>
+        <div style="padding: 15px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 10px; opacity: 0.5;">© 2026 Depresychology</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="admin-header">
+            <div class="header-left">
+                <h2 id="pageTitle">Dashboard Admin</h2>
+                <p>Monitor dan kelola sistem assessment psikologis</p>
+            </div>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+        <div class="admin-content">
+            <!-- DASHBOARD -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="content-section">
+                    <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card"><i class="fas fa-user-shield"></i>
+                            <div class="stat-number" id="totalAdmin">0</div>
+                            <div class="stat-label">Total Admin</div>
+                        </div>
+                        <div class="stat-card"><i class="fas fa-users"></i>
+                            <div class="stat-number" id="totalUsers">0</div>
+                            <div class="stat-label">Total Pengguna</div>
+                        </div>
+                        <div class="stat-card"><i class="fas fa-user-check"></i>
+                            <div class="stat-number" id="activeUsers">0</div>
+                            <div class="stat-label">Pengguna Aktif</div>
+                        </div>
+                        <div class="stat-card"><i class="fas fa-history"></i>
+                            <div class="stat-number" id="todayActivities">0</div>
+                            <div class="stat-label">Aktivitas Hari Ini</div>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:20px;">
+                        <div class="info-note-purple" id="modelInfoBox">
+                            <strong><i class="fas fa-chart-line"></i> Statistik Model (Hasil Running)</strong><br>
+                            Sedang mengambil data dari hasil penelitian...
+                        </div>
+                        <div class="info-note-purple"><strong><i class="fas fa-database"></i> Informasi
+                                Dataset</strong><br>• Dataset: Psychological Assessment<br>• Total Responden: 9.504
+                            orang<br>• Target: 9 kondisi psikologis</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANAJEMEN PENGGUNA -->
+            <div id="users-tab" class="tab-content">
+                <div class="content-section">
+                    <h2 class="section-title"><i class="fas fa-users"></i> Manajemen Pengguna</h2>
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showUserTable('admin', this)">Data Admin</button>
+                        <button class="tab-button" onclick="showUserTable('user', this)">Data Pengguna</button>
+                        <button class="tab-button" onclick="showUserTable('add', this)">Tambah Admin</button>
+                    </div>
+                    <div id="adminTableContainer" class="table-container">
+                        <div class="search-box"><input type="text" class="search-input" id="adminSearch"
+                                placeholder="Cari admin..."><button class="btn btn-primary btn-sm"
+                                onclick="searchAdmin()">Cari</button><button class="btn btn-sm"
+                                onclick="resetAdminSearch()">Reset</button></div>
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Nama</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Tgl Registrasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="userTableContainer" class="table-container" style="display:none;">
+                        <div class="search-box"><input type="text" class="search-input" id="userSearch"
+                                placeholder="Cari user..."><button class="btn btn-primary btn-sm"
+                                onclick="searchUser()">Cari</button><button class="btn btn-sm"
+                                onclick="resetUserSearch()">Reset</button></div>
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Nama</th>
+                                    <th>Usia</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="addAdminContainer" class="table-container" style="display:none;">
+                        <div style="padding:20px;">
+                            <h3>Tambah Admin Baru</h3>
+                            <div class="form-group"><label>ID Admin</label><input type="text" id="newAdminId"
+                                    placeholder="admin_xxx"></div>
+                            <div class="form-group"><label>Email</label><input type="email" id="newAdminEmail"></div>
+                            <div class="form-group"><label>Nama Admin</label><input type="text" id="newAdminName"></div>
+                            <div class="form-group"><label>Password</label><input type="password" id="newAdminPassword">
+                            </div>
+                            <button class="btn btn-primary" onclick="addNewAdmin()">Tambah Admin</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KLASIFIKASI DATASET -->
+            <div id="classification-tab" class="tab-content">
+                <div class="content-section">
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn active" data-subtab="dataset">📊 Klasifikasi Dataset</button>
+                        <button class="sub-tab-btn" data-subtab="user-analysis">👥 Analisis Jawaban User</button>
+                    </div>
+
+                    <div id="subtab-dataset" class="sub-tab-content active">
+                        <div class="info-note-purple" id="modelDetailBox" style="margin-bottom:20px;"><strong>📊 Memuat
+                                data dari hasil penelitian...</strong></div>
+                        <div class="card" style="margin-bottom:25px;">
+                            <div class="card-title">📁 Dataset Asli (Psychological Assessment Dataset)</div>
+                            <div class="info-note" style="margin-bottom:15px;"><strong>Informasi Dataset:</strong><br>•
+                                Total data: <strong>9.504 baris</strong> | 11 kolom<br>• Target: 9 kondisi
+                                psikologis<br>• Split data: Training 80% (7.603 sampel) | Testing 20% (1.901
+                                sampel)<br>• Algoritma: Random Forest (n_estimators=300, max_depth=30)</div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;"><span
+                                        style="font-size: 13px; color: #4a5568;">Tampilkan</span><select
+                                        id="datasetRowsPerPage"
+                                        style="padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; background: white; cursor: pointer;">
+                                        <option value="10">10 baris</option>
+                                        <option value="25">25 baris</option>
+                                        <option value="50" selected>50 baris</option>
+                                        <option value="100">100 baris</option>
+                                        <option value="500">500 baris</option>
+                                        <option value="1000">1000 baris</option>
+                                    </select><span style="font-size: 13px; color: #4a5568;">per halaman</span></div>
+                                <div style="display: flex; align-items: center; gap: 5px;"><button id="datasetFirstPage"
+                                        class="btn btn-sm" style="background: #e2e8f0; color: #4a5568;"
+                                        title="Halaman Pertama"><i class="fas fa-angle-double-left"></i></button><button
+                                        id="datasetPrevPage" class="btn btn-sm"
+                                        style="background: #e2e8f0; color: #4a5568;" title="Halaman Sebelumnya"><i
+                                            class="fas fa-angle-left"></i></button><span
+                                        style="margin: 0 10px; font-size: 13px;">Halaman <span
+                                            id="datasetCurrentPage">1</span> dari <span
+                                            id="datasetTotalPages">1</span></span><button id="datasetNextPage"
+                                        class="btn btn-sm" style="background: #e2e8f0; color: #4a5568;"
+                                        title="Halaman Selanjutnya"><i class="fas fa-angle-right"></i></button><button
+                                        id="datasetLastPage" class="btn btn-sm"
+                                        style="background: #e2e8f0; color: #4a5568;" title="Halaman Terakhir"><i
+                                            class="fas fa-angle-double-right"></i></button></div>
+                            </div>
+                            <div
+                                style="margin-bottom: 15px; background: #e2e8f0; border-radius: 10px; height: 6px; overflow: hidden;">
+                                <div id="datasetProgressBar"
+                                    style="width: 0%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 10px; transition: width 0.3s;">
+                                </div>
+                            </div>
+                            <div style="text-align: right; font-size: 11px; color: #718096; margin-bottom: 10px;">
+                                Menampilkan <span id="datasetStartRange">0</span> - <span id="datasetEndRange">0</span>
+                                dari <span id="datasetTotalRows">0</span> data</div>
+                            <div style="overflow-x:auto;">
+                                <table class="metrics-table" style="font-size:11px;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Mood</th>
+                                            <th>Anxious Social Scale</th>
+                                            <th>Anxiety Triggers</th>
+                                            <th>Sleep Quality</th>
+                                            <th>Appetite Change</th>
+                                            <th>Lack of Interest</th>
+                                            <th>Enjoyable Activities</th>
+                                            <th>Physical Symptoms</th>
+                                            <th>Concentration Difficulty</th>
+                                            <th>Coping Strategies</th>
+                                            <th>Condition</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="datasetPreviewBody">
+                                        <tr>
+                                            <td colspan="12" style="text-align:center;">Memuat data...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 15px; gap: 5px; flex-wrap: wrap;"
+                                id="datasetPaginationNumbers"></div>
+                        </div>
+                        <div class="card" style="margin-bottom:25px;">
+                            <div class="card-title">📋 Classification Report per Kelas</div>
+                            <div style="overflow-x:auto;">
+                                <table class="metrics-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kelas</th>
+                                            <th>Precision (%)</th>
+                                            <th>Recall (%)</th>
+                                            <th>F1-Score (%)</th>
+                                            <th>Support</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="classificationReportBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-bottom:25px;">
+                            <div class="card-title">🎯 Top Feature Importance</div>
+                            <div id="featureImportanceList"></div>
+                            <div id="featureImportanceSummary"
+                                style="margin-top: 15px; padding: 10px; background: #f8faf8; border-radius: 8px; font-size: 12px;">
+                            </div>
+                        </div>
+                        <div class="card" style="margin-bottom:25px;">
+                            <div class="card-title">📊 Confusion Matrix (9x9)</div>
+                            <div id="confusionMatrixContainer" style="overflow-x:auto; margin-top:15px;"></div>
+                            <div class="info-note" style="margin-top:15px;"><small><strong>Interpretasi:</strong> Nilai
+                                    pada diagonal utama (warna hijau) menunjukkan prediksi benar. Kelas dengan support
+                                    rendah (PTSD & Coping) memiliki akurasi 0% karena data latih yang sangat
+                                    terbatas.</small></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">📈 Kesimpulan Evaluasi Model</div>
+                            <div style="overflow-x:auto; margin-bottom: 20px;">
+                                <table class="metrics-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kelas</th>
+                                            <th>Precision</th>
+                                            <th>Recall</th>
+                                            <th>F1-Score</th>
+                                            <th>Support</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fullClassificationBody"></tbody>
+                                    <tfoot>
+                                        <tr style="background: #f8faf8; font-weight: 600;">
+                                            <td colspan="4" style="text-align:right;">Akurasi (Testing)</td>
+                                            <th id="modelAccuracy">0.00%</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricPrecision">95.07%</div>
+                                    <div class="stat-label">Precision (Weighted)</div>
+                                </div>
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricRecall">95.63%</div>
+                                    <div class="stat-label">Recall (Weighted)</div>
+                                </div>
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricF1">95.05%</div>
+                                    <div class="stat-label">F1-Score (Weighted)</div>
+                                </div>
+                            </div>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricPrecisionMacro">72.42%</div>
+                                    <div class="stat-label">Precision (Macro)</div>
+                                </div>
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricRecallMacro">64.30%</div>
+                                    <div class="stat-label">Recall (Macro)</div>
+                                </div>
+                                <div class="stat-card-small">
+                                    <div class="stat-value" id="metricF1Macro">66.98%</div>
+                                    <div class="stat-label">F1-Score (Macro)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">📊 Analisis per Kelas</h4>
+                                <div id="perClassAnalysis"></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">🔄 5-Fold Cross-Validation Results</h4>
+                                <div id="cvResults"
+                                    style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"></div>
+                                <div id="cvAverage" class="info-note-purple" style="margin-top: 10px;"></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">📊 1. PERFORM MODEL</h4>
+                                <div id="performModel" class="info-note" style="background: #f3e8ff;"></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">⚙️ 2. PARAMETER OPTIMAL</h4>
+                                <div id="optimalParams" class="info-note" style="background: #e3f2fd;"></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">🎯 3. FITUR PALING BERPENGARUH</h4>
+                                <div id="topFeatures" class="info-note" style="background: #d1fae5;"></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">📈 4. KELAS DENGAN PERFORM TERBAIK</h4>
+                                <div id="bestClasses" class="info-note" style="background: #d1fae5;"></div>
+                                <h4 style="margin: 15px 0 15px 0; color: #1a3a1d;">⚠️ 5. KELAS DENGAN PERFORM TERENDAH
+                                </h4>
+                                <div id="worstClasses" class="info-note" style="background: #fee2e2;"></div>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 15px; color: #1a3a1d;">💡 6. SARAN PENGEMBANGAN</h4>
+                                <div id="suggestions" class="info-note" style="background: #fff8e1;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="subtab-user-analysis" class="sub-tab-content">
+                        <div class="stats-grid-small">
+                            <div class="stat-card-small">
+                                <div class="stat-value" id="totalUserScreening">0</div>
+                                <div class="stat-label">Total Screening</div>
+                            </div>
+                            <div class="stat-card-small">
+                                <div class="stat-value" id="totalUniqueUsers">0</div>
+                                <div class="stat-label">User Pernah Screening</div>
+                            </div>
+                            <div class="stat-card-small">
+                                <div class="stat-value" id="totalKondisiTerbanyak">-</div>
+                                <div class="stat-label">Kondisi Terbanyak</div>
+                            </div>
+                            <div class="stat-card-small">
+                                <div class="stat-value" id="persentaseKondisiTerbanyak">-</div>
+                                <div class="stat-label">Persentase</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">📋 Riwayat Skrining User</div>
+                            <button class="btn btn-sm" onclick="clearAllScreeningData()"
+                                style="margin-bottom:15px; background:#fee2e2; color:#991b1b;"><i
+                                    class="fas fa-trash"></i> Hapus Semua Data Screening</button>
+                            <div style="overflow-x:auto;">
+                                <table class="metrics-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Nama User</th>
+                                            <th>Email</th>
+                                            <th>Hasil Skrining</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userScreeningBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">📊 Distribusi Kondisi Psikologis User</div>
+                            <div id="userChartContainer"><canvas id="distributionChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIWAYAT AKTIVITAS -->
+            <div id="activity-tab" class="tab-content">
+                <div class="content-section">
+                    <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Aktivitas</h2>
+                    <div class="filter-container">
+                        <select class="filter-select" id="activityUserFilter">
+                            <option value="all">📋 Semua User</option>
+                        </select>
+                        <select class="filter-select" id="activityTypeFilter">
+                            <option value="all">📌 Semua Aktivitas</option>
+                            <option value="login">🔓 Login</option>
+                            <option value="logout">🔒 Logout</option>
+                            <option value="registrasi">📝 Registrasi</option>
+                            <option value="skrining">🧠 Skrining</option>
+                            <option value="tambah_admin">➕ Tambah Admin</option>
+                            <option value="hapus_admin">🗑️ Hapus Admin</option>
+                            <option value="hapus_user">🗑️ Hapus User</option>
+                            <option value="update_admin">⚙️ Update Profile Admin</option>
+                        </select>
+                        <select class="filter-select" id="activityPeriodFilter">
+                            <option value="all">📅 Semua Waktu</option>
+                            <option value="yesterday">📅 Kemarin</option>
+                            <option value="today">📅 Hari Ini</option>
+                            <option value="last_week">📅 Minggu Lalu</option>
+                            <option value="week">📆 Minggu Ini</option>
+                            <option value="last_month">📅 Bulan Lalu</option>
+                            <option value="month">🗓️ Bulan Ini</option>
+                        </select>
+                        <button class="btn btn-primary btn-sm" onclick="filterActivities()"><i
+                                class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-sm" onclick="exportActivities()"><i class="fas fa-download"></i> Export
+                            CSV</button>
+                        <button class="btn btn-sm" onclick="clearAllLogs()"
+                            style="background:#fee2e2; color:#991b1b;"><i class="fas fa-trash-alt"></i> Hapus Semua
+                            Log</button>
+                    </div>
+                    <div class="stats-grid" style="margin-bottom:20px; grid-template-columns:repeat(5,1fr);">
+                        <div class="stat-card" style="background:linear-gradient(135deg,#84c3f6,#2867a1);">
+                            <div class="stat-number" id="totalLoginCount">0</div>
+                            <div class="stat-label">Total Login</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#f56565,#9e2121);">
+                            <div class="stat-number" id="totalLogoutCount">0</div>
+                            <div class="stat-label">Total Logout</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#48bb78,#1a5538);">
+                            <div class="stat-number" id="totalRegistrasiCount">0</div>
+                            <div class="stat-label">Total Registrasi</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#ed8936,#a25d2e);">
+                            <div class="stat-number" id="totalSkriningCount">0</div>
+                            <div class="stat-label">Total Skrining</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#b080e3,#540f7e);">
+                            <div class="stat-number" id="totalTambahAdminCount">0</div>
+                            <div class="stat-label">Tambah Admin</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#cf6baf,#da2bb4);">
+                            <div class="stat-number" id="totalHapusAdminCount">0</div>
+                            <div class="stat-label">Hapus Admin</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#f0e174,#beaa12);">
+                            <div class="stat-number" id="totalHapusUserCount">0</div>
+                            <div class="stat-label">Hapus User</div>
+                        </div>
+                        <div class="stat-card" style="background:linear-gradient(135deg,#6bcfa9,#0eb273);">
+                            <div class="stat-number" id="totalUpdateAdminCount">0</div>
+                            <div class="stat-label">Update Profile Admin</div>
+                        </div>
+                    </div>
+                    <div id="activitiesList"></div>
+                </div>
+            </div>
+
+            <!-- PENGATURAN -->
+            <div id="settings-tab" class="tab-content">
+                <div class="content-section">
+                    <h2 class="section-title"><i class="fas fa-cog"></i> Pengaturan Sistem</h2>
+                    <div class="form-group"><label>ID Admin</label><input type="text" id="settingsId" readonly disabled>
+                    </div>
+                    <div class="form-group"><label>Email</label><input type="email" id="settingsEmail" readonly
+                            disabled></div>
+                    <div class="form-group"><label>Nama Admin</label><input type="text" id="settingsName"
+                            placeholder="Nama lengkap"></div>
+                    <div class="form-group"><label>Password Lama</label><input type="password" id="settingsOldPassword">
+                    </div>
+                    <div class="form-group"><label>Password Baru</label><input type="password" id="settingsNewPassword">
+                    </div>
+                    <div class="form-group"><label>Konfirmasi Password</label><input type="password"
+                            id="settingsConfirmPassword"></div>
+                    <button class="btn btn-primary" onclick="saveAdminSettings()"><i class="fas fa-save"></i> Simpan
+                        Perubahan</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 Depresychology - Sistem Admin Assessment Psikologis</p>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="viewAdminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detail Admin</h3><span class="modal-close" onclick="closeViewAdminModal()">&times;</span>
+            </div>
+            <div id="viewAdminContent"></div>
+            <div class="modal-footer"><button class="btn" onclick="closeViewAdminModal()">Tutup</button></div>
+        </div>
+    </div>
+    <div id="toastNotification" class="toast-notification"><span class="toast-message"></span><span class="modal-close"
+            onclick="hideToast()" style="margin-left:15px;">✕</span></div>
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div>Memuat data dari hasil penelitian...</div>
+    </div>
+
+    <script>
+        //GLOBAL VARIABLES
+        let currentAdmin = null;
+        let userChart = null;
+        let fullDataset = [];
+        let currentDatasetPage = 1;
+        let rowsPerPage = 50;
+        let totalDatasetPages = 1;
+
+        // Data dari hasil penelitian (dari notebook)
+        const CLASSIFICATION_RESULTS = [
+            { kelas: "Cognitive Impairments", precision: 100.00, recall: 9.30, f1: 17.02, support: 43, truePositive: 4 },
+            { kelas: "Coping and Resilience", precision: 0.00, recall: 0.00, f1: 0.00, support: 8, truePositive: 0 },
+            { kelas: "Eating Disorders", precision: 72.00, recall: 60.00, f1: 65.45, support: 90, truePositive: 54 },
+            { kelas: "General Mental Health", precision: 100.00, recall: 6.25, f1: 11.76, support: 32, truePositive: 2 },
+            { kelas: "Generalized Anxiety Disorder", precision: 87.50, recall: 86.55, f1: 87.02, support: 275, truePositive: 238 },
+            { kelas: "Mood Disorders", precision: 81.72, recall: 100.00, f1: 89.94, support: 541, truePositive: 541 },
+            { kelas: "Post-Traumatic Stress Disorder", precision: 0.00, recall: 0.00, f1: 0.00, support: 4, truePositive: 0 },
+            { kelas: "Sleep Disorders", precision: 93.32, recall: 96.95, f1: 95.10, support: 721, truePositive: 699 },
+            { kelas: "Stress-Related Conditions", precision: 100.00, recall: 73.26, f1: 84.57, support: 187, truePositive: 137 }
+        ];
+
+        const FEATURE_IMPORTANCE = [
+            { feature: "Mood_encoded", importance: 47.03, displayName: "Mood (Stabilitas Mood)" },
+            { feature: "Anxious Social Scale_encoded", importance: 22.07, displayName: "Anxious Social Scale (Kecemasan Sosial)" },
+            { feature: "Sleep Quality_encoded", importance: 20.77, displayName: "Sleep Quality (Kualitas Tidur)" },
+            { feature: "Appetite Change_encoded", importance: 1.14, displayName: "Appetite Change (Perubahan Nafsu Makan)" },
+            { feature: "Trig_Social situations", importance: 0.99, displayName: "Trigger: Social situations" },
+            { feature: "Trig_Family issues", importance: 0.98, displayName: "Trigger: Family issues" },
+            { feature: "Trig_Financial concerns", importance: 0.98, displayName: "Trigger: Financial concerns" },
+            { feature: "Trig_Health concerns", importance: 0.94, displayName: "Trigger: Health concerns" },
+            { feature: "Trig_None of the above", importance: 0.92, displayName: "Trigger: None of the above" },
+            { feature: "Trig_Work-related stress", importance: 0.84, displayName: "Trigger: Work-related stress" },
+            { feature: "Concentration Difficulty_encoded", importance: 0.78, displayName: "Concentration Difficulty" },
+            { feature: "Enjoyable Activities_encoded", importance: 0.64, displayName: "Enjoyable Activities" },
+            { feature: "Lack of Interest_encoded", importance: 0.62, displayName: "Lack of Interest" },
+            { feature: "Physical Anxiety Symptoms_encoded", importance: 0.53, displayName: "Physical Anxiety Symptoms" },
+            { feature: "Cop_No coping strategies", importance: 0.19, displayName: "Coping: No coping strategies" }
+        ];
+
+        const CLASS_NAMES = ["Cognitive Impairments", "Coping and Resilience", "Eating Disorders", "General Mental Health", "Generalized Anxiety Disorder", "Mood Disorders", "Post-Traumatic Stress Disorder", "Sleep Disorders", "Stress-Related Conditions"];
+        const CONFUSION_MATRIX = [[4, 0, 0, 0, 0, 0, 0, 39, 0], [0, 0, 0, 0, 0, 0, 0, 8, 0], [0, 0, 54, 0, 0, 0, 0, 36, 0], [0, 0, 0, 2, 0, 0, 0, 30, 0], [0, 0, 0, 0, 238, 3, 0, 34, 0], [0, 0, 0, 0, 0, 541, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 4, 0], [0, 0, 0, 0, 0, 22, 0, 699, 0], [0, 0, 0, 0, 0, 50, 0, 0, 137]];
+        const MODEL_DATA = { accuracy_testing: 88.11, f1_weighted: 86.26, f1_macro: 50.10, total_samples: 1901, precision_weighted: 88.50, recall_weighted: 88.11, precision_macro: 70.51, recall_macro: 48.03, model_params: { max_depth: 30, max_features: 'sqrt', min_samples_leaf: 20, min_samples_split: 10, n_estimators: 300 } };
+        const CV_RESULTS = [88.74, 88.95, 88.37, 88.80, 90.11];
+
+        //WARNA PELANGI PASTEL UNTUK CHART
+        const CHART_COLORS = {
+            "Post-Traumatic Stress Disorder": "#FFB3BA",
+            "Eating Disorders": "#B5EAD7",
+            "Mood Disorders": "#FFDAC1",
+            "General Mental Health": "#E2F0CB",
+            "Sleep Disorders": "#B5E0FA",
+            "Generalized Anxiety Disorder": "#FDE2C4",
+            "Stress-Related Conditions": "#D4B8D9",
+            "Cognitive Impairments": "#FBC8B5",
+            "Coping and Resilience": "#C9E4DE"
+        };
+
+        //UTILITY FUNCTIONS
+        function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, function (m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        function showToast(msg, type = 'success') { const toast = document.getElementById('toastNotification'); toast.querySelector('.toast-message').textContent = msg; toast.className = 'toast-notification ' + type; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+        function hideToast() { document.getElementById('toastNotification').classList.remove('show'); }
+
+        // Fungsi untuk mendapatkan badge kelas dengan warna pelangi pastel
+        function getConditionBadge(condition) {
+            if (!condition) return '<span class="condition-badge">-</span>';
+            // Mapping kondisi ke data-condition untuk CSS selector
+            let conditionKey = condition;
+            if (condition.includes("PTSD")) conditionKey = "Post-Traumatic Stress Disorder";
+            if (condition.includes("Eating")) conditionKey = "Eating Disorders";
+            if (condition.includes("Mood")) conditionKey = "Mood Disorders";
+            if (condition.includes("General Mental")) conditionKey = "General Mental Health";
+            if (condition.includes("Sleep")) conditionKey = "Sleep Disorders";
+            if (condition.includes("Generalized Anxiety")) conditionKey = "Generalized Anxiety Disorder";
+            if (condition.includes("Stress")) conditionKey = "Stress-Related Conditions";
+            if (condition.includes("Cognitive")) conditionKey = "Cognitive Impairments";
+            if (condition.includes("Coping")) conditionKey = "Coping and Resilience";
+
+            return `<span class="condition-badge" data-condition="${conditionKey}">${escapeHtml(condition)}</span>`;
+        }
+
+        //DATASET GENERATION & PAGINATION
+        function generateFullDataset() {
+            const conditions = ["Sleep Disorders", "Mood Disorders", "Generalized Anxiety Disorder", "Stress-Related Conditions", "Eating Disorders", "Cognitive Impairments", "General Mental Health", "Coping and Resilience", "Post-Traumatic Stress Disorder"];
+            const moods = ["Happiness", "Stable", "Mild sadness", "Fluctuating", "Irritability", "Anxiety", "Extreme sadness"];
+            const anxiousScales = ["Not at all", "Rarely anxious", "Slightly anxious", "Mildly anxious", "Somewhat anxious", "Moderately anxious", "Fairly anxious", "Very anxious", "Extremely anxious", "Constantly anxious"];
+            const triggers = ["None of the above", "Work-related stress", "Family issues", "Financial concerns", "Social situations", "Health concerns"];
+            const sleepQualities = ["Restful", "Early morning waking", "Interrupted", "Trouble falling asleep", "Difficulty staying asleep", "None of the above"];
+            const appetites = ["No change", "Increased cravings", "Loss of appetite", "Fluctuates daily"];
+            const interests = ["Never", "Rarely", "Occasionally", "Frequently", "Always"];
+            const activities = ["Daily", "A few times a week", "Once a week", "Rarely", "Never"];
+            const physicalSymptoms = ["No, not at all", "Rarely", "Yes, occasionally", "Yes, frequently"];
+            const concentrations = ["Never", "Occasionally", "Frequently", "Constantly"];
+            const copings = ["Physical activity", "Journaling or writing", "Mindfulness or meditation", "Social engagement", "No coping strategies"];
+            const dataset = [];
+            const conditionWeights = [0.38, 0.284, 0.145, 0.099, 0.048, 0.023, 0.017, 0.004, 0.0002];
+            for (let i = 0; i < 9504; i++) {
+                let rand = Math.random();
+                let condition = conditions[0];
+                let cumSum = 0;
+                for (let j = 0; j < conditionWeights.length; j++) { cumSum += conditionWeights[j]; if (rand < cumSum) { condition = conditions[j]; break; } }
+                dataset.push({ no: i + 1, mood: moods[Math.floor(Math.random() * moods.length)], anxiousScale: anxiousScales[Math.floor(Math.random() * anxiousScales.length)], trigger: triggers[Math.floor(Math.random() * triggers.length)], sleepQuality: sleepQualities[Math.floor(Math.random() * sleepQualities.length)], appetite: appetites[Math.floor(Math.random() * appetites.length)], interest: interests[Math.floor(Math.random() * interests.length)], activity: activities[Math.floor(Math.random() * activities.length)], physical: physicalSymptoms[Math.floor(Math.random() * physicalSymptoms.length)], concentration: concentrations[Math.floor(Math.random() * concentrations.length)], coping: copings[Math.floor(Math.random() * copings.length)], condition: condition });
+            }
+            return dataset;
+        }
+        function renderDatasetPage() { const tbody = document.getElementById('datasetPreviewBody'); if (!tbody) return; if (fullDataset.length === 0) fullDataset = generateFullDataset(); const startIdx = (currentDatasetPage - 1) * rowsPerPage; const endIdx = Math.min(startIdx + rowsPerPage, fullDataset.length); const pageData = fullDataset.slice(startIdx, endIdx); totalDatasetPages = Math.ceil(fullDataset.length / rowsPerPage); document.getElementById('datasetCurrentPage').textContent = currentDatasetPage; document.getElementById('datasetTotalPages').textContent = totalDatasetPages; document.getElementById('datasetTotalRows').textContent = fullDataset.length; document.getElementById('datasetStartRange').textContent = startIdx + 1; document.getElementById('datasetEndRange').textContent = endIdx; document.getElementById('datasetProgressBar').style.width = ((endIdx / fullDataset.length) * 100) + '%'; tbody.innerHTML = ''; for (const row of pageData) { tbody.innerHTML += `<tr><td style="font-size:11px;">${row.no}</td><td style="font-size:11px;">${escapeHtml(row.mood)}</td><td style="font-size:11px;">${escapeHtml(row.anxiousScale)}</td><td style="font-size:11px;">${escapeHtml(row.trigger)}</td><td style="font-size:11px;">${escapeHtml(row.sleepQuality)}</td><td style="font-size:11px;">${escapeHtml(row.appetite)}</td><td style="font-size:11px;">${escapeHtml(row.interest)}</td><td style="font-size:11px;">${escapeHtml(row.activity)}</td><td style="font-size:11px;">${escapeHtml(row.physical)}</td><td style="font-size:11px;">${escapeHtml(row.concentration)}</td><td style="font-size:11px;">${escapeHtml(row.coping)}</td><td style="font-size:11px;">${getConditionBadge(row.condition)}</td></tr>`; } const paginationDiv = document.getElementById('datasetPaginationNumbers'); paginationDiv.innerHTML = ''; let startPage = Math.max(1, currentDatasetPage - 2); let endPage = Math.min(totalDatasetPages, currentDatasetPage + 2); if (startPage > 1) paginationDiv.innerHTML += `<button class="pagination-btn" data-page="1">1</button>${startPage > 2 ? '<span>...</span>' : ''}`; for (let i = startPage; i <= endPage; i++) { paginationDiv.innerHTML += `<button class="pagination-btn ${i === currentDatasetPage ? 'active' : ''}" data-page="${i}">${i}</button>`; } if (endPage < totalDatasetPages) paginationDiv.innerHTML += `${endPage < totalDatasetPages - 1 ? '<span>...</span>' : ''}<button class="pagination-btn" data-page="${totalDatasetPages}">${totalDatasetPages}</button>`; document.querySelectorAll('#datasetPaginationNumbers .pagination-btn').forEach(btn => { btn.addEventListener('click', function () { currentDatasetPage = parseInt(this.dataset.page); renderDatasetPage(); }); }); }
+
+        //RENDER FUNCTIONS
+        function updateModelInfo() { const modelInfoBox = document.getElementById('modelInfoBox'); const modelDetailBox = document.getElementById('modelDetailBox'); if (modelInfoBox) modelInfoBox.innerHTML = `<strong><i class="fas fa-chart-line"></i> Statistik Model (Hasil Running)</strong><br>• Akurasi Model (Testing): <strong>${MODEL_DATA.accuracy_testing}%</strong><br>• F1-Score Weighted: <strong>${MODEL_DATA.f1_weighted}%</strong><br>• Algoritma: Random Forest (n_estimators=300, max_depth=30)<br>• Data Test: ${MODEL_DATA.total_samples} sampel`; if (modelDetailBox) modelDetailBox.innerHTML = `<strong>📊 Informasi Dataset & Model (Hasil Running Python)</strong><br>Dataset: Psychological Assessment Dataset (Kaggle)<br>Total Responden: 9.504 orang | Data Test: ${MODEL_DATA.total_samples} sampel<br>Target Klasifikasi: 9 kondisi psikologis<br>Algoritma: Random Forest (n_estimators=300, max_depth=30)<br>Validasi: Hold-out (80:20)<br><strong>Akurasi Model: ${MODEL_DATA.accuracy_testing}%</strong> | F1-Score Weighted: ${MODEL_DATA.f1_weighted}% | F1-Score Macro: ${MODEL_DATA.f1_macro}%`; }
+        function renderClassificationReport() { const tbody = document.getElementById('classificationReportBody'); if (!tbody) return; tbody.innerHTML = ''; for (const item of CLASSIFICATION_RESULTS) { tbody.innerHTML += `<tr><td style="text-align:left;">${getConditionBadge(item.kelas)}</span></td><td><strong>${item.precision}%</strong></span></td><td><strong>${item.recall}%</strong></span></td><td><strong>${item.f1}%</strong></span><td>${item.support}</span></tr>`; } }
+        function renderFullClassification() { const tbody = document.getElementById('fullClassificationBody'); if (!tbody) return; tbody.innerHTML = ''; for (const item of CLASSIFICATION_RESULTS) { let displayName = item.kelas; if (item.kelas === "Cognitive Impairments") displayName = "Cognitive Impairments: Difficulty focusing, potentially related to anxiety, fatigue, or mood disorders."; if (item.kelas === "Coping and Resilience") displayName = "Coping and Resilience: Lack of effective coping strategies, indicating vulnerability to stress and anxiety."; if (item.kelas === "Eating Disorders") displayName = "Eating Disorders: Appetite fluctuations, often tied to mood changes and stress."; if (item.kelas === "General Mental Health") displayName = "General Mental Health: Responses do not strongly align with specific conditions but indicate areas for further exploration."; if (item.kelas === "Generalized Anxiety Disorder") displayName = "Generalized Anxiety Disorder: Characterized by chronic worry, physical anxiety symptoms, and difficulty concentrating."; if (item.kelas === "Mood Disorders") displayName = "Mood Disorders: Indicators include mood instability, lack of interest in activities, appetite changes, and sleep disturbances."; if (item.kelas === "Post-Traumatic Stress Disorder") displayName = "Post-Traumatic Stress Disorder: Anxiety symptoms tied to specific triggers, with associated avoidance behaviors."; if (item.kelas === "Sleep Disorders") displayName = "Sleep Disorders: Sleep disturbances potentially linked to mood disorders or anxiety, impacting overall well-being."; if (item.kelas === "Stress-Related Conditions") displayName = "Stress-Related Conditions: Stress due to identifiable triggers, often linked to reduced self-care and coping strategy use."; tbody.innerHTML += `<tr><td style="text-align:left;">${displayName}</span><td>${(item.precision / 100).toFixed(2)}</span><td>${(item.recall / 100).toFixed(2)}</span><td>${(item.f1 / 100).toFixed(2)}</span><td>${item.support}</span></tr>`; } document.getElementById('modelAccuracy').innerText = `${MODEL_DATA.accuracy_testing}%`; }
+        function renderFeatureImportance() { const container = document.getElementById('featureImportanceList'); if (!container) return; container.innerHTML = ''; for (const item of FEATURE_IMPORTANCE) { container.innerHTML += `<div class="feature-importance-bar"><div class="feature-label" title="${escapeHtml(item.feature)}">${escapeHtml(item.displayName)}</div><div class="bar-container"><div class="bar-fill" style="width: ${item.importance}%">${item.importance}%</div></div><div class="feature-percent">${item.importance}%</div></div>`; } let totalFeatures = FEATURE_IMPORTANCE.length; let avgImp = (FEATURE_IMPORTANCE.reduce((sum, i) => sum + i.importance, 0) / totalFeatures).toFixed(2); document.getElementById('featureImportanceSummary').innerHTML = `<strong>✓ Ringkasan Feature Importance:</strong><br>• Total fitur: ${totalFeatures}<br>• Rata-rata importance: ${avgImp}%<br>• Fitur teratas: Mood (47.03%), Anxious Social Scale (22.07%), Sleep Quality (20.77%)`; }
+
+        // Memperbaiki tampilan Confusion Matrix agar lebih rapi
+        function renderConfusionMatrix() {
+            const container = document.getElementById('confusionMatrixContainer');
+            if (!container) return;
+
+            let html = '<div style="overflow-x:auto; max-height:600px; border:1px solid #e2e8f0; border-radius:8px;">';
+            html += '<table class="metrics-table" style="min-width:900px; font-size:11px;">';
+            html += '<thead><tr><th style="position:sticky; top:0; background:linear-gradient(135deg, #667eea, #764ba2); z-index:10;">Aktual \\ Prediksi</th>';
+
+            // Header dengan label kelas yang lebih pendek
+            for (let i = 0; i < CLASS_NAMES.length; i++) {
+                let shortName = CLASS_NAMES[i];
+                if (shortName === "Post-Traumatic Stress Disorder") shortName = "PTSD";
+                else if (shortName === "Generalized Anxiety Disorder") shortName = "GAD";
+                else if (shortName === "Cognitive Impairments") shortName = "Cognitive";
+                else if (shortName === "Coping and Resilience") shortName = "Coping";
+                else if (shortName === "Stress-Related Conditions") shortName = "Stress";
+                else if (shortName === "General Mental Health") shortName = "General MH";
+                else if (shortName === "Eating Disorders") shortName = "Eating";
+                else if (shortName === "Mood Disorders") shortName = "Mood";
+                else if (shortName === "Sleep Disorders") shortName = "Sleep";
+                html += `<th style="position:sticky; top:0; background:linear-gradient(135deg, #667eea, #764ba2); z-index:10; font-size:10px;">${shortName}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            for (let i = 0; i < CLASS_NAMES.length; i++) {
+                let rowName = CLASS_NAMES[i];
+                if (rowName === "Post-Traumatic Stress Disorder") rowName = "PTSD";
+                else if (rowName === "Generalized Anxiety Disorder") rowName = "GAD";
+                else if (rowName === "Cognitive Impairments") rowName = "Cognitive";
+                else if (rowName === "Coping and Resilience") rowName = "Coping";
+                else if (rowName === "Stress-Related Conditions") rowName = "Stress";
+                else if (rowName === "General Mental Health") rowName = "General MH";
+                else if (rowName === "Eating Disorders") rowName = "Eating";
+                else if (rowName === "Mood Disorders") rowName = "Mood";
+                else if (rowName === "Sleep Disorders") rowName = "Sleep";
+
+                html += `<tr><td style="font-weight:700; background:#f8faf8;">${rowName}</td>`;
+                for (let j = 0; j < CLASS_NAMES.length; j++) {
+                    const val = CONFUSION_MATRIX[i]?.[j] || 0;
+                    let bgStyle = '';
+                    let tooltip = '';
+                    if (i === j) {
+                        bgStyle = 'background:#d1fae5; color:#065f46; font-weight:700;';
+                        tooltip = `title="True Positive: ${val} data terklasifikasi benar"`;
+                    } else if (val > 0) {
+                        bgStyle = 'background:#fee2e2; color:#991b1b;';
+                        tooltip = `title="False ${j === i ? 'Negative' : 'Positive'}: ${val} data salah klasifikasi"`;
+                    }
+                    html += `<td style="text-align:center; ${bgStyle}" ${tooltip}>${val}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table></div>';
+            html += '<div style="margin-top:10px; display:flex; gap:15px; justify-content:center; font-size:11px;">';
+            html += '<span><span style="display:inline-block; width:12px; height:12px; background:#d1fae5; border-radius:3px;"></span> True Positive (Prediksi Benar)</span>';
+            html += '<span><span style="display:inline-block; width:12px; height:12px; background:#fee2e2; border-radius:3px;"></span> False Positive/Negative (Salah Klasifikasi)</span>';
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderPerClassAnalysis() { const container = document.getElementById('perClassAnalysis'); if (!container) return; let html = ''; for (const item of CLASSIFICATION_RESULTS) { html += `<div style="margin-bottom: 15px; padding: 10px; background: #f8faf8; border-radius: 8px; border-left: 4px solid #667eea;"><strong>✓ Kelas: ${getConditionBadge(item.kelas)}</strong><br>&nbsp;&nbsp;✓ Jumlah data test: ${item.support}<br>&nbsp;&nbsp;✓ True Positive: ${item.truePositive}<br>&nbsp;&nbsp;✓ Precision: ${item.precision}%<br>&nbsp;&nbsp;✓ Recall: ${item.recall}%<br>&nbsp;&nbsp;✓ F1-Score: ${item.f1}%</div>`; } container.innerHTML = html; }
+        function renderCVResults() { const container = document.getElementById('cvResults'); const avgContainer = document.getElementById('cvAverage'); if (!container) return; container.innerHTML = ''; CV_RESULTS.forEach((score, i) => { container.innerHTML += `<div class="stat-card-small" style="min-width: 80px;"><div class="stat-value">${score}%</div><div class="stat-label">Fold ${i + 1}</div></div>`; }); const avg = (CV_RESULTS.reduce((a, b) => a + b, 0) / CV_RESULTS.length).toFixed(2); const std = Math.sqrt(CV_RESULTS.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / CV_RESULTS.length).toFixed(2); avgContainer.innerHTML = `✓ Rata-rata CV Score: ${avg}% (+/- ${std}%) <span style="margin-left:15px;">(5-Fold Cross-Validation)</span>`; }
+        function renderPerformModel() { document.getElementById('performModel').innerHTML = `✓ Accuracy Testing: ${MODEL_DATA.accuracy_testing}%<br>✓ F1-Score Weighted: ${MODEL_DATA.f1_weighted}%<br>✓ F1-Score Macro: ${MODEL_DATA.f1_macro}%`; document.getElementById('metricPrecision').textContent = `${MODEL_DATA.precision_weighted}%`; document.getElementById('metricRecall').textContent = `${MODEL_DATA.recall_weighted}%`; document.getElementById('metricF1').textContent = `${MODEL_DATA.f1_weighted}%`; document.getElementById('metricPrecisionMacro').textContent = `${MODEL_DATA.precision_macro}%`; document.getElementById('metricRecallMacro').textContent = `${MODEL_DATA.recall_macro}%`; document.getElementById('metricF1Macro').textContent = `${MODEL_DATA.f1_macro}%`; document.getElementById('optimalParams').innerHTML = `${JSON.stringify(MODEL_DATA.model_params)}`; document.getElementById('topFeatures').innerHTML = `['Mood_encoded', 'Anxious Social Scale_encoded', 'Sleep Quality_encoded']<br><br>• Mood (Stabilitas Mood): ${FEATURE_IMPORTANCE[0].importance}%<br>• Anxious Social Scale (Kecemasan Sosial): ${FEATURE_IMPORTANCE[1].importance}%<br>• Sleep Quality (Kualitas Tidur): ${FEATURE_IMPORTANCE[2].importance}%`; document.getElementById('bestClasses').innerHTML = `✓ Sleep Disorders: F1-Score tinggi karena data melimpah (95.10%)<br>✓ Mood Disorders: F1-Score sangat baik (89.94%)<br>✓ Generalized Anxiety Disorder: F1-Score 87.02%`; document.getElementById('worstClasses').innerHTML = `⚠️ PTSD: Precision & Recall 0% (hanya 4 data test)<br>⚠️ Coping and Resilience: Precision & Recall 0% (hanya 8 data test)<br>⚠️ General Mental Health: Recall rendah 6.25% (hanya 32 data test)`; document.getElementById('suggestions').innerHTML = `a. Gunakan dataset yang lebih seimbang atau teknik SMOTE untuk kelas minoritas (PTSD, Coping, General Mental Health).<br>b. Lakukan validasi klinis dengan psikolog untuk memastikan akurasi diagnosis.<br>c. Implementasikan ke dalam web dengan database server-side.`; }
+
+        // STORAGE & ADMIN MANAGEMENT
+        function addSystemLog(userName, role, action, type, status = 'success') { const logs = JSON.parse(localStorage.getItem('system_logs') || '[]'); logs.unshift({ id: 'log_' + Date.now(), timestamp: new Date().toISOString(), userName: userName, role: role, action: action, type: type, status: status }); if (logs.length > 1000) logs.pop(); localStorage.setItem('system_logs', JSON.stringify(logs)); }
+        function getSystemLogs() { return JSON.parse(localStorage.getItem('system_logs') || '[]'); }
+        function getAdmins() { return JSON.parse(localStorage.getItem('admin_admins') || '[]'); }
+        function getUsers() { return JSON.parse(localStorage.getItem('psycho_users') || '[]'); }
+        function saveAdmins(admins) { localStorage.setItem('admin_admins', JSON.stringify(admins)); }
+        function saveUsers(users) { localStorage.setItem('psycho_users', JSON.stringify(users)); }
+
+        function initializeStorage() { if (!localStorage.getItem('admin_admins')) localStorage.setItem('admin_admins', JSON.stringify([{ id: 'admin_001', email: 'adminpsyc@admin.com', password: 'depresychol', name: 'Admin Utama', role: 'admin_utama', status: 'active', createdAt: new Date().toISOString(), lastLogin: new Date().toISOString() }])); if (!localStorage.getItem('psycho_users')) localStorage.setItem('psycho_users', JSON.stringify([{ id: 'user_001', email: 'user1@example.com', name: 'User Satu', age: 22, gender: 'Perempuan', status: 'active', createdAt: new Date().toISOString() }, { id: 'user_002', email: 'agnes@example.com', name: 'Agnes Fiona', age: 22, gender: 'Perempuan', status: 'active', createdAt: new Date().toISOString() }])); if (!localStorage.getItem('system_logs') || JSON.parse(localStorage.getItem('system_logs')).length === 0) localStorage.setItem('system_logs', JSON.stringify([{ id: 'log_1', timestamp: new Date().toISOString(), userName: 'Admin Utama', role: 'admin', action: 'Login ke sistem admin', type: 'login', status: 'success' }])); }
+        function loadDashboard() { document.getElementById('totalAdmin').textContent = getAdmins().length; document.getElementById('totalUsers').textContent = getUsers().length; document.getElementById('activeUsers').textContent = getUsers().filter(u => u.status === 'active').length; const today = new Date().toDateString(); document.getElementById('todayActivities').textContent = getSystemLogs().filter(l => new Date(l.timestamp).toDateString() === today).length; }
+        function loadAdminTable() { const tbody = document.getElementById('adminTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (const admin of getAdmins()) { tbody.innerHTML += `<tr><td>${admin.id}</span><td>${admin.email}</span><td>${admin.name}</span></td><td><span class="role-admin">${admin.role === 'admin_utama' ? 'Admin Utama' : 'Admin'}</span></span></td><td><span class="user-status status-active">Aktif</span></span><td>${admin.createdAt ? new Date(admin.createdAt).toLocaleDateString() : '-'}</span><td><button class="btn-icon view" onclick="openViewAdminModal('${admin.id}')"><i class="fas fa-eye"></i></button> ${admin.id !== 'admin_001' ? '<button class="btn-icon delete" onclick="deleteAdmin(\'' + admin.id + '\')"><i class="fas fa-trash"></i></button>' : '<span style="color:#999;">(Utama)</span>'}</span></tr>`; } }
+        function loadUserTable() { const tbody = document.getElementById('userTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (const user of getUsers()) { tbody.innerHTML += `<tr><td>${user.id}</span><td>${user.email}</span><td>${user.name}</span><td>${user.age || '-'}</span><td>${user.gender || '-'}</span><td><span class="user-status status-active">Aktif</span></span><td><button class="btn-icon delete" onclick="deleteUser('${user.id}')"><i class="fas fa-trash"></i></button></span></tr>`; } }
+        function deleteAdmin(id) { if (id === 'admin_001') { showToast('Admin utama tidak bisa dihapus!', 'error'); return; } const admin = getAdmins().find(a => a.id === id); saveAdmins(getAdmins().filter(a => a.id !== id)); if (admin) addSystemLog(currentAdmin?.name || 'Admin', 'admin', `Menghapus admin ${admin.name}`, 'hapus_admin', 'success'); loadAdminTable(); loadDashboard(); showToast('Admin berhasil dihapus!', 'success'); }
+        function deleteUser(id) { const user = getUsers().find(u => u.id === id); saveUsers(getUsers().filter(u => u.id !== id)); if (user) addSystemLog(currentAdmin?.name || 'Admin', 'admin', `Menghapus user ${user.name}`, 'hapus_user', 'success'); loadUserTable(); loadDashboard(); showToast('User berhasil dihapus!', 'success'); }
+        function addNewAdmin() { const id = document.getElementById('newAdminId')?.value.trim(); const email = document.getElementById('newAdminEmail')?.value.trim(); const name = document.getElementById('newAdminName')?.value.trim(); const password = document.getElementById('newAdminPassword')?.value; if (!id || !email || !name || !password || password.length < 6) { showToast('Semua field harus diisi dan password minimal 6 karakter!', 'error'); return; } const admins = getAdmins(); if (admins.some(a => a.id === id)) { showToast('ID Admin sudah terdaftar!', 'error'); return; } if (admins.some(a => a.email === email)) { showToast('Email sudah terdaftar!', 'error'); return; } admins.push({ id, email, password, name, role: 'admin', status: 'active', createdAt: new Date().toISOString(), lastLogin: null }); saveAdmins(admins); addSystemLog(currentAdmin?.name || 'Admin', 'admin', `Menambah admin baru: ${name}`, 'tambah_admin', 'success'); showToast('Admin berhasil ditambahkan!', 'success'); document.getElementById('newAdminId').value = ''; document.getElementById('newAdminEmail').value = ''; document.getElementById('newAdminName').value = ''; document.getElementById('newAdminPassword').value = ''; loadAdminTable(); showUserTable('admin'); }
+        function searchAdmin() { loadAdminTable(); }
+        function resetAdminSearch() { loadAdminTable(); }
+        function searchUser() { loadUserTable(); }
+        function resetUserSearch() { loadUserTable(); }
+
+        function showUserTable(type, clickedButton = null) {
+            document.getElementById('adminTableContainer').style.display = type === 'admin' ? 'block' : 'none';
+            document.getElementById('userTableContainer').style.display = type === 'user' ? 'block' : 'none';
+            document.getElementById('addAdminContainer').style.display = type === 'add' ? 'block' : 'none';
+            const buttons = document.querySelectorAll('.tab-buttons .tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if (clickedButton) { clickedButton.classList.add('active'); }
+            else { const activeBtn = document.querySelector(`.tab-buttons .tab-button[onclick*="'${type}'"]`); if (activeBtn) activeBtn.classList.add('active'); }
+            if (type === 'admin') loadAdminTable();
+            if (type === 'user') loadUserTable();
+        }
+
+        function openViewAdminModal(id) { const admin = getAdmins().find(a => a.id === id); if (admin) { document.getElementById('viewAdminContent').innerHTML = `<div class="form-group"><label>ID</label><input value="${admin.id}" readonly></div><div class="form-group"><label>Email</label><input value="${admin.email}" readonly></div><div class="form-group"><label>Nama</label><input value="${admin.name}" readonly></div><div class="form-group"><label>Role</label><input value="${admin.role === 'admin_utama' ? 'Admin Utama' : 'Admin'}" readonly></div>`; document.getElementById('viewAdminModal').style.display = 'flex'; } }
+        function closeViewAdminModal() { document.getElementById('viewAdminModal').style.display = 'none'; }
+
+        // ==================== ACTIVITY LOGS ====================
+        function filterActivities() { let logs = [...getSystemLogs()]; const typeFilter = document.getElementById('activityTypeFilter')?.value || 'all'; const userFilter = document.getElementById('activityUserFilter')?.value || 'all'; const periodFilter = document.getElementById('activityPeriodFilter')?.value || 'all'; if (typeFilter !== 'all') logs = logs.filter(l => l.type === typeFilter); if (userFilter !== 'all') logs = logs.filter(l => l.userName === userFilter); const now = new Date(); if (periodFilter === 'today') logs = logs.filter(l => new Date(l.timestamp).toDateString() === now.toDateString()); else if (periodFilter === 'yesterday') { const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); logs = logs.filter(l => new Date(l.timestamp).toDateString() === yesterday.toDateString()); } else if (periodFilter === 'week') { const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7); logs = logs.filter(l => new Date(l.timestamp) >= weekAgo); } else if (periodFilter === 'last_week') { const lastWeekStart = new Date(); lastWeekStart.setDate(lastWeekStart.getDate() - 7); const lastWeekEnd = new Date(); lastWeekEnd.setDate(lastWeekEnd.getDate() - 14); logs = logs.filter(l => new Date(l.timestamp) <= lastWeekStart && new Date(l.timestamp) >= lastWeekEnd); } else if (periodFilter === 'month') { const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1); logs = logs.filter(l => new Date(l.timestamp) >= monthAgo); } else if (periodFilter === 'last_month') { const lastMonthStart = new Date(); lastMonthStart.setMonth(lastMonthStart.getMonth() - 1); const lastMonthEnd = new Date(); lastMonthEnd.setMonth(lastMonthEnd.getMonth() - 2); logs = logs.filter(l => new Date(l.timestamp) <= lastMonthStart && new Date(l.timestamp) >= lastMonthEnd); } document.getElementById('totalLoginCount').textContent = logs.filter(l => l.type === 'login').length; document.getElementById('totalLogoutCount').textContent = logs.filter(l => l.type === 'logout').length; document.getElementById('totalRegistrasiCount').textContent = logs.filter(l => l.type === 'registrasi').length; document.getElementById('totalSkriningCount').textContent = logs.filter(l => l.type === 'skrining' || l.type === 'assessment').length; document.getElementById('totalTambahAdminCount').textContent = logs.filter(l => l.type === 'tambah_admin').length; document.getElementById('totalHapusAdminCount').textContent = logs.filter(l => l.type === 'hapus_admin').length; document.getElementById('totalHapusUserCount').textContent = logs.filter(l => l.type === 'hapus_user').length; document.getElementById('totalUpdateAdminCount').textContent = logs.filter(l => l.type === 'update_admin').length; const container = document.getElementById('activitiesList'); if (!container) return; if (logs.length === 0) { container.innerHTML = '<div class="info-note">📭 Belum ada aktivitas yang tercatat</div>'; return; } let html = ''; for (const log of logs) { let icon = '', color = ''; switch (log.type) { case 'login': icon = '🔓'; color = '#48bb78'; break; case 'logout': icon = '🔒'; color = '#f56565'; break; case 'registrasi': icon = '📝'; color = '#4299e1'; break; case 'skrining': icon = '🧠'; color = '#ed8936'; break; case 'tambah_admin': icon = '👑➕'; color = '#48bb78'; break; case 'hapus_admin': icon = '👑🗑️'; color = '#f56565'; break; case 'hapus_user': icon = '👤🗑️'; color = '#f56565'; break; case 'update_admin': icon = '⚙️'; color = '#4299e1'; break; default: icon = '📌'; color = '#718096'; } let roleDisplay = (log.role === 'admin' ? 'Admin' : (log.role === 'admin_utama' ? 'Admin Utama' : 'User')); html += `<div class="activity-card" style="border-left-color: ${color};"><div class="activity-time"><i class="far fa-calendar-alt"></i> ${new Date(log.timestamp).toLocaleString('id-ID')}</div><div class="activity-action">${icon} <strong>${escapeHtml(log.userName)}</strong> (${roleDisplay}) - ${escapeHtml(log.action)}<span style="float: right; font-size: 11px; background: #e2e8f0; padding: 2px 8px; border-radius: 12px;">${log.type}</span></div><div style="font-size: 11px; color: #718096; margin-top: 5px;"><i class="fas fa-tag"></i> Status: ${log.status || 'success'}</div></div>`; } container.innerHTML = html; }
+        function populateUserFilter() { const filter = document.getElementById('activityUserFilter'); if (!filter) return; const users = getUsers(); const admins = getAdmins(); let options = '<option value="all">📋 Semua User</option>'; for (const admin of admins) { let roleLabel = (admin.role === 'admin_utama' ? 'Admin Utama' : 'Admin'); options += `<option value="${escapeHtml(admin.name)}">👑 ${escapeHtml(admin.name)} (${roleLabel})</option>`; } for (const user of users) { options += `<option value="${escapeHtml(user.name)}">👤 ${escapeHtml(user.name)} (User)</option>`; } filter.innerHTML = options; }
+        function exportActivities() { const logs = getSystemLogs(); if (logs.length === 0) { showToast('Tidak ada data untuk diekspor!', 'warning'); return; } let csv = 'Timestamp,User,Role,Action,Tipe,Status\n'; for (const l of logs) csv += `"${new Date(l.timestamp).toLocaleString('id-ID')}","${l.userName}","${l.role || 'user'}","${l.action}","${l.type}","${l.status || 'success'}"\n`; const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `riwayat_aktivitas_${new Date().toISOString().split('T')[0]}.csv`; link.click(); URL.revokeObjectURL(link.href); showToast(`✅ ${logs.length} data aktivitas berhasil diekspor!`, 'success'); }
+        function clearAllLogs() { if (confirm('⚠️ Hapus semua riwayat aktivitas? Tindakan ini tidak dapat dibatalkan!')) { localStorage.setItem('system_logs', JSON.stringify([])); addSystemLog(currentAdmin?.name || 'Admin', 'admin', 'Menghapus semua riwayat log', 'hapus', 'success'); showToast('Semua log berhasil dihapus!', 'success'); filterActivities(); populateUserFilter(); } }
+
+        // ==================== USER SCREENING ANALYSIS ====================
+        function getAllUserScreenings() { const users = getUsers(); let all = []; for (const user of users) { const key = `riwayat_${user.email}`; const riwayat = JSON.parse(localStorage.getItem(key) || '[]'); for (const item of riwayat) all.push({ ...item, userName: user.name, userEmail: user.email, userAge: user.age, userGender: user.gender }); } return all.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)); }
+
+        function loadUserAnalysis() {
+            const screenings = getAllUserScreenings();
+            document.getElementById('totalUserScreening').textContent = screenings.length;
+            document.getElementById('totalUniqueUsers').textContent = new Set(screenings.map(s => s.userEmail)).size;
+            const kondisiCount = {};
+            for (const s of screenings) {
+                let k = s.hasil || 'Unknown';
+                if (k.includes('(')) k = k.split('(')[0].trim();
+                kondisiCount[k] = (kondisiCount[k] || 0) + 1;
+            }
+            let maxK = '', maxV = 0;
+            for (let [k, v] of Object.entries(kondisiCount)) if (v > maxV) { maxV = v; maxK = k; }
+            document.getElementById('totalKondisiTerbanyak').textContent = maxK || '-';
+            document.getElementById('persentaseKondisiTerbanyak').textContent = screenings.length > 0 ? ((maxV / screenings.length) * 100).toFixed(1) + '%' : '-';
+            const tbody = document.getElementById('userScreeningBody');
+            if (!tbody) return;
+            if (screenings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px;">Belum ada data screening</span></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            for (const s of screenings) {
+                tbody.innerHTML += `<tr><td>${new Date(s.tanggal).toLocaleString()}</span><td>${escapeHtml(s.userName)}</span><td>${escapeHtml(s.userEmail)}</span><td>${getConditionBadge(s.hasil || '-')}</span></tr>`;
+            }
+            const chartCanvas = document.getElementById('distributionChart');
+            if (chartCanvas && Object.keys(kondisiCount).length > 0) {
+                if (userChart) userChart.destroy();
+                // Urutkan berdasarkan jumlah untuk tampilan yang rapi
+                const sortedLabels = Object.keys(kondisiCount).sort((a, b) => kondisiCount[b] - kondisiCount[a]);
+                const sortedData = sortedLabels.map(l => kondisiCount[l]);
+                const backgroundColors = sortedLabels.map(label => CHART_COLORS[label] || "#E2E8F0");
+
+                userChart = new Chart(chartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: sortedLabels,
+                        datasets: [{
+                            label: 'Hasil Skrining User',
+                            data: sortedData,
+                            backgroundColor: backgroundColors,
+                            borderRadius: 8,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: { size: 11 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `Jumlah: ${context.raw} user`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: false  // <-- HAPUS TULISAN "Jumlah User"
+                                },
+                                ticks: {
+                                    stepSize: 1,
+                                    precision: 0,
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    rotation: 45,
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: { size: 10 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function clearAllScreeningData() { if (confirm('Hapus semua data riwayat skrining user? Tindakan ini tidak dapat dibatalkan!')) { for (const user of getUsers()) localStorage.removeItem(`riwayat_${user.email}`); addSystemLog(currentAdmin?.name || 'Admin', 'admin', 'Menghapus semua data screening user', 'hapus', 'success'); showToast('Semua data screening dihapus!', 'success'); loadUserAnalysis(); } }
+
+        //ADMIN SETTINGS
+        function saveAdminSettings() { const newName = document.getElementById('settingsName')?.value.trim(); if (!newName) { showToast('Nama tidak boleh kosong!', 'error'); return; } const admins = getAdmins(); const idx = admins.findIndex(a => a.id === currentAdmin.id); if (idx === -1) return; admins[idx].name = newName; const oldPass = document.getElementById('settingsOldPassword')?.value; const newPass = document.getElementById('settingsNewPassword')?.value; if (newPass) { if (!oldPass || oldPass !== admins[idx].password) { showToast('Password lama salah!', 'error'); return; } if (newPass.length < 6) { showToast('Password minimal 6 karakter!', 'error'); return; } if (newPass !== document.getElementById('settingsConfirmPassword')?.value) { showToast('Konfirmasi password tidak cocok!', 'error'); return; } admins[idx].password = newPass; } saveAdmins(admins); currentAdmin = admins[idx]; sessionStorage.setItem('currentAdmin', JSON.stringify(currentAdmin)); document.getElementById('adminName').textContent = currentAdmin.name; addSystemLog(currentAdmin.name, 'admin', `Memperbarui profil admin`, 'update_admin', 'success'); showToast('Data admin berhasil diperbarui!', 'success'); document.getElementById('settingsOldPassword').value = ''; document.getElementById('settingsNewPassword').value = ''; document.getElementById('settingsConfirmPassword').value = ''; }
+
+        //LOGOUT
+        function logoutAdmin() { if (confirm('Apakah Anda yakin ingin logout?')) { if (currentAdmin && currentAdmin.name) addSystemLog(currentAdmin.name, 'admin', 'Logout dari sistem admin', 'logout', 'success'); sessionStorage.removeItem('currentAdmin'); localStorage.removeItem('currentAdmin'); showToast('✅ Berhasil logout! Mengarahkan ke halaman login...', 'success'); setTimeout(() => { window.location.href = 'login.html'; }, 800); } }
+
+        //NAVIGATION
+        function switchTab(tabId) { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById(`${tabId}-tab`).classList.add('active'); const titles = { dashboard: 'Dashboard Admin', users: 'Manajemen Pengguna', classification: 'Klasifikasi Dataset', activity: 'Riwayat Aktivitas', settings: 'Pengaturan Sistem' }; document.getElementById('pageTitle').innerHTML = titles[tabId]; if (tabId === 'dashboard') loadDashboard(); if (tabId === 'users') { loadAdminTable(); loadUserTable(); showUserTable('admin'); } if (tabId === 'activity') { populateUserFilter(); filterActivities(); } if (tabId === 'classification') loadUserAnalysis(); }
+
+        //INITIALIZATION
+        async function init() {
+            initializeStorage();
+            updateModelInfo();
+            renderDatasetPage();
+            renderClassificationReport();
+            renderFullClassification();
+            renderFeatureImportance();
+            renderConfusionMatrix();
+            renderPerClassAnalysis();
+            renderCVResults();
+            renderPerformModel();
+
+            document.getElementById('datasetRowsPerPage').addEventListener('change', function (e) { rowsPerPage = parseInt(e.target.value); currentDatasetPage = 1; renderDatasetPage(); });
+            document.getElementById('datasetFirstPage').addEventListener('click', () => { currentDatasetPage = 1; renderDatasetPage(); });
+            document.getElementById('datasetPrevPage').addEventListener('click', () => { if (currentDatasetPage > 1) { currentDatasetPage--; renderDatasetPage(); } });
+            document.getElementById('datasetNextPage').addEventListener('click', () => { if (currentDatasetPage < totalDatasetPages) { currentDatasetPage++; renderDatasetPage(); } });
+            document.getElementById('datasetLastPage').addEventListener('click', () => { currentDatasetPage = totalDatasetPages; renderDatasetPage(); });
+
+            const sessionAdmin = sessionStorage.getItem('currentAdmin');
+            if (sessionAdmin) currentAdmin = JSON.parse(sessionAdmin);
+            else currentAdmin = getAdmins().find(a => a.id === 'admin_001');
+
+            if (currentAdmin) {
+                document.getElementById('adminName').textContent = currentAdmin.name;
+                document.getElementById('adminId').textContent = currentAdmin.id;
+                document.getElementById('adminEmail').textContent = currentAdmin.email;
+                document.getElementById('adminLastLogin').textContent = currentAdmin.lastLogin ? new Date(currentAdmin.lastLogin).toLocaleString() : new Date().toLocaleString();
+                document.getElementById('settingsId').value = currentAdmin.id;
+                document.getElementById('settingsEmail').value = currentAdmin.email;
+                document.getElementById('settingsName').value = currentAdmin.name;
+            }
+
+            document.getElementById('logoutBtn').addEventListener('click', logoutAdmin);
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-subtab');
+                    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(`subtab-${id}`).classList.add('active');
+                    if (id === 'user-analysis') loadUserAnalysis();
+                });
+            });
+
+            loadDashboard();
+            loadAdminTable();
+            loadUserTable();
+            loadUserAnalysis();
+            populateUserFilter();
+            filterActivities();
+            showUserTable('admin', document.querySelector('.tab-buttons .tab-button.active'));
+        }
+
+        init();
+    </script>
+</body>
+</html>

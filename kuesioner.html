@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychological Screening - Mental Healths</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f2;
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(165deg, #1a3a1d 0%, #2c5e2f 30%, #4f8a4a 70%, #a8d08d 100%);
+            color: white;
+            padding: 20px 15px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 20px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #c2d7b6, #e5f2d8);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: #1a3a1d;
+            border: 3px solid #ffffff;
+        }
+
+        .profile-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-status {
+            font-size: 0.8em;
+            color: #a8d08d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .profile-status .dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .profile-email {
+            font-size: 0.75em;
+            color: #e5f2d8;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .profile-gender {
+            font-size: 0.8em;
+            color: #d0ebc0;
+        }
+
+        .menu-title {
+            color: #e5f2d8;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 10px 0 15px 10px;
+            font-weight: 600;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            border-left: 4px solid #a8d08d;
+        }
+
+        .menu-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .menu-checkbox.checked {
+            background: #a8d08d;
+            color: #1a3a1d;
+        }
+
+        .menu-checkbox.checked::after {
+            content: "✓";
+        }
+
+        .menu-checkbox.unchecked {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateX(5px);
+        }
+
+        .logout-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px;
+            background: #f8faf5;
+            min-height: 100vh;
+            width: calc(100% - 280px);
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 40, 0, 0.08);
+            border-left: 6px solid #2c5e2f;
+        }
+
+        .page-header h1 {
+            color: #1a3a1d;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: #4a6b3f;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #d0e2c0;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a3a1d;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-description {
+            color: #5f7e4e;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #c2d7b6;
+        }
+
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: #f5faf0;
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.3s;
+            border-left: 4px solid #2c5e2f;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #1a3a1d;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border: 1px solid #d0e2c0;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background: #e5f2d8;
+            border-color: #2c5e2f;
+        }
+
+        .option-label input {
+            accent-color: #2c5e2f;
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #2c5e2f, #4f8a4a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 30px auto 20px;
+            box-shadow: 0 4px 15px rgba(44, 94, 47, 0.3);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 94, 47, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .result-card {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e5f2d8, #f5faf0);
+            border-radius: 16px;
+            border-left: 6px solid #2c5e2f;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a3a1d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-condition-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a3a1d;
+            background: white;
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #2c5e2f;
+            flex-wrap: wrap;
+        }
+
+        .result-condition-desc {
+            margin-top: 12px;
+            padding: 15px;
+            background: #eaf5e0;
+            border-radius: 10px;
+            color: #2d4f1e;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            border: 1px solid #c2d7b6;
+        }
+
+        .result-suggestion {
+            margin-top: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #c2d7b6;
+        }
+
+        .disclaimer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            background: #fff8e1;
+            border-radius: 10px;
+        }
+
+        .btn-new-screening {
+            background: #2c5e2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px 15px;
+            color: #5f7e4e;
+            margin-top: 30px;
+            border-top: 1px solid #d0e2c0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; width: 100%; }
+            .two-column-grid { grid-template-columns: 1fr; gap: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile-section">
+            <div class="profile-avatar" id="profile-avatar">👤</div>
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-status"><span class="dot"></span><span id="profile-status-text">Online</span></div>
+            <div class="profile-email" id="profile-email">-</div>
+            <div class="profile-gender" id="profile-gender">-</div>
+        </div>
+        <div class="menu-title">MAIN MENU</div>
+        <div class="menu-items">
+            <div class="menu-item" data-page="dashboard">
+                <div class="menu-checkbox unchecked"></div><span class="menu-icon">🏠</span><span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item active" data-page="kuesioner">
+                <div class="menu-checkbox checked"></div><span class="menu-icon">📝</span><span class="menu-text">Skrining Psikologis</span>
+            </div>
+            <div class="menu-item" data-page="riwayat">
+                <div class="menu-checkbox unchecked"></div><span class="menu-icon">📋</span><span class="menu-text">Riwayat Skrining</span>
+            </div>
+            <div class="menu-item" data-page="tentang">
+                <div class="menu-checkbox unchecked"></div><span class="menu-icon">ℹ️</span><span class="menu-text">Tentang Website</span>
+            </div>
+        </div>
+        <div class="logout-btn" id="logout-btn"><span class="logout-icon">🚪</span><span class="logout-text">Logout</span></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1><span>📝</span> Skrining Psikologis</h1>
+            <p>Complete the 10-question assessment based on the Psychological Assessment Dataset</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-title"><span>🧠</span> Penilaian Kesehatan Mental</div>
+            <div class="form-description">
+                <i class="fas fa-info-circle"></i>
+                Jawablah 10 pertanyaan berikut dengan jujur untuk mengetahui hasil skrining kesehatan mental Anda.
+                <br><small>Pilihlah jawaban yang paling sesuai dengan kondisi Anda dalam 2 minggu terakhir.
+                    Pertanyaan berdasarkan Psychological Assessment Dataset (https://www.kaggle.com/datasets/abdullah895/psychological-assessment-dataset) 
+                    sebagai penelitian, dengan algoritma Random Forest.</small>
+            </div>
+
+            <form id="screeningForm">
+                <div class="two-column-grid">
+                    <div class="column">
+                        <!-- 1. MOOD -->
+                        <div class="question-card">
+                            <div class="question-text">1. How would you describe your mood over the past two weeks? <span style="color:#2c5e2f;">(Mood)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="Mood" value="Happiness" required> Happiness</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Stable"> Stable</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Mild sadness"> Mild sadness</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Fluctuating"> Fluctuating</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Irritability"> Irritability</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Anxiety"> Anxiety</label>
+                                <label class="option-label"><input type="radio" name="Mood" value="Extreme sadness"> Extreme sadness</label>
+                            </div>
+                        </div>
+
+                        <!-- 2. ANXIOUS SOCIAL SCALE -->
+                        <div class="question-card">
+                            <div class="question-text">2. On a scale of 1-10, how often have you felt anxious in social situations recently? <span style="color:#2c5e2f;">(Anxious Social Scale)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Not at all" required> Not at all</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Rarely anxious"> Rarely anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Slightly anxious"> Slightly anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Mildly anxious"> Mildly anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Somewhat anxious"> Somewhat anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Moderately anxious"> Moderately anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Fairly anxious"> Fairly anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Very anxious"> Very anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Extremely anxious"> Extremely anxious</label>
+                                <label class="option-label"><input type="radio" name="AnxiousSocialScale" value="Constantly anxious"> Constantly anxious</label>
+                            </div>
+                        </div>
+
+                        <!-- 3. ANXIETY TRIGGERS -->
+                        <div class="question-card">
+                            <div class="question-text">3. Have you experienced any of the following anxiety triggers in the past month? <span style="color:#2c5e2f;">(Anxiety Triggers)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="None of the above" required> None of the above</label>
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="Work-related stress"> Work-related stress</label>
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="Family issues"> Family issues</label>
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="Financial concerns"> Financial concerns</label>
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="Social situations"> Social situations</label>
+                                <label class="option-label"><input type="radio" name="AnxietyTriggers" value="Health concerns"> Health concerns</label>
+                            </div>
+                        </div>
+
+                        <!-- 4. SLEEP QUALITY -->
+                        <div class="question-card">
+                            <div class="question-text">4. How would you rate the quality of your sleep over the past week? <span style="color:#2c5e2f;">(Sleep Quality)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="Restful" required> Restful</label>
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="Trouble falling asleep"> Trouble falling asleep</label>
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="Interrupted"> Interrupted</label>
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="Difficulty staying asleep"> Difficulty staying asleep</label>
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="Early morning waking"> Early morning waking</label>
+                                <label class="option-label"><input type="radio" name="SleepQuality" value="None of the above"> None of the above</label>
+                            </div>
+                        </div>
+
+                        <!-- 5. APPETITE CHANGE -->
+                        <div class="question-card">
+                            <div class="question-text">5. Have you noticed any significant changes in your appetite? <span style="color:#2c5e2f;">(Appetite Change)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="AppetiteChange" value="No change" required> No change</label>
+                                <label class="option-label"><input type="radio" name="AppetiteChange" value="Increased cravings"> Increased cravings</label>
+                                <label class="option-label"><input type="radio" name="AppetiteChange" value="Loss of appetite"> Loss of appetite</label>
+                                <label class="option-label"><input type="radio" name="AppetiteChange" value="Fluctuates daily"> Fluctuates daily</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <!-- 6. LACK OF INTEREST -->
+                        <div class="question-card">
+                            <div class="question-text">6. How often have you felt a lack of interest or pleasure in daily activities? <span style="color:#2c5e2f;">(Lack of Interest)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="LackOfInterest" value="Never" required> Never</label>
+                                <label class="option-label"><input type="radio" name="LackOfInterest" value="Rarely"> Rarely</label>
+                                <label class="option-label"><input type="radio" name="LackOfInterest" value="Occasionally"> Occasionally</label>
+                                <label class="option-label"><input type="radio" name="LackOfInterest" value="Frequently"> Frequently</label>
+                                <label class="option-label"><input type="radio" name="LackOfInterest" value="Always"> Always</label>
+                            </div>
+                        </div>
+
+                        <!-- 7. ENJOYABLE ACTIVITIES -->
+                        <div class="question-card">
+                            <div class="question-text">7. How often do you engage in activities you enjoy or that help you relax? <span style="color:#2c5e2f;">(Enjoyable Activities)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="EnjoyableActivities" value="Daily" required> Daily</label>
+                                <label class="option-label"><input type="radio" name="EnjoyableActivities" value="A few times a week"> A few times a week</label>
+                                <label class="option-label"><input type="radio" name="EnjoyableActivities" value="Once a week"> Once a week</label>
+                                <label class="option-label"><input type="radio" name="EnjoyableActivities" value="Rarely"> Rarely</label>
+                                <label class="option-label"><input type="radio" name="EnjoyableActivities" value="Never"> Never</label>
+                            </div>
+                        </div>
+
+                        <!-- 8. PHYSICAL ANXIETY SYMPTOMS -->
+                        <div class="question-card">
+                            <div class="question-text">8. Have you had any physical symptoms of anxiety (e.g., heart palpitations, sweating, shortness of breath)? <span style="color:#2c5e2f;">(Physical Anxiety Symptoms)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="PhysicalSymptoms" value="No, not at all" required> No, not at all</label>
+                                <label class="option-label"><input type="radio" name="PhysicalSymptoms" value="Rarely"> Rarely</label>
+                                <label class="option-label"><input type="radio" name="PhysicalSymptoms" value="Yes, occasionally"> Yes, occasionally</label>
+                                <label class="option-label"><input type="radio" name="PhysicalSymptoms" value="Yes, frequently"> Yes, frequently</label>
+                            </div>
+                        </div>
+
+                        <!-- 9. CONCENTRATION DIFFICULTY -->
+                        <div class="question-card">
+                            <div class="question-text">9. How often do you find it difficult to concentrate on tasks? <span style="color:#2c5e2f;">(Concentration Difficulty)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="ConcentrationDifficulty" value="Never" required> Never</label>
+                                <label class="option-label"><input type="radio" name="ConcentrationDifficulty" value="Occasionally"> Occasionally</label>
+                                <label class="option-label"><input type="radio" name="ConcentrationDifficulty" value="Frequently"> Frequently</label>
+                                <label class="option-label"><input type="radio" name="ConcentrationDifficulty" value="Constantly"> Constantly</label>
+                            </div>
+                        </div>
+
+                        <!-- 10. COPING STRATEGIES -->
+                        <div class="question-card">
+                            <div class="question-text">10. What coping strategies have you used when feeling stressed or anxious? <span style="color:#2c5e2f;">(Coping Strategies)</span></div>
+                            <div class="options-group">
+                                <label class="option-label"><input type="radio" name="CopingStrategies" value="Physical activity" required> Physical activity</label>
+                                <label class="option-label"><input type="radio" name="CopingStrategies" value="Journaling or writing"> Journaling or writing</label>
+                                <label class="option-label"><input type="radio" name="CopingStrategies" value="Mindfulness or meditation"> Mindfulness or meditation</label>
+                                <label class="option-label"><input type="radio" name="CopingStrategies" value="Social engagement"> Social engagement</label>
+                                <label class="option-label"><input type="radio" name="CopingStrategies" value="No coping strategies"> No coping strategies</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-brain"></i> Submit Your Answers
+                    </button>
+                </div>
+            </form>
+
+            <!-- RESULT -->
+            <div id="resultArea" class="result-card">
+                <div class="result-title"><span>✅</span> Analysis Result</div>
+                <div class="result-condition-name" id="resultConditionName"></div>
+                <div class="result-condition-desc" id="resultConditionDesc"></div>
+                <div class="result-suggestion" id="resultSuggestion"></div>
+                <button class="btn-new-screening" id="btnNewScreening"><i class="fas fa-redo"></i> Start New Screening</button>
+            </div>
+
+            <div class="disclaimer">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Disclaimer:</strong> This result is based on classification using the Random Forest model and is for informational purposes only.
+                This is not a medical diagnosis. Please consult a mental health professional for accurate assessment.
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logo">Depresychology</div>
+            <div class="copyright">© 2026 Depresychology - Online Psychological Assessment</div>
+        </div>
+    </div>
+
+    <script>
+        // ========================= CONDITION DATA (LENGKAP) =========================
+        const conditionData = {
+            "Sleep Disorders": {
+                desc: "Sleep disturbances potentially linked to mood disorders or anxiety, impacting overall well-being. Symptoms include difficulty falling asleep, staying asleep, or waking up too early.",
+                suggestion: "Practice good sleep hygiene: maintain a regular sleep schedule (7-9 hours), avoid screens 1 hour before bed, create a dark and quiet sleep environment, limit caffeine after 2 PM. If sleep issues persist for more than 2 weeks, consult a healthcare provider."
+            },
+            "Stress-Related Conditions": {
+                desc: "Stress due to identifiable triggers (work, family, finances, health), often linked to reduced self-care and inadequate coping strategy use. Physical symptoms may include headaches, muscle tension, and fatigue.",
+                suggestion: "Identify your main stress sources and prioritize tasks. Learn time management and stress management techniques like deep breathing (4-7-8 method). Make time for relaxation and hobbies. Consider talking to a counselor if stress feels overwhelming."
+            },
+            "Mood Disorders": {
+                desc: "Indicators include mood instability (fluctuating between highs and lows), lack of interest in activities (anhedonia), appetite changes (increase or decrease), and sleep disturbances (insomnia or hypersomnia).",
+                suggestion: "Consult a psychologist or psychiatrist promptly. Start with small activities you used to enjoy, even for 5 minutes. Maintain regular daily routines and eating patterns. Reach out to trusted friends or family for support."
+            },
+            "Generalized Anxiety Disorder": {
+                desc: "Characterized by chronic, excessive worry about multiple areas of life (work, health, finances) that is difficult to control, along with physical symptoms like restlessness, muscle tension, and fatigue.",
+                suggestion: "Learn relaxation techniques like progressive muscle relaxation and grounding (5-4-3-2-1 method). Reduce caffeine and alcohol intake. Maintain regular sleep and exercise. Consider Cognitive Behavioral Therapy (CBT) with a professional."
+            },
+            "Eating Disorders": {
+                desc: "Significant appetite fluctuations (loss of appetite or increased cravings), often tied to mood changes, stress, and body image concerns. May include restrictive eating or binge episodes.",
+                suggestion: "Consult a psychologist or nutritionist experienced in eating disorders. Avoid extreme diets and maintain regular, nutritious eating patterns (3 meals + 2 snacks daily). Seek support from eating disorder support groups."
+            },
+            "Cognitive Impairments": {
+                desc: "Difficulty focusing, concentrating, or remembering things, potentially related to anxiety, fatigue, sleep disorders, or mood disorders affecting executive function.",
+                suggestion: "Consult a psychologist for further cognitive evaluation. Train cognitive abilities through reading, puzzles (crosswords, Sudoku), or brain-stimulating activities like learning a new skill. Ensure adequate sleep and rest (7-9 hours nightly)."
+            },
+            "Post-Traumatic Stress Disorder": {
+                desc: "Anxiety symptoms tied to specific traumatic triggers (reminders of past trauma), with associated avoidance behaviors, intrusive memories (flashbacks), nightmares, and hypervigilance.",
+                suggestion: "Seek professional mental health help immediately. Trauma-focused therapies like EMDR (Eye Movement Desensitization and Reprocessing) or Prolonged Exposure therapy are effective. Don't face this alone - support groups can help."
+            },
+            "Coping and Resilience": {
+                desc: "Lack of effective coping strategies when facing stress or anxiety, indicating vulnerability to developing more serious mental health conditions if not addressed.",
+                suggestion: "Start building positive coping strategies: regular exercise (30 minutes, 3x/week), journaling (write 3 things you're grateful for daily), or joining a supportive community. Consider counseling to build resilience and learn healthy coping mechanisms."
+            },
+            "General Mental Health": {
+                desc: "Responses do not strongly align with specific clinical conditions but indicate some areas that may benefit from attention and self-care. Your mental health appears generally stable.",
+                suggestion: "Maintain a healthy lifestyle with balanced nutrition, regular exercise (150 minutes/week), adequate sleep (7-9 hours), and stress management. Engage in enjoyable activities regularly. It's okay to talk to a counselor if something is bothering you - prevention is key."
+            }
+        };
+
+        // ==================== OFFLINE SCORING YANG AKURAT ====================
+        function calculateOfflineScore(data) {
+            let score = 0;
+            
+            const moodScores = {
+                "Happiness": 1, "Stable": 2, "Mild sadness": 4,
+                "Fluctuating": 5, "Irritability": 6, "Anxiety": 7, "Extreme sadness": 9
+            };
+            score += moodScores[data.Mood] || 3;
+            
+            const anxiousScores = {
+                "Not at all": 1, "Rarely anxious": 2, "Slightly anxious": 3,
+                "Mildly anxious": 4, "Somewhat anxious": 5, "Moderately anxious": 6,
+                "Fairly anxious": 7, "Very anxious": 8, "Extremely anxious": 9, "Constantly anxious": 10
+            };
+            score += anxiousScores[data.AnxiousSocialScale] || 3;
+            
+            const triggerScores = {
+                "None of the above": 1, "Work-related stress": 5, "Family issues": 6,
+                "Financial concerns": 6, "Social situations": 7, "Health concerns": 5
+            };
+            score += triggerScores[data.AnxietyTriggers] || 3;
+            
+            const sleepScores = {
+                "Restful": 1, "None of the above": 2, "Trouble falling asleep": 5,
+                "Interrupted": 5, "Difficulty staying asleep": 7, "Early morning waking": 7
+            };
+            score += sleepScores[data.SleepQuality] || 3;
+            
+            const appetiteScores = {
+                "No change": 1, "Increased cravings": 4, "Fluctuates daily": 6, "Loss of appetite": 7
+            };
+            score += appetiteScores[data.AppetiteChange] || 3;
+            
+            const interestScores = {
+                "Never": 1, "Rarely": 3, "Occasionally": 5, "Frequently": 8, "Always": 10
+            };
+            score += interestScores[data.LackOfInterest] || 3;
+            
+            const enjoyableScores = {
+                "Daily": 1, "A few times a week": 2, "Once a week": 4, "Rarely": 7, "Never": 10
+            };
+            score += enjoyableScores[data.EnjoyableActivities] || 3;
+            
+            const physicalScores = {
+                "No, not at all": 1, "Rarely": 3, "Yes, occasionally": 6, "Yes, frequently": 9
+            };
+            score += physicalScores[data.PhysicalSymptoms] || 3;
+            
+            const concentrationScores = {
+                "Never": 1, "Occasionally": 4, "Frequently": 7, "Constantly": 10
+            };
+            score += concentrationScores[data.ConcentrationDifficulty] || 3;
+            
+            const copingScores = {
+                "Physical activity": 2, "Journaling or writing": 2,
+                "Mindfulness or meditation": 2, "Social engagement": 2, "No coping strategies": 10
+            };
+            score += copingScores[data.CopingStrategies] || 5;
+            
+            return score;
+        }
+
+        const offlineMapping = [
+            { key: "Sleep Disorders", min: 70 },
+            { key: "Stress-Related Conditions", min: 62 },
+            { key: "Generalized Anxiety Disorder", min: 55 },
+            { key: "Mood Disorders", min: 48 },
+            { key: "Post-Traumatic Stress Disorder", min: 42 },
+            { key: "Eating Disorders", min: 38 },
+            { key: "Cognitive Impairments", min: 34 },
+            { key: "Coping and Resilience", min: 28 },
+            { key: "General Mental Health", min: 0 }
+        ];
+
+        function getConditionFromScore(score) {
+            const sorted = [...offlineMapping].sort((a, b) => b.min - a.min);
+            for (const m of sorted) {
+                if (score >= m.min) return m.key;
+            }
+            return "General Mental Health";
+        }
+
+        function displayResult(conditionRaw, description, suggestion, score) {
+            let conditionName = conditionRaw;
+            let conditionDesc = description;
+            let suggestionText = suggestion;
+
+            const cd = conditionData[conditionName];
+            if (cd) {
+                conditionDesc = cd.desc;
+                suggestionText = cd.suggestion;
+            }
+
+            const scoreDisplay = score ? `<span style="font-size:0.7em; background:#2196f3; color:white; padding:2px 8px; border-radius:20px; margin-left:10px;">Score: ${score}</span>` : '';
+
+            document.getElementById('resultConditionName').innerHTML = `<i class="fas fa-brain" style="color:#2c5e2f;"></i> ${conditionName}${scoreDisplay}`;
+            document.getElementById('resultConditionDesc').innerHTML = conditionDesc || 'No description available.';
+            document.getElementById('resultSuggestion').innerHTML = `<h4 style="margin-bottom:8px;color:#1a3a1d;"><i class="fas fa-lightbulb"></i> Recommendation</h4><p>${suggestionText || 'Take good care of your mental health.'}</p>`;
+            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== SYSTEM LOGS (untuk admin) ====================
+        function addSystemLog(userName, role, action, type, status = 'success') {
+            const logs = JSON.parse(localStorage.getItem('system_logs') || '[]');
+            logs.unshift({
+                id: 'log_' + Date.now(),
+                timestamp: new Date().toISOString(),
+                userName: userName,
+                role: role,
+                action: action,
+                type: type,
+                status: status
+            });
+            if (logs.length > 1000) logs.pop();
+            localStorage.setItem('system_logs', JSON.stringify(logs));
+            console.log('Log added:', { userName, role, action, type });
+        }
+
+        // ========================= SUBMIT HANDLER =========================
+        document.getElementById('screeningForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<span class="loading-spinner"></span> Processing...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value; });
+            
+            // Hitung skor offline
+            const score = calculateOfflineScore(data);
+            const conditionKey = getConditionFromScore(score);
+            const cd = conditionData[conditionKey];
+            
+            displayResult(conditionKey, cd ? cd.desc : '', cd ? cd.suggestion : '', score);
+            saveHistory(data, conditionKey, cd ? cd.desc : '', cd ? cd.suggestion : '', score);
+            
+            // ========== CATAT LOG SKRINING UNTUK ADMIN ==========
+            const currentUserForLog = getCurrentUser();
+            if (currentUserForLog && currentUserForLog.name) {
+                addSystemLog(currentUserForLog.name, 'user', `Mengisi kuesioner skrining psikologis - Hasil: ${conditionKey}`, 'skrining', 'success');
+            } else if (currentUserForLog && currentUserForLog.email) {
+                addSystemLog(currentUserForLog.email, 'user', `Mengisi kuesioner skrining psikologis - Hasil: ${conditionKey}`, 'skrining', 'success');
+            } else {
+                addSystemLog('User', 'user', `Mengisi kuesioner skrining psikologis - Hasil: ${conditionKey}`, 'skrining', 'success');
+            }
+            
+            showNotification(`Screening result: ${conditionKey} (Score: ${score})`, 'success');
+            
+            submitBtn.innerHTML = '<i class="fas fa-brain"></i> Submit Screening';
+            submitBtn.disabled = false;
+        });
+
+        function saveHistory(data, condition, description, suggestion, score) {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) return;
+            
+            const key = `riwayat_${currentUser.email}`;
+            let history = JSON.parse(localStorage.getItem(key) || '[]');
+            
+            history.unshift({
+                id: Date.now(),
+                tanggal: new Date().toISOString(),
+                hasil: condition,
+                deskripsi: description,
+                saran: suggestion,
+                jawabanDisplay: data,
+                score: score,
+                mode: 'offline'
+            });
+            
+            if (history.length > 100) history = history.slice(0, 100);
+            localStorage.setItem(key, JSON.stringify(history));
+        }
+
+        document.getElementById('btnNewScreening').addEventListener('click', function () {
+            document.getElementById('screeningForm').reset();
+            document.getElementById('resultArea').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ========================= USER & NAVIGATION =========================
+        function getCurrentUser() {
+            try {
+                const s = sessionStorage.getItem('currentUser');
+                if (s) return JSON.parse(s);
+                const l = localStorage.getItem('currentUser');
+                if (l) return JSON.parse(l);
+                return null;
+            } catch (e) { return null; }
+        }
+
+        function getCurrentUserId() {
+            const u = getCurrentUser();
+            return u && u.email ? u.email.replace(/[@.]/g, '_') : 'guest';
+        }
+
+        function getActivityKey() {
+            return `user_activities_${getCurrentUserId()}`;
+        }
+
+        function saveActivity(activity) {
+            try {
+                const key = getActivityKey();
+                let acts = JSON.parse(localStorage.getItem(key)) || [];
+                acts.unshift({ id: Date.now(), ...activity, timestamp: new Date().toISOString() });
+                if (acts.length > 50) acts = acts.slice(0, 50);
+                localStorage.setItem(key, JSON.stringify(acts));
+            } catch (e) { console.error(e); }
+        }
+
+        function navigateTo(page, pageType, pageName) {
+            saveActivity({ pageName, pageType });
+            window.location.href = page;
+        }
+
+        function setupMenuNavigation() {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    const page = this.getAttribute('data-page');
+                    const names = { dashboard: 'Dashboard', kuesioner: 'Psychological Screening', riwayat: 'Screening History', tentang: 'About' };
+                    if (window.location.pathname.includes(`${page}.html`)) return;
+                    navigateTo(`${page}.html`, page, names[page] || page);
+                });
+            });
+        }
+
+        function getUserFromDatabase(email) {
+            if (!email) return null;
+            try {
+                const u = localStorage.getItem('psycho_users');
+                return u ? (JSON.parse(u).find(x => x.email === email) || null) : null;
+            } catch { return null; }
+        }
+
+        function updateSideProfile() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                document.getElementById('profile-avatar').innerHTML = '🔓';
+                document.getElementById('profile-name').textContent = 'Not Logged In';
+                document.getElementById('profile-email').textContent = 'Please login';
+                document.getElementById('profile-gender').innerHTML = '👤 Guest';
+                return;
+            }
+            const userData = getUserFromDatabase(currentUser.email) || currentUser;
+            const fullName = userData.name || 'User';
+            const initials = fullName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('profile-avatar').innerHTML = initials;
+            document.getElementById('profile-name').textContent = fullName;
+            document.getElementById('profile-email').textContent = currentUser.email || '';
+            const g = userData.gender || '';
+            let genderText = '👤 User';
+            if (g === 'Laki-laki' || g === 'male') genderText = '👨 Male';
+            else if (g === 'Perempuan' || g === 'female') genderText = '👩 Female';
+            document.getElementById('profile-gender').innerHTML = genderText;
+        }
+
+        function confirmLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                saveActivity({ pageName: 'Logout', pageType: 'logout' });
+                sessionStorage.removeItem('currentUser');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            let bgColor = '#2c5e2f';
+            let icon = 'fas fa-check-circle';
+            if (type === 'warning') {
+                bgColor = '#ff9800';
+                icon = 'fas fa-exclamation-triangle';
+            } else if (type === 'error') {
+                bgColor = '#f44336';
+                icon = 'fas fa-times-circle';
+            }
+            notif.style.cssText = `position:fixed;bottom:20px;right:20px;background:${bgColor};color:white;padding:12px 20px;border-radius:8px;z-index:1000;animation:slideIn 0.3s ease;font-size:13px;`;
+            notif.innerHTML = `<i class="${icon}"></i> ${message}`;
+            document.body.appendChild(notif);
+            setTimeout(() => {
+                notif.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateSideProfile();
+            setupMenuNavigation();
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    confirmLogout();
+                });
+            }
+            
+            saveActivity({ pageName: 'Psychological Screening', pageType: 'kuesioner' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    border-left: 4px solid #2ed573; /* Tambahkan ini */
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #f5576c, #f093fb);
+    border-left: 4px solid #ff4757; /* Tambahkan ini */
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #ffd166, #ff9e00);
+    border-left: 4px solid #ffa502; /* Tambahkan ini */
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-left: 4px solid #1a2980; /* Tambahkan ini */
+}
+
+/* Animasi untuk notification */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Perbaiki bagian chart-container agar tidak bertabrakan */
+.system-chart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.system-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.system-chart-header h3 {
+    color: #1a2980;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.system-data-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #1a2980;
+}
+
+.system-data-card h4 {
+    color: #1a2980;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.system-progress-indicator {
+    margin: 20px 0;
+}
+
+.system-progress-bar {
+    height: 10px;
+    background: #e1e1e1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.system-progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #1a2980, #26d0ce);
+    border-radius: 5px;
+    transition: width 1s ease;
+}
+
+.system-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1a2980;
+    border-radius: 50%;
+    animation: spinnerSpin 1s linear infinite;
+    margin: 0 auto;
+}
+
+.system-loading-spinner.small {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+}
+
+@keyframes spinnerSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Print Optimizations */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+    
+    body {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    
+    h1, h2, h3, h4 {
+        color: #000 !important;
+    }
+    
+    .card, .system-data-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
+    
+    table {
+        break-inside: avoid;
+    }
+    
+    .page-break {
+        page-break-before: always;
+    }
+    
+    .container {
+        padding: 0 10px;
+    }
+}

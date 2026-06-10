@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #1a2980;
+    --secondary: #26d0ce;
+    --light: #f5f7fb;
+    --dark: #2d3748;
+    --gray: #718096;
+    --border: #eef2f7;
+    --success: #43e97b;
+    --danger: #f56565;
+    --warning: #ffd166;
+    --sidebar-width: 280px;
+}
+
+/* SIDEBAR STYLES */
+.sidebar {
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    height: 100vh;
+    position: fixed;
+    overflow-y: auto;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 30px 25px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.sidebar-user {
+    padding: 25px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: white;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-info {
+    color: white;
+}
+
+.user-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-indicator.online {
+    background: var(--success);
+    animation: pulse 2s infinite;
+}
+
+.user-info h4 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.user-email, .user-gender {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 3px;
+}
+
+/* Navigation Menu */
+.sidebar-nav {
+    padding: 20px 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    border-left: 4px solid transparent;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left-color: rgba(255, 255, 255, 0.3);
+    padding-left: 30px;
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-left-color: white;
+    font-weight: 600;
+}
+
+/* CHECKBOX INDICATOR di SIDEBAR */
+.nav-item::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.nav-item.active::before {
+    content: '✓';
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    font-size: 12px;
+    color: white;
+}
+
+.nav-item i {
+    width: 20px;
+    margin-right: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.nav-item span {
+    flex: 1;
+    font-size: 15px;
+}
+
+.logout-item {
+    color: #ffcccc;
+    border-left-color: transparent !important;
+}
+
+.logout-item:hover {
+    background: rgba(245, 101, 101, 0.2);
+    color: white;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .sidebar-nav {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+    
+    .nav-item {
+        flex: 1 0 calc(50% - 10px);
+        margin: 5px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border-left: none !important;
+    }
+    
+    .nav-item::before {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-item {
+        flex: 1 0 100%;
+    }
+    
+    .sidebar-user {
+        padding: 20px 15px;
+    }
+    
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+}

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang - Mental Healths</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f2;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(165deg, #1a3a1d 0%, #2c5e2f 30%, #4f8a4a 70%, #a8d08d 100%);
+            color: white;
+            padding: 20px 15px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 20px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #c2d7b6, #e5f2d8);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: #1a3a1d;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .profile-status {
+            font-size: 0.8em;
+            color: #a8d08d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .profile-status .dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .profile-email {
+            font-size: 0.75em;
+            color: #e5f2d8;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .profile-gender {
+            font-size: 0.8em;
+            color: #d0ebc0;
+        }
+
+        .menu-title {
+            color: #e5f2d8;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 10px 0 15px 10px;
+            font-weight: 600;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            border-left: 4px solid #a8d08d;
+        }
+
+        .menu-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .menu-checkbox.checked {
+            background: #a8d08d;
+            color: #1a3a1d;
+        }
+
+        .menu-checkbox.checked::after {
+            content: "✓";
+        }
+
+        .menu-checkbox.unchecked {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateX(5px);
+        }
+
+        .logout-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px;
+            background: #f8faf5;
+            min-height: 100vh;
+            width: calc(100% - 280px);
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 40, 0, 0.08);
+            border-left: 6px solid #2c5e2f;
+        }
+
+        .page-header h1 {
+            color: #1a3a1d;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: #4a6b3f;
+        }
+
+        .about-header {
+            background: linear-gradient(135deg, #2c5e2f 0%, #4f8a4a 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(44, 94, 47, 0.3);
+        }
+
+        .about-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .about-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .column-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 40, 0, 0.05);
+            border: 1px solid #d0e2c0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a3a1d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #c2d7b6;
+            padding-bottom: 12px;
+        }
+
+        .content-card {
+            background: #f5faf0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #d0e2c0;
+        }
+
+        .content-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a3a1d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-card-body {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4a6b3f;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .feature-card {
+            background: #f5faf0;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #d0e2c0;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(44, 94, 47, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #2c5e2f;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a3a1d;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: #5f7e4e;
+            line-height: 1.5;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .team-card {
+            background: #f5faf0;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #d0e2c0;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(44, 94, 47, 0.15);
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #2c5e2f, #4f8a4a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .team-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1a3a1d;
+        }
+
+        .team-role {
+            font-size: 14px;
+            color: #2c5e2f;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .team-description {
+            font-size: 14px;
+            color: #5f7e4e;
+            line-height: 1.5;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f5faf0;
+            border-radius: 12px;
+            border: 1px solid #d0e2c0;
+        }
+
+        .contact-icon {
+            font-size: 22px;
+            color: #2c5e2f;
+            width: 36px;
+            text-align: center;
+        }
+
+        .contact-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #1a3a1d;
+        }
+
+        .contact-details p {
+            font-size: 13px;
+            color: #5f7e4e;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px 15px;
+            color: #5f7e4e;
+            margin-top: 30px;
+            border-top: 1px solid #d0e2c0;
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c5e2f;
+            margin-bottom: 6px;
+        }
+
+        .copyright {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 992px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .about-header {
+                padding: 25px;
+            }
+            .about-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="profile-section">
+            <div class="profile-avatar" id="profile-avatar">👤</div>
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-status"><span class="dot"></span><span id="profile-status-text">Online</span></div>
+            <div class="profile-email" id="profile-email">-</div>
+            <div class="profile-gender" id="profile-gender">-</div>
+        </div>
+        <div class="menu-title">MENU UTAMA</div>
+        <div class="menu-items">
+            <a href="dashboard.html" class="menu-item" id="menu-dashboard">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">🏠</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="kuesioner.html" class="menu-item" id="menu-kuesioner">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">📝</span>
+                <span class="menu-text">Kuesioner Kondisi Kesehatan</span>
+            </a>
+            <a href="riwayat.html" class="menu-item" id="menu-riwayat">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">Riwayat Kuesioner</span>
+            </a>
+            <a href="tentang.html" class="menu-item active" id="menu-tentang">
+                <div class="menu-checkbox checked"></div>
+                <span class="menu-icon">ℹ️</span>
+                <span class="menu-text">Tentang Website</span>
+            </a>
+        </div>
+        <div class="logout-btn" id="logout-btn">
+            <span class="logout-icon">🚪</span>
+            <span class="logout-text">Keluar</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1><span>ℹ️</span> Tentang Website Mental Healths</h1>
+            <p>Platform skrining kesehatan mental online</p>
+        </div>
+
+        <div class="about-header">
+            <h2 class="about-title">Mental Healths</h2>
+            <p class="about-subtitle">
+                Platform skrining psikologis online yang membantu Anda memahami kondisi kesehatan mental 
+                melalui kuesioner sederhana dan mendapatkan rekomendasi yang bermanfaat.
+            </p>
+        </div>
+
+        <!-- Visi & Misi -->
+        <div class="two-column-layout">
+            <div class="column-section">
+                <h3 class="section-title"><span class="section-icon">👁️</span> Visi</h3>
+                <div class="content-card">
+                    <div class="content-card-body">
+                        Menjadi platform skrining kesehatan mental yang mudah diakses oleh masyarakat luas, 
+                        membantu deteksi dini masalah psikologis, dan mendorong kesadaran akan pentingnya 
+                        kesehatan mental.
+                    </div>
+                </div>
+            </div>
+
+            <div class="column-section">
+                <h3 class="section-title"><span class="section-icon">🚀</span> Misi</h3>
+                <div class="content-card">
+                    <div class="content-card-body">
+                        <ul style="margin-left: 20px; line-height: 1.8;">
+                            <li>Menyediakan alat skrining psikologis yang mudah digunakan</li>
+                            <li>Membantu pengguna memahami kondisi kesehatan mental mereka</li>
+                            <li>Memberikan rekomendasi yang bermanfaat berdasarkan hasil skrining</li>
+                            <li>Menjaga kerahasiaan dan keamanan data pengguna</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fitur -->
+        <div class="column-section" style="margin-bottom: 25px;">
+            <h3 class="section-title"><span class="section-icon">✨</span> Fitur yang Tersedia</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h4 class="feature-title">Skrining Psikologis</h4>
+                    <p class="feature-description">
+                        Kuesioner lengkap untuk menilai kondisi kesehatan mental Anda.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h4 class="feature-title">Riwayat Skrining</h4>
+                    <p class="feature-description">
+                        Lihat kembali hasil skrining Anda sebelumnya kapan saja.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">😊</div>
+                    <h4 class="feature-title">Mood Tracker</h4>
+                    <p class="feature-description">
+                        Pantau suasana hati Anda setiap hari.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h4 class="feature-title">Privasi Terjaga</h4>
+                    <p class="feature-description">
+                        Data Anda aman dan hanya tersimpan di browser Anda.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tim editor -->
+        <div class="column-section" style="margin-bottom: 25px;">
+            <h3 class="section-title"><span class="section-icon">👥</span> Tim Editor</h3>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">🙀</div>
+                    <h4 class="team-name">Agnes Fiona/Fifi</h4>
+                    <div class="team-role">Mahasiswi Informatika sekaligus Editor</div>
+                    <p class="team-description">
+                        Mahasiswi Informatika Universitas Sanata Dharma Yogyakarta yang tertarik belajar 
+                        tentang psikologi. Membuat website ini sebagai tugas akhir untuk memenuhi syarat kelulusan.<br><br>
+                        Menjadi psikologi merupakan keinginan saya sejak kecil, namun karena berbagai pertimbangan, saya memilih jurusan 
+                        informatika. Saya berharap dengan membuat website ini, saya bisa memberikan manfaat bagi banyak orang dan 
+                        tetap bisa belajar tentang psikologi meskipun tidak menjadi psikolog secara formal.
+                    </p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🏫</div>
+                    <h4 class="team-name">Pak Iwan</h4>
+                    <div class="team-role">Kaprodi Informatika sekaligus Dosen Pembimbing</div>
+                    <p class="team-description">
+                        Membimbing dengan sabar, beliau dosen luar biasa menyenangkan.<br>
+                        Semoga sistem ini segera di ACC dari pak Iwan, sehingga bisa segera digunakan untuk membantu banyak orang yang membutuhkan.
+                        dengan kode CTR+L (Cepat Tanda Tangan + Lulus) semoga bisa segera selesai dan lulus dengan nilai yang memuaskan. Amin.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kontak -->
+        <div class="column-section" style="margin-bottom: 25px;">
+            <h3 class="section-title"><span class="section-icon">📞</span> Kontak</h3>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-details">
+                        <h4>Email</h4>
+                        <p>agnesfionaiga@gmail.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">🎓👩🏻‍🎓</div>
+                    <div class="contact-details">
+                        <h4>Universitas</h4>
+                        <p>Universitas Sanata Dharma</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-details">
+                        <h4>Lokasi</h4>
+                        <p>DI Yogyakarta, Indonesia</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-details">
+                        <h4>Instagram</h4>
+                        <p>@fin.pionaass04</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">Depresychology</div>
+            <div class="copyright">© 2026 Depresychology - Skrining Kesehatan Mental Online</div>
+        </div>
+    </div>
+
+    <script>
+        function getCurrentUser() {
+            try {
+                const sessionUser = sessionStorage.getItem('currentUser');
+                if (sessionUser) return JSON.parse(sessionUser);
+                const localUser = localStorage.getItem('currentUser');
+                if (localUser) return JSON.parse(localUser);
+                return null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function getUserFromDatabase(email) {
+            if (!email) return null;
+            try {
+                const usersData = localStorage.getItem('psycho_users');
+                if (!usersData) return null;
+                const users = JSON.parse(usersData);
+                return users.find(user => user.email === email) || null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function updateSideProfile() {
+            const avatar = document.getElementById('profile-avatar');
+            const name = document.getElementById('profile-name');
+            const email = document.getElementById('profile-email');
+            const gender = document.getElementById('profile-gender');
+            const currentUser = getCurrentUser();
+
+            if (!currentUser) {
+                if (avatar) avatar.innerHTML = '🔓';
+                if (name) name.textContent = 'Belum Login';
+                if (email) email.textContent = 'Silakan login terlebih dahulu';
+                if (gender) gender.innerHTML = '👤 Pengunjung';
+                return;
+            }
+
+            const userData = getUserFromDatabase(currentUser.email) || currentUser;
+            let fullName = userData.name || 'User';
+            let initials = fullName.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
+            if (avatar) avatar.innerHTML = initials;
+            if (name) name.textContent = fullName;
+            if (email) email.textContent = currentUser.email || '';
+            
+            const genderValue = userData.gender || '';
+            if (gender) {
+                if (genderValue === 'male') gender.innerHTML = '👨 Laki-laki';
+                else if (genderValue === 'female') gender.innerHTML = '👩 Perempuan';
+                else gender.innerHTML = '👤 Pengguna';
+            }
+        }
+
+        function confirmLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                sessionStorage.removeItem('currentUser');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSideProfile();
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    confirmLogout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

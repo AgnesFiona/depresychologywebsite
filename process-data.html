@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Psikologis - PsychoClass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR KONSISTEN */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+        }
+
+        .sidebar-user {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a2980;
+        }
+
+        .user-info {
+            color: white;
+        }
+
+        .user-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .dataset-header {
+            background: white;
+            color: #1a2980;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .dataset-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #1a2980;
+        }
+
+        .dataset-header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: bold;
+            color: #1a2980;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* FILTER SECTION */
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .filter-section h3 {
+            color: #1a2980;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .filter-select, .filter-input {
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #26d0ce;
+        }
+
+        /* DATASET TABLE */
+        .dataset-table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h3 {
+            color: #1a2980;
+            font-size: 20px;
+        }
+
+        .table-wrapper {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #e1e1e1;
+        }
+
+        .dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        .dataset-table thead {
+            position: sticky;
+            top: 0;
+            background: #1a2980;
+            z-index: 10;
+        }
+
+        .dataset-table th {
+            padding: 18px 15px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            border-bottom: 2px solid #26d0ce;
+            white-space: nowrap;
+        }
+
+        .dataset-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .dataset-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* CATEGORY BADGES */
+        .category-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .category-sleep { background: #e3f2fd; color: #1565c0; }
+        .category-mood { background: #f3e5f5; color: #7b1fa2; }
+        .category-stress { background: #fff3e0; color: #ef6c00; }
+        .category-eating { background: #e8f5e9; color: #2e7d32; }
+        .category-cognitive { background: #fce4ec; color: #c2185b; }
+        .category-general { background: #f5f5f5; color: #666; }
+
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 208, 206, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1a2980;
+            border: 2px solid #1a2980;
+        }
+
+        .btn-outline:hover {
+            background: #1a2980;
+            color: white;
+        }
+
+        /* PAGINATION */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .page-btn.active {
+            background: #1a2980;
+            color: white;
+            border-color: #1a2980;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-left: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+                max-height: 300px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .dataset-header h1 {
+                font-size: 28px;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-wrapper {
+                max-height: 400px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* GLOBAL NOTIFICATION */
+        .global-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+        }
+
+        .notification-info {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .fade-out {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR KONSISTEN -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-brain"></i> PsychoClass</h2>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar" id="userAvatar">
+                <!-- Initial akan diisi oleh JavaScript -->
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- Informasi user akan diisi oleh JavaScript -->
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="input.html" class="nav-item">
+                <i class="fas fa-edit"></i> Tes Psikologis
+            </a>
+            <a href="hasil.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i> Hasil Tes
+            </a>
+            <a href="riwayat.html" class="nav-item">
+                <i class="fas fa-history"></i> Riwayat
+            </a>
+            <a href="process-data.html" class="nav-item active">
+                <i class="fas fa-database"></i> Dataset
+            </a>
+            <a href="tentang.html" class="nav-item">
+                <i class="fas fa-info-circle"></i> Tentang Sistem
+            </a>
+            <a href="#" class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="dataset-header">
+            <h1><i class="fas fa-database"></i> Dataset Psikologis</h1>
+            <p>9,504 records dengan 10 variabel psikologis untuk analisis hybrid AHP-Logistic Regression</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalRecords">9,504</div>
+                <div class="stat-label">Total Records</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">10</div>
+                <div class="stat-label">Variabel Psikologis</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="uniqueCategories">6</div>
+                <div class="stat-label">Kategori Target</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">87%</div>
+                <div class="stat-label">Akurasi Model</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h3><i class="fas fa-filter"></i> Filter Data</h3>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Kategori Kondisi</label>
+                    <select class="filter-select" id="filterCategory">
+                        <option value="">Semua Kategori</option>
+                        <option value="Sleep Disorders">Sleep Disorders</option>
+                        <option value="Mood Disorders">Mood Disorders</option>
+                        <option value="Stress-Related">Stress-Related</option>
+                        <option value="Eating Disorders">Eating Disorders</option>
+                        <option value="Cognitive">Cognitive</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Mood</label>
+                    <select class="filter-select" id="filterMood">
+                        <option value="">Semua Mood</option>
+                        <option value="Happiness">Happiness</option>
+                        <option value="Stable">Stable</option>
+                        <option value="Mild sadness">Mild Sadness</option>
+                        <option value="Anxiety">Anxiety</option>
+                        <option value="Irritability">Irritability</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Skor Kecemasan</label>
+                    <select class="filter-select" id="filterAnxiety">
+                        <option value="">Semua Level</option>
+                        <option value="Low">Rendah</option>
+                        <option value="Medium">Sedang</option>
+                        <option value="High">Tinggi</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Kualitas Tidur</label>
+                    <select class="filter-select" id="filterSleep">
+                        <option value="">Semua Kualitas</option>
+                        <option value="Good">Baik</option>
+                        <option value="Fair">Cukup</option>
+                        <option value="Poor">Buruk</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Pencarian</label>
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Cari dalam dataset...">
+                </div>
+                
+                <div class="filter-group" style="align-items: flex-end;">
+                    <button class="btn btn-primary" onclick="applyFilters()" style="width: 100%;">
+                        <i class="fas fa-search"></i> Terapkan Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Table -->
+        <div class="dataset-table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-table"></i> Dataset Preview</h3>
+                <span id="displayCount" style="color: #666;">Menampilkan 50 dari 9,504 records</span>
+            </div>
+            
+            <div class="table-wrapper">
+                <table class="dataset-table" id="datasetTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Mood</th>
+                            <th>Anxious Scale</th>
+                            <th>Anxiety Triggers</th>
+                            <th>Sleep Quality</th>
+                            <th>Appetite Change</th>
+                            <th>Physical Symptoms</th>
+                            <th>Concentration</th>
+                            <th>Coping Strategies</th>
+                            <th>Condition</th>
+                        </tr>
+                    </thead>
+                    <tbody id="datasetBody">
+                        <!-- Data akan di-load oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination akan di-generate oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-outline" onclick="exportDataset('csv')">
+                <i class="fas fa-file-csv"></i> Export CSV
+            </button>
+            <button class="btn btn-outline" onclick="exportDataset('json')">
+                <i class="fas fa-file-code"></i> Export JSON
+            </button>
+            <button class="btn btn-primary" onclick="runAnalysis()">
+                <i class="fas fa-chart-bar"></i> Analisis Data
+            </button>
+            <button class="btn btn-primary" onclick="loadAllData()">
+                <i class="fas fa-redo"></i> Muat Semua Data
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DATASET SAMPLE DATA
+        const sampleDataset = [
+            {
+                mood: "Happiness",
+                anxiousScale: "Mildly anxious",
+                anxietyTriggers: "Family issues",
+                sleepQuality: "Early morning waking",
+                appetiteChange: "Increased cravings",
+                physicalSymptoms: "Yes, occasionally",
+                concentration: "Occasionally",
+                copingStrategies: "Physical activity",
+                condition: "Sleep Disorders: Sleep disturbances potentially linked to mood disorders"
+            },
+            {
+                mood: "Irritability",
+                anxiousScale: "Somewhat anxious",
+                anxietyTriggers: "Work-related stress",
+                sleepQuality: "Restful",
+                appetiteChange: "Fluctuates daily",
+                physicalSymptoms: "Yes, occasionally",
+                concentration: "Constantly",
+                copingStrategies: "Journaling or writing",
+                condition: "Stress-Related Conditions: Stress due to identifiable triggers"
+            },
+            {
+                mood: "Stable",
+                anxiousScale: "Not at all",
+                anxietyTriggers: "None of the above",
+                sleepQuality: "Restful",
+                appetiteChange: "No change",
+                physicalSymptoms: "No, not at all",
+                concentration: "Never",
+                copingStrategies: "Mindfulness or meditation",
+                condition: "General Mental Health: Good overall mental health"
+            },
+            {
+                mood: "Anxiety",
+                anxiousScale: "Very anxious",
+                anxietyTriggers: "Social situations",
+                sleepQuality: "Trouble falling asleep",
+                appetiteChange: "Loss of appetite",
+                physicalSymptoms: "Yes, frequently",
+                concentration: "Frequently",
+                copingStrategies: "No coping strategies",
+                condition: "Mood Disorders: Indicators include mood instability"
+            },
+            {
+                mood: "Mild sadness",
+                anxiousScale: "Slightly anxious",
+                anxietyTriggers: "Health concerns",
+                sleepQuality: "Interrupted",
+                appetiteChange: "Loss of appetite",
+                physicalSymptoms: "Rarely",
+                concentration: "Occasionally",
+                copingStrategies: "Social engagement",
+                condition: "Mood Disorders: With sleep and appetite disturbances"
+            }
+        ];
+
+        // GLOBAL VARIABLES
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 50;
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data
+            loadUserData();
+            
+            // Generate sample dataset (9,504 records)
+            generateLargeDataset();
+            
+            // Load initial data
+            loadDataset();
+            
+            // Setup pagination
+            updatePagination();
+            
+            // Setup event listeners
+            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+            
+            // Setup logout
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Apakah Anda yakin ingin logout?')) {
+                    localStorage.removeItem('currentUser');
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        function loadUserData() {
+            // Data dummy untuk contoh
+            const userData = {
+                name: "Agnes Fiona",
+                email: "agnesfionaiga@gmail.com"
+            };
+            
+            // Simpan ke localStorage jika belum ada
+            if (!localStorage.getItem('currentUser')) {
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+            }
+            
+            // Tampilkan data user
+            document.getElementById('userInfo').innerHTML = `
+                <h4>${userData.name}</h4>
+                <p>${userData.email}</p>
+            `;
+            
+            // Set avatar
+            const avatar = document.getElementById('userAvatar');
+            const initials = userData.name.charAt(0).toUpperCase();
+            avatar.textContent = initials;
+            
+            // Set random color
+            const colors = ['#1a2980', '#26d0ce', '#667eea', '#f5576c', '#43e97b'];
+            const colorIndex = userData.name.length % colors.length;
+            avatar.style.backgroundColor = colors[colorIndex];
+            avatar.style.color = 'white';
+        }
+
+        function generateLargeDataset() {
+            // Generate 9,504 records
+            allData = [];
+            const moods = ["Happiness", "Stable", "Mild sadness", "Anxiety", "Irritability", "Fluctuating", "Extreme sadness"];
+            const anxietyLevels = ["Not at all", "Rarely anxious", "Mildly anxious", "Somewhat anxious", "Slightly anxious", "Moderately anxious", "Fairly anxious", "Very anxious", "Extremely anxious", "Constantly anxious"];
+            const triggers = ["Family issues", "Work-related stress", "Social situations", "Financial concerns", "Health concerns", "None of the above"];
+            const sleepQuality = ["Restful", "Early morning waking", "Interrupted", "Difficulty staying asleep", "Trouble falling asleep"];
+            const appetite = ["No change", "Increased cravings", "Loss of appetite", "Fluctuates daily"];
+            const physicalSymptoms = ["No, not at all", "Rarely", "Yes, occasionally", "Yes, frequently"];
+            const concentration = ["Never", "Occasionally", "Frequently", "Constantly"];
+            const coping = ["Physical activity", "Journaling or writing", "Social engagement", "Mindfulness or meditation", "No coping strategies"];
+            const conditions = [
+                "Sleep Disorders: Sleep disturbances potentially linked to mood disorders or anxiety",
+                "Mood Disorders: Indicators include mood instability, lack of interest in activities",
+                "Stress-Related Conditions: Stress due to identifiable triggers, often linked to reduced self-care",
+                "Eating Disorders: Appetite fluctuations, often tied to mood changes and stress",
+                "Cognitive Impairments: Difficulty focusing, potentially related to anxiety, fatigue",
+                "General Mental Health: Responses do not strongly align with specific conditions"
+            ];
+
+            for (let i = 1; i <= 9504; i++) {
+                allData.push({
+                    id: i,
+                    mood: moods[Math.floor(Math.random() * moods.length)],
+                    anxiousScale: anxietyLevels[Math.floor(Math.random() * anxietyLevels.length)],
+                    anxietyTriggers: triggers[Math.floor(Math.random() * triggers.length)],
+                    sleepQuality: sleepQuality[Math.floor(Math.random() * sleepQuality.length)],
+                    appetiteChange: appetite[Math.floor(Math.random() * appetite.length)],
+                    physicalSymptoms: physicalSymptoms[Math.floor(Math.random() * physicalSymptoms.length)],
+                    concentration: concentration[Math.floor(Math.random() * concentration.length)],
+                    copingStrategies: coping[Math.floor(Math.random() * coping.length)],
+                    condition: conditions[Math.floor(Math.random() * conditions.length)]
+                });
+            }
+
+            filteredData = [...allData];
+            
+            // Hitung kategori unik
+            const uniqueConditions = [...new Set(conditions.map(c => c.split(':')[0]))];
+            document.getElementById('uniqueCategories').textContent = uniqueConditions.length;
+        }
+
+        function loadDataset() {
+            const tableBody = document.getElementById('datasetBody');
+            
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-database fa-2x" style="margin-bottom: 15px; opacity: 0.5;"></i>
+                            <p>Tidak ada data yang ditemukan</p>
+                        </td>
+                    </tr>
+                `;
+                updateDisplayCount();
+                return;
+            }
+
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            tableBody.innerHTML = pageData.map((item, index) => {
+                const rowNum = startIndex + index + 1;
+                const conditionType = item.condition.split(':')[0];
+                let badgeClass = 'category-general';
+                
+                if (conditionType.includes('Sleep')) badgeClass = 'category-sleep';
+                else if (conditionType.includes('Mood')) badgeClass = 'category-mood';
+                else if (conditionType.includes('Stress')) badgeClass = 'category-stress';
+                else if (conditionType.includes('Eating')) badgeClass = 'category-eating';
+                else if (conditionType.includes('Cognitive')) badgeClass = 'category-cognitive';
+
+                return `
+                    <tr>
+                        <td>${rowNum}</td>
+                        <td>${item.mood}</td>
+                        <td>${item.anxiousScale}</td>
+                        <td>${item.anxietyTriggers}</td>
+                        <td>${item.sleepQuality}</td>
+                        <td>${item.appetiteChange}</td>
+                        <td>${item.physicalSymptoms}</td>
+                        <td>${item.concentration}</td>
+                        <td>${item.copingStrategies}</td>
+                        <td>
+                            <span class="category-badge ${badgeClass}">${conditionType}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Update display count
+            updateDisplayCount();
+            
+            // Update pagination
+            updatePagination();
+        }
+
+        function updateDisplayCount() {
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+            const endIndex = Math.min(currentPage * itemsPerPage, filteredData.length);
+            document.getElementById('displayCount').textContent = 
+                `Menampilkan ${startIndex}-${endIndex} dari ${filteredData.length} records`;
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const paginationContainer = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '';
+            const maxVisiblePages = 5;
+            
+            // Previous button
+            paginationHTML += `
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button class="page-btn ${currentPage === i ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(filteredData.length / itemsPerPage)) return;
+            
+            currentPage = page;
+            loadDataset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function applyFilters() {
+            const categoryFilter = document.getElementById('filterCategory').value;
+            const moodFilter = document.getElementById('filterMood').value;
+            const anxietyFilter = document.getElementById('filterAnxiety').value;
+            const sleepFilter = document.getElementById('filterSleep').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredData = allData.filter(item => {
+                // Filter by category
+                if (categoryFilter && !item.condition.includes(categoryFilter)) {
+                    return false;
+                }
+                
+                // Filter by mood
+                if (moodFilter) {
+                    let moodMatch = false;
+                    if (moodFilter === "Mild Sadness" && item.mood.toLowerCase().includes("mild")) {
+                        moodMatch = true;
+                    } else if (item.mood === moodFilter) {
+                        moodMatch = true;
+                    }
+                    if (!moodMatch) return false;
+                }
+                
+                // Filter by anxiety level
+                if (anxietyFilter) {
+                    const anxietyLevel = item.anxiousScale.toLowerCase();
+                    let anxietyMatch = false;
+                    
+                    if (anxietyFilter === "Low") {
+                        anxietyMatch = anxietyLevel.includes("not at all") || 
+                                     anxietyLevel.includes("rarely") ||
+                                     anxietyLevel.includes("mildly");
+                    } else if (anxietyFilter === "Medium") {
+                        anxietyMatch = anxietyLevel.includes("somewhat") ||
+                                     anxietyLevel.includes("slightly") ||
+                                     anxietyLevel.includes("moderately");
+                    } else if (anxietyFilter === "High") {
+                        anxietyMatch = anxietyLevel.includes("very") ||
+                                     anxietyLevel.includes("extremely") ||
+                                     anxietyLevel.includes("constantly");
+                    }
+                    
+                    if (!anxietyMatch) return false;
+                }
+                
+                // Filter by sleep quality
+                if (sleepFilter) {
+                    let sleepMatch = false;
+                    const sleepQuality = item.sleepQuality.toLowerCase();
+                    
+                    if (sleepFilter === "Good") {
+                        sleepMatch = sleepQuality.includes("restful");
+                    } else if (sleepFilter === "Fair") {
+                        sleepMatch = sleepQuality.includes("interrupted") ||
+                                   sleepQuality.includes("early");
+                    } else if (sleepFilter === "Poor") {
+                        sleepMatch = sleepQuality.includes("trouble") ||
+                                   sleepQuality.includes("difficulty");
+                    }
+                    
+                    if (!sleepMatch) return false;
+                }
+                
+                // Search across all fields
+                if (searchTerm) {
+                    const searchableText = Object.values(item).join(' ').toLowerCase();
+                    if (!searchableText.includes(searchTerm)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            loadDataset();
+            showNotification(`Menemukan ${filteredData.length} records`, 'success');
+        }
+
+        function exportDataset(format) {
+            if (filteredData.length === 0) {
+                showNotification('Tidak ada data untuk diexport', 'error');
+                return;
+            }
+            
+            let content, mimeType, filename;
+            
+            if (format === 'csv') {
+                // Create CSV
+                const headers = ['ID', 'Mood', 'Anxious Scale', 'Anxiety Triggers', 'Sleep Quality', 
+                               'Appetite Change', 'Physical Symptoms', 'Concentration', 
+                               'Coping Strategies', 'Condition'];
+                
+                const rows = filteredData.map(item => [
+                    item.id,
+                    `"${item.mood}"`,
+                    `"${item.anxiousScale}"`,
+                    `"${item.anxietyTriggers}"`,
+                    `"${item.sleepQuality}"`,
+                    `"${item.appetiteChange}"`,
+                    `"${item.physicalSymptoms}"`,
+                    `"${item.concentration}"`,
+                    `"${item.copingStrategies}"`,
+                    `"${item.condition}"`
+                ].join(','));
+                
+                content = [headers.join(','), ...rows].join('\n');
+                mimeType = 'text/csv';
+                filename = `dataset_psikologis_${new Date().toISOString().split('T')[0]}.csv`;
+            } else if (format === 'json') {
+                // Create JSON
+                content = JSON.stringify(filteredData, null, 2);
+                mimeType = 'application/json';
+                filename = `dataset_psikologis_${new Date().toISOString().split('T')[0]}.json`;
+            }
+            
+            // Create download link
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`Dataset berhasil diexport (${format.toUpperCase()})`, 'success');
+        }
+
+        function runAnalysis() {
+            showNotification('Memulai analisis dataset...', 'info');
+            
+            // Simulasi analisis data
+            setTimeout(() => {
+                // Hitung statistik
+                const categories = {};
+                const moods = {};
+                const anxietyLevels = {};
+                
+                filteredData.forEach(item => {
+                    // Hitung kategori
+                    const category = item.condition.split(':')[0].trim();
+                    categories[category] = (categories[category] || 0) + 1;
+                    
+                    // Hitung mood
+                    moods[item.mood] = (moods[item.mood] || 0) + 1;
+                    
+                    // Hitung anxiety level
+                    const anxiety = item.anxiousScale.toLowerCase();
+                    let level = 'Low';
+                    if (anxiety.includes('very') || anxiety.includes('extremely') || anxiety.includes('constantly')) {
+                        level = 'High';
+                    } else if (anxiety.includes('somewhat') || anxiety.includes('slightly') || anxiety.includes('moderately')) {
+                        level = 'Medium';
+                    }
+                    anxietyLevels[level] = (anxietyLevels[level] || 0) + 1;
+                });
+                
+                // Tampilkan hasil analisis
+                const mostCommonCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b);
+                const mostCommonMood = Object.keys(moods).reduce((a, b) => moods[a] > moods[b] ? a : b);
+                
+                const analysisResults = `
+                    <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h4><i class="fas fa-chart-pie"></i> Hasil Analisis Dataset</h4>
+                        <p><strong>Total Data:</strong> ${filteredData.length} records</p>
+                        <p><strong>Kategori Terbanyak:</strong> ${mostCommonCategory} (${categories[mostCommonCategory]} records)</p>
+                        <p><strong>Mood Dominan:</strong> ${mostCommonMood} (${moods[mostCommonMood]} records)</p>
+                        <p><strong>Distribusi Kecemasan:</strong></p>
+                        <ul>
+                            <li>Rendah: ${anxietyLevels.Low || 0} records</li>
+                            <li>Sedang: ${anxietyLevels.Medium || 0} records</li>
+                            <li>Tinggi: ${anxietyLevels.High || 0} records</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: #1a2980; font-weight: 600;">
+                            <i class="fas fa-lightbulb"></i> Rekomendasi: Fokus pada intervensi untuk ${mostCommonCategory.toLowerCase()}
+                        </p>
+                    </div>
+                `;
+                
+                // Tampilkan hasil analisis
+                const tableContainer = document.querySelector('.dataset-table-container');
+                tableContainer.insertAdjacentHTML('afterend', analysisResults);
+                
+                showNotification('Analisis selesai! Hasil ditampilkan di bawah tabel.', 'success');
+            }, 1500);
+        }
+
+        function loadAllData() {
+            filteredData = [...allData];
+            currentPage = 1;
+            document.getElementById('filterCategory').value = '';
+            document.getElementById('filterMood').value = '';
+            document.getElementById('filterAnxiety').value = '';
+            document.getElementById('filterSleep').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            loadDataset();
+            showNotification('Semua data dimuat ulang', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.global-notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = `global-notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

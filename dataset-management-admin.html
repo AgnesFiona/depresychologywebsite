@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Management - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --border: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .header h1 {
+            color: var(--secondary);
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        /* Main Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* Dataset Info */
+        .dataset-info {
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            color: var(--secondary);
+            font-size: 22px;
+        }
+        
+        .table-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            opacity: 0.9;
+        }
+        
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--primary);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Process Data Section */
+        .process-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .process-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .process-card h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Login Info */
+        .login-info {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--warning);
+        }
+        
+        .login-info h3 {
+            color: var(--warning);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .login-details {
+            background: #fff5f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .login-row {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ffccd5;
+        }
+        
+        .login-row:last-child {
+            border-bottom: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .table-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-database"></i>
+                Dataset Management - Admin Panel
+            </h1>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div>
+                    <h4>Administrator</h4>
+                    <p>adminpsyc@admin.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard">
+            <div class="card">
+                <h2>Dataset Pathology Overview</h2>
+                <p style="color: #666; margin-top: 10px;">Kelola dataset pathology (9,504 records)</p>
+                
+                <div class="stats-grid" style="margin-top: 25px;">
+                    <div class="stat-card">
+                        <h3>9,504</h3>
+                        <p>Total Records</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>10</h3>
+                        <p>Features</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>5</h3>
+                        <p>Target Categories</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>6</h3>
+                        <p>Condition Types</p>
+                    </div>
+                </div>
+                
+                <div class="dataset-info">
+                    <h3 style="margin: 20px 0 15px 0; color: var(--secondary);">
+                        <i class="fas fa-info-circle"></i> Dataset Information
+                    </h3>
+                    <div class="info-item">
+                        <span><strong>Source:</strong></span>
+                        <span>Cogdp's Psychological Assessment Dataset</span>
+                    </div>
+                    <div class="info-item">
+                        <span><strong>Features:</strong></span>
+                        <span>Mood, Anotop, Social Scale, Anxiety Triggers, Sleep Quality, Appetite Change, Lack of Interest, Enjoyable Activities, Physical Anxiety Symptoms, Concentration Difficulty, Coping Strategies</span>
+                    </div>
+                    <div class="info-item">
+                        <span><strong>Target:</strong></span>
+                        <span>Condition Summary (Sleep Disorders, Mood Disorders, Eating Disorders, Stress-Related Conditions, Cognitive Impairments, General Mental Health)</span>
+                    </div>
+                    <div class="info-item">
+                        <span><strong>Dataset Link:</strong></span>
+                        <a href="https://www.kaggle.com/datasets/cognitivepsychology/psychological-assessment-dataset" 
+                           target="_blank" 
+                           style="color: var(--primary); text-decoration: none;">
+                           <i class="fab fa-kaggle"></i> Kaggle Dataset Link
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Quick Actions</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-file-import"></i> Import New Dataset
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Update Dataset
+                    </button>
+                    <button class="btn btn-warning" id="exportCsvBtn">
+                        <i class="fas fa-file-export"></i> Export as CSV
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-chart-bar"></i> Generate Report
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-cog"></i> Dataset Settings
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 10px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">
+                        <i class="fas fa-shield-alt"></i> Data Security Note
+                    </h4>
+                    <p style="color: #555; font-size: 14px;">
+                        <i class="fas fa-check-circle" style="color: green;"></i> 
+                        Data tidak disimpan di database eksternal
+                    </p>
+                    <p style="color: #555; font-size: 14px; margin-top: 5px;">
+                        <i class="fas fa-check-circle" style="color: green;"></i> 
+                        Semua data hanya tersimpan di browser pengguna
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Table Section -->
+        <div class="table-section">
+            <div class="section-header">
+                <h2><i class="fas fa-table"></i> Dataset Preview (First 50 Records)</h2>
+                <div class="table-controls">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button class="btn btn-primary" id="loadMoreBtn">
+                        <i class="fas fa-plus"></i> Load More Data
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mood</th>
+                            <th>Anotop</th>
+                            <th>Social Scale</th>
+                            <th>Anxiety Triggers</th>
+                            <th>Sleep Quality</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="datasetTable">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center; color: #666;">
+                <p>Showing 50 of 9,504 records</p>
+            </div>
+        </div>
+
+        <!-- Process Data Section -->
+        <div class="process-section">
+            <h2><i class="fas fa-cogs"></i> Proses Data</h2>
+            
+            <div class="process-grid">
+                <div class="process-card">
+                    <h4><i class="fas fa-filter"></i> Filter</h4>
+                    <p>Interstrict: 10 isotopes filter dengan checklist untuk menyaring data berdasarkan kriteria tertentu.</p>
+                </div>
+                
+                <div class="process-card">
+                    <h4><i class="fas fa-tools"></i> Precursor</h4>
+                    <p>Preprocessing data termasuk beta-algama mood, kondisi, dan parameter klinis lainnya.</p>
+                </div>
+                
+                <div class="process-card">
+                    <h4><i class="fas fa-pagelines"></i> Pagination</h4>
+                    <p>Mengelola data dengan sistem pagination yang efisien untuk performa optimal.</p>
+                </div>
+                
+                <div class="process-card">
+                    <h4><i class="fas fa-chart-line"></i> Visualisasi</h4>
+                    <p>Grafik distribusi data interaktif untuk analisis visual dataset.</p>
+                </div>
+                
+                <div class="process-card">
+                    <h4><i class="fas fa-chart-bar"></i> Analisis</h4>
+                    <p>Statistik deskriptif dan insights otomatis dari dataset pathology.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Information Section -->
+        <div class="login-info">
+            <h3><i class="fas fa-sign-in-alt"></i> Informasi Login Admin</h3>
+            <p>Gunakan kredensial berikut untuk login sebagai administrator:</p>
+            
+            <div class="login-details">
+                <div class="login-row">
+                    <strong>Email:</strong> adminpsyc@admin.com
+                </div>
+                <div class="login-row">
+                    <strong>Password:</strong> depresychol
+                </div>
+                <div class="login-row">
+                    <strong>Catatan:</strong> Data tidak tersimpan di database eksternal, hanya di browser pengguna.
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #e7f4ff; border-radius: 8px;">
+                <p style="color: var(--primary); margin: 0;">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Keamanan:</strong> Kredensial ini hanya untuk keperluan administratif. Jangan bagikan kepada pengguna lain.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample dataset untuk preview
+        const sampleData = [
+            { id: 1, mood: "Low", anotop: "Moderate", socialScale: "Isolated", anxietyTriggers: "Work", sleepQuality: "Poor", condition: "Mood Disorders" },
+            { id: 2, mood: "High", anotop: "Low", socialScale: "Social", anxietyTriggers: "None", sleepQuality: "Good", condition: "General Mental Health" },
+            { id: 3, mood: "Moderate", anotop: "High", socialScale: "Limited", anxietyTriggers: "Social", sleepQuality: "Fair", condition: "Anxiety Disorders" },
+            { id: 4, mood: "Low", anotop: "Moderate", socialScale: "Isolated", anxietyTriggers: "Financial", sleepQuality: "Poor", condition: "Sleep Disorders" },
+            { id: 5, mood: "High", anotop: "Low", socialScale: "Active", anxietyTriggers: "None", sleepQuality: "Excellent", condition: "General Mental Health" },
+            { id: 6, mood: "Moderate", anotop: "High", socialScale: "Limited", anxietyTriggers: "Health", sleepQuality: "Fair", condition: "Stress-Related Conditions" },
+            { id: 7, mood: "Low", anotop: "Very High", socialScale: "Isolated", anxietyTriggers: "Multiple", sleepQuality: "Very Poor", condition: "Cognitive Impairments" },
+            { id: 8, mood: "High", anotop: "Low", socialScale: "Very Active", anxietyTriggers: "None", sleepQuality: "Good", condition: "General Mental Health" },
+            { id: 9, mood: "Moderate", anotop: "Moderate", socialScale: "Social", anxietyTriggers: "Relationships", sleepQuality: "Fair", condition: "Mood Disorders" },
+            { id: 10, mood: "Low", anotop: "High", socialScale: "Limited", anxietyTriggers: "Work", sleepQuality: "Poor", condition: "Eating Disorders" }
+        ];
+
+        // Fungsi untuk mengisi tabel
+        function populateTable() {
+            const tableBody = document.getElementById('datasetTable');
+            tableBody.innerHTML = '';
+            
+            sampleData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.mood}</td>
+                    <td>${row.anotop}</td>
+                    <td>${row.socialScale}</td>
+                    <td>${row.anxietyTriggers}</td>
+                    <td>${row.sleepQuality}</td>
+                    <td><span class="condition-badge">${row.condition}</span></td>
+                    <td>
+                        <button class="btn-small" style="padding: 5px 10px; background: #e7f4ff; color: var(--primary); border: none; border-radius: 4px; margin-right: 5px;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-small" style="padding: 5px 10px; background: #fff0f3; color: var(--warning); border: none; border-radius: 4px;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Fungsi untuk export CSV
+        document.getElementById('exportCsvBtn').addEventListener('click', function() {
+            // Konversi data ke CSV
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Header
+            csvContent += "ID,Mood,Anotop,Social Scale,Anxiety Triggers,Sleep Quality,Condition\n";
+            
+            // Data rows
+            sampleData.forEach(row => {
+                csvContent += `${row.id},${row.mood},${row.anotop},${row.socialScale},${row.anxietyTriggers},${row.sleepQuality},${row.condition}\n`;
+            });
+            
+            // Buat link download
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "dataset_export.csv");
+            document.body.appendChild(link);
+            
+            // Trigger download
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("Dataset berhasil diekspor sebagai CSV!");
+        });
+
+        // Load More Data
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            alert("Memuat data tambahan... (Simulasi)");
+            // Di implementasi nyata, ini akan fetch data tambahan dari server
+        });
+
+        // Initialize table
+        populateTable();
+
+        // Add some CSS for condition badges
+        const style = document.createElement('style');
+        style.textContent = `
+            .condition-badge {
+                padding: 5px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+            
+            .condition-badge:nth-child(1) { background: #e7f4ff; color: #0369a1; }
+            .condition-badge:nth-child(2) { background: #f0f9ff; color: #0c4a6e; }
+            .condition-badge:nth-child(3) { background: #fef3c7; color: #92400e; }
+            .condition-badge:nth-child(4) { background: #fce7f3; color: #9d174d; }
+            .condition-badge:nth-child(5) { background: #dcfce7; color: #166534; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

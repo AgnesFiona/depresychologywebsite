@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screening History - Mental Healths</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f2;
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(165deg, #1a3a1d 0%, #2c5e2f 30%, #4f8a4a 70%, #a8d08d 100%);
+            color: white;
+            padding: 20px 15px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 20px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #c2d7b6, #e5f2d8);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: #1a3a1d;
+            border: 3px solid #ffffff;
+        }
+
+        .profile-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-status {
+            font-size: 0.8em;
+            color: #a8d08d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .profile-status .dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .profile-email {
+            font-size: 0.75em;
+            color: #e5f2d8;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .profile-gender {
+            font-size: 0.8em;
+            color: #d0ebc0;
+        }
+
+        .menu-title {
+            color: #e5f2d8;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin: 10px 0 15px 10px;
+            font-weight: 600;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            border-left: 4px solid #a8d08d;
+        }
+
+        .menu-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .menu-checkbox.checked {
+            background: #a8d08d;
+            color: #1a3a1d;
+        }
+
+        .menu-checkbox.checked::after {
+            content: "✓";
+        }
+
+        .menu-checkbox.unchecked {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateX(5px);
+        }
+
+        .logout-icon {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px;
+            background: #f8faf5;
+            min-height: 100vh;
+            width: calc(100% - 280px);
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 40, 0, 0.08);
+            border-left: 6px solid #2c5e2f;
+        }
+
+        .page-header h1 {
+            color: #1a3a1d;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: #4a6b3f;
+        }
+
+        .history-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #d0e2c0;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 50px;
+            color: #5f7e4e;
+        }
+
+        .history-card {
+            background: #f5faf0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2c5e2f;
+            transition: all 0.3s;
+        }
+
+        .history-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-date {
+            color: #5f7e4e;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .mode-online {
+            background: #4caf50;
+            color: white;
+        }
+
+        .mode-offline {
+            background: #ff9800;
+            color: white;
+        }
+
+        .mode-demo {
+            background: #9c27b0;
+            color: white;
+        }
+
+        .history-result {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c5e2f;
+            margin: 10px 0;
+        }
+
+        .history-detail {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #d0e2c0;
+        }
+
+        .history-detail summary {
+            cursor: pointer;
+            color: #2c5e2f;
+            font-weight: 600;
+            padding: 5px 0;
+        }
+
+        .jawaban-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .jawaban-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .jawaban-label {
+            font-weight: 600;
+            color: #2c5e2f;
+        }
+
+        .jawaban-value {
+            color: #1a3a1d;
+            margin-top: 4px;
+            display: block;
+            word-break: break-word;
+        }
+
+        .history-analysis {
+            background: linear-gradient(135deg, #e5f2d8, #f5faf0);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #2c5e2f;
+        }
+
+        .history-analysis h4 {
+            color: #1a3a1d;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .history-analysis p {
+            color: #2c5e2f;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .analysis-condition {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c5e2f;
+            margin-bottom: 10px;
+        }
+
+        .btn-back {
+            background: #2c5e2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-delete-all {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-delete-all:hover {
+            background: #c53030;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px 15px;
+            color: #5f7e4e;
+            margin-top: 30px;
+            border-top: 1px solid #d0e2c0;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .jawaban-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile-section">
+            <div class="profile-avatar" id="profile-avatar">👤</div>
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-status"><span class="dot"></span><span id="profile-status-text">Online</span></div>
+            <div class="profile-email" id="profile-email">-</div>
+            <div class="profile-gender" id="profile-gender">-</div>
+        </div>
+        <div class="menu-title">MAIN MENU</div>
+        <div class="menu-items">
+            <div class="menu-item" data-page="dashboard">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">🏠</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="kuesioner">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">📝</span>
+                <span class="menu-text">Skrining Psikologis</span>
+            </div>
+            <div class="menu-item active" data-page="riwayat">
+                <div class="menu-checkbox checked"></div>
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">Riwayat Skrining</span>
+            </div>
+            <div class="menu-item" data-page="tentang">
+                <div class="menu-checkbox unchecked"></div>
+                <span class="menu-icon">ℹ️</span>
+                <span class="menu-text">Tentang Website</span>
+            </div>
+        </div>
+        <div class="logout-btn" id="logout-btn">
+            <span class="logout-icon">🚪</span>
+            <span class="logout-text">Logout</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1><span>📋</span> Riwayat Skrining</h1>
+            <p>Hasil assessment skrining kesehatan mental Anda dapat dilihat di bawah ini.</p>
+        </div>
+
+        <div class="history-container">
+            <div style="text-align: right; margin-bottom: 15px;">
+                <button class="btn-delete-all" id="btnDeleteAllHistory">
+                    <i class="fas fa-trash-alt"></i> Delete All History
+                </button>
+            </div>
+            <div id="historyContainer"></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logo">Depresychology</div>
+            <div class="copyright">© 2026 Depresychology - Online Psychological Assessment</div>
+        </div>
+    </div>
+
+    <script>
+        // ========== NAVIGATION & ACTIVITY FUNCTIONS ==========
+        function getCurrentUser() {
+            try {
+                const sessionUser = sessionStorage.getItem('currentUser');
+                if (sessionUser) return JSON.parse(sessionUser);
+                const localUser = localStorage.getItem('currentUser');
+                if (localUser) return JSON.parse(localUser);
+                return null;
+            } catch (error) { return null; }
+        }
+
+        function getCurrentUserId() {
+            const user = getCurrentUser();
+            if (user && user.email) {
+                return user.email.replace(/[@.]/g, '_');
+            }
+            return 'guest';
+        }
+
+        function getActivityKey() {
+            const userId = getCurrentUserId();
+            return `user_activities_${userId}`;
+        }
+
+        function saveActivity(activity) {
+            try {
+                const key = getActivityKey();
+                let acts = JSON.parse(localStorage.getItem(key)) || [];
+                const newActivity = {
+                    id: Date.now(),
+                    ...activity,
+                    timestamp: new Date().toISOString()
+                };
+                acts.unshift(newActivity);
+                if (acts.length > 50) acts = acts.slice(0, 50);
+                localStorage.setItem(key, JSON.stringify(acts));
+            } catch (error) {
+                console.error('Error saving activity:', error);
+            }
+        }
+
+        function navigateTo(page, pageType, pageName) {
+            saveActivity({ pageName: pageName, pageType: pageType });
+            window.location.href = page;
+        }
+
+        function setupMenuNavigation() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    const page = this.getAttribute('data-page');
+                    let pageName = '';
+                    switch (page) {
+                        case 'dashboard': pageName = 'Dashboard'; break;
+                        case 'kuesioner': pageName = 'Psychological Screening'; break;
+                        case 'riwayat': pageName = 'Screening History'; break;
+                        case 'tentang': pageName = 'About'; break;
+                        default: pageName = page;
+                    }
+                    if (window.location.pathname.includes(`${page}.html`)) return;
+                    navigateTo(`${page}.html`, page, pageName);
+                });
+            });
+        }
+
+        // ========== SIDEPROFILE FUNCTIONS ==========
+        function getUserFromDatabase(email) {
+            if (!email) return null;
+            try {
+                const usersData = localStorage.getItem('psycho_users');
+                if (!usersData) return null;
+                const users = JSON.parse(usersData);
+                return users.find(user => user.email === email) || null;
+            } catch (error) { return null; }
+        }
+
+        function updateSideProfile() {
+            const avatar = document.getElementById('profile-avatar');
+            const name = document.getElementById('profile-name');
+            const email = document.getElementById('profile-email');
+            const gender = document.getElementById('profile-gender');
+            const currentUser = getCurrentUser();
+
+            if (!currentUser) {
+                if (avatar) avatar.innerHTML = '🔓';
+                if (name) name.textContent = 'Not Logged In';
+                if (email) email.textContent = 'Please login to access';
+                if (gender) gender.innerHTML = '👤 Guest';
+                return;
+            }
+
+            const userData = getUserFromDatabase(currentUser.email) || currentUser;
+            let avatarText = '👤';
+            const fullName = userData.name || 'User';
+            if (fullName) {
+                const names = fullName.split(' ');
+                if (names.length >= 2) avatarText = (names[0][0] + names[1][0]).toUpperCase();
+                else avatarText = fullName.substring(0, 2).toUpperCase();
+            }
+            if (avatar) avatar.innerHTML = avatarText;
+            if (name) name.textContent = fullName;
+            if (email) email.textContent = currentUser.email || '';
+            if (gender) {
+                const genderValue = userData.gender || '';
+                let genderIcon = '👤', genderText = 'User';
+                if (genderValue === 'Laki-laki' || genderValue === 'male') { genderIcon = '👨'; genderText = 'Male'; }
+                else if (genderValue === 'Perempuan' || genderValue === 'female') { genderIcon = '👩'; genderText = 'Female'; }
+                else { genderIcon = '👤'; genderText = genderValue || 'User'; }
+                gender.innerHTML = `${genderIcon} ${genderText}`;
+            }
+        }
+
+        function confirmLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                saveActivity({ pageName: 'Logout', pageType: 'logout' });
+                sessionStorage.removeItem('currentUser');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return false;
+        }
+
+        // ========== FIELD MAPPING - Exactly matching the 10 questions from dataset ==========
+        const fieldDisplayOrder = [
+            { shortKey: 'Mood', label: 'Mood (Past 2 weeks)' },
+            { shortKey: 'AnxiousSocialScale', label: 'Anxious Social Scale' },
+            { shortKey: 'AnxietyTriggers', label: 'Anxiety Triggers' },
+            { shortKey: 'SleepQuality', label: 'Sleep Quality' },
+            { shortKey: 'AppetiteChange', label: 'Appetite Change' },
+            { shortKey: 'LackOfInterest', label: 'Lack of Interest' },
+            { shortKey: 'EnjoyableActivities', label: 'Enjoyable Activities' },
+            { shortKey: 'PhysicalSymptoms', label: 'Physical Anxiety Symptoms' },
+            { shortKey: 'ConcentrationDifficulty', label: 'Concentration Difficulty' },
+            { shortKey: 'CopingStrategies', label: 'Coping Strategies' }
+        ];
+
+        function getFieldLabel(key) {
+            const found = fieldDisplayOrder.find(f => f.shortKey === key);
+            return found ? found.label : key;
+        }
+
+        function getModeBadge(mode) {
+            if (mode === 'online') {
+                return '<span class="mode-badge mode-online"><i class="fas fa-cloud-upload-alt"></i> Online (ML Model)</span>';
+            } else if (mode === 'offline') {
+                return '<span class="mode-badge mode-offline"><i class="fas fa-database"></i> Offline (Rule-based)</span>';
+            } else if (mode === 'demo') {
+                return '<span class="mode-badge mode-demo"><i class="fas fa-chart-line"></i> Demo Mode</span>';
+            }
+            return '';
+        }
+
+        function deleteAllHistory() {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) return;
+            
+            if (confirm('Are you sure you want to delete ALL screening history? This action cannot be undone.')) {
+                const riwayatKey = `riwayat_${currentUser.email}`;
+                localStorage.removeItem(riwayatKey);
+                showNotification('All screening history has been deleted');
+                tampilkanRiwayat();
+            }
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#2c5e2f;color:white;padding:12px 20px;border-radius:8px;z-index:1000;animation:slideIn 0.3s ease;font-size:13px;';
+            notif.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        function tampilkanRiwayat() {
+            const currentUser = getCurrentUser();
+            const container = document.getElementById('historyContainer');
+
+            if (!currentUser || !currentUser.email) {
+                container.innerHTML = `<div class="empty-history"><i class="fas fa-lock" style="font-size: 48px; margin-bottom: 15px; display: block;"></i><p>Please login first to view your screening history.</p><a href="login.html" class="btn-back"><i class="fas fa-sign-in-alt"></i> Login Now</a></div>`;
+                return;
+            }
+
+            const riwayatKey = `riwayat_${currentUser.email}`;
+            let riwayat = JSON.parse(localStorage.getItem(riwayatKey) || '[]');
+
+            if (riwayat.length === 0) {
+                container.innerHTML = `<div class="empty-history"><i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 15px; display: block;"></i><p>No screening history yet. Please complete a screening first.</p><a href="kuesioner.html" class="btn-back"><i class="fas fa-edit"></i> Start Screening</a></div>`;
+                return;
+            }
+
+            let html = '';
+
+            for (let item of riwayat) {
+                const tanggalFormatted = new Date(item.tanggal).toLocaleString('id-ID', {
+                    dateStyle: 'full',
+                    timeStyle: 'short'
+                });
+
+                // Build jawaban HTML with all 10 fields matching dataset
+                let jawabanHtml = '<div class="jawaban-grid">';
+                if (item.jawabanDisplay && Object.keys(item.jawabanDisplay).length > 0) {
+                    for (const [key, value] of Object.entries(item.jawabanDisplay)) {
+                        const label = getFieldLabel(key);
+                        jawabanHtml += `
+                            <div class="jawaban-item">
+                                <div class="jawaban-label">${label}:</div>
+                                <div class="jawaban-value">${escapeHtml(value) || '-'}</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    jawabanHtml += `<div class="jawaban-item" style="grid-column: span 2; text-align: center; color: #999;">Detailed answers not available</div>`;
+                }
+                jawabanHtml += '</div>';
+
+                // Get mode badge
+                const modeBadge = getModeBadge(item.mode);
+
+                const analysisHtml = `
+                    <div class="history-analysis">
+                        <div class="analysis-condition"><i class="fas fa-brain"></i> ${escapeHtml(item.hasil) || 'No result'}</div>
+                        <h4><i class="fas fa-info-circle"></i> Result Explanation</h4>
+                        <p>${escapeHtml(item.deskripsi) || 'No description available'}</p>
+                        <h4><i class="fas fa-lightbulb"></i> Recommendation</h4>
+                        <p>${escapeHtml(item.saran) || 'No recommendation available'}</p>
+                    </div>
+                `;
+
+                html += `
+                    <div class="history-card">
+                        <div class="history-date">
+                            <i class="far fa-calendar-alt"></i> ${tanggalFormatted}
+                            ${modeBadge}
+                        </div>
+                        <div class="history-result"><i class="fas fa-chart-line"></i> Screening Result: ${escapeHtml(item.hasil) || '-'}</div>
+                        <details class="history-detail">
+                            <summary><i class="fas fa-chevron-down"></i> View detailed answers (10 indicators) & analysis</summary>
+                            ${jawabanHtml}
+                            ${analysisHtml}
+                        </details>
+                    </div>
+                `;
+            }
+
+            html += `<div style="text-align: center; margin-top: 20px;"><a href="kuesioner.html" class="btn-back"><i class="fas fa-plus"></i> Start New Screening</a></div>`;
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            updateSideProfile();
+            setupMenuNavigation();
+            tampilkanRiwayat();
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    confirmLogout();
+                });
+            }
+
+            const deleteAllBtn = document.getElementById('btnDeleteAllHistory');
+            if (deleteAllBtn) {
+                deleteAllBtn.addEventListener('click', function () {
+                    deleteAllHistory();
+                });
+            }
+
+            const key = getActivityKey();
+            const acts = JSON.parse(localStorage.getItem(key)) || [];
+            const today = new Date().toDateString();
+            const alreadyHasToday = acts.some(a =>
+                a.pageType === 'riwayat' && new Date(a.timestamp).toDateString() === today
+            );
+
+            if (!alreadyHasToday) {
+                saveActivity({ pageName: 'Screening History', pageType: 'riwayat' });
+            }
+        });
+    </script>
+</body>
+</html>
